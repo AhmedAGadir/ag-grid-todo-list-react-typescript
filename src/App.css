@@ -11,6 +11,12 @@ body {
   background: blueviolet;
 }
 
+.ag-react-container {
+  height: 100%;
+}
+
+input {}
+
 .to-do-input {
   border: none;
   background-image: none;
@@ -18,8 +24,8 @@ body {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  background: #3B465C;
   outline: none;
+  background: #3B465C;
   color: #ccc;
   height: 60px;
   flex-grow: 1;
@@ -28,7 +34,7 @@ body {
 }
 
 .to-do-input::placeholder {
-  color: #ccc;
+  color: #ddd;
 }
 
 button[type="submit"] {

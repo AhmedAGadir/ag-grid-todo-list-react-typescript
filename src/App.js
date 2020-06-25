@@ -140,7 +140,10 @@ class ToDoRenderer extends Component {
       )
     } else {
       component = <div
-        style={{ textDecoration: this.props.data.completed ? 'line-through' : 'none' }}>{
+        style={{
+          textDecoration: this.props.data.completed ? 'line-through' : 'none',
+          // color: this.props.data.completed ? 'darkgrey' : 'black'
+        }}>{
           this.props.value}</div>
     }
 
@@ -167,7 +170,7 @@ class CompletedRenderer extends Component {
   setCompleted = bool => {
     this.setState({ completed: bool }, () => {
       this.props.node.setDataValue(this.props.column.colId, bool);
-      this.props.api.refreshCells({ rowNodes: [this.props.node], force: true })
+      this.props.api.redrawRows({ rowNodes: [this.props.node], force: true })
     })
   }
 
@@ -204,6 +207,7 @@ class App extends Component {
       columnDefs: [
         {
           field: 'description',
+          rowDrag: true,
           suppressMenu: true,
           flex: 3,
           cellRenderer: 'toDoRenderer',
@@ -238,9 +242,10 @@ class App extends Component {
       ],
       rowData: [
         { description: 'Hello World!', id: 0, date: '11/07/20', completed: false },
-        { description: 'World Hello!', id: 999, date: '23/04/20', completed: false },
+        { description: 'World Hello!', id: 999, date: '23/04/20', completed: true },
         { description: 'Hello! Sudan', id: 987, date: '19/11/20', completed: true },
         { description: 'Goodbye Latin America Hello!', id: 599, date: '01/08/20', completed: false },
+        { description: 'Buy Coca-Cola', id: 666, date: '12/03/20', completed: true },
       ],
       frameworkComponents: {
         toDoRenderer: ToDoRenderer,
@@ -285,7 +290,7 @@ class App extends Component {
 
   render() {
     return (
-      <div style={{ width: 600, position: 'absolute', left: '50%', top: 'calc(50% - 100px)', transform: 'translate(-50%, -50%)' }}>
+      <div style={{ width: 650, position: 'absolute', left: '50%', top: 'calc(50% - 100px)', transform: 'translate(-50%, -50%)' }}>
         <form style={{ display: 'flex' }} onSubmit={e => e.preventDefault()}>
           <input
             ref={this.inputRef}
@@ -314,7 +319,15 @@ class App extends Component {
             }}
             domLayout="autoHeight"
             headerHeight={0}
-            rowHeight={65}>
+            rowHeight={65}
+            getRowStyle={params => {
+              if (params.node.data.completed) {
+                return { background: 'lightgreen' }
+              }
+            }}
+            rowDragManaged
+            animateRows
+          >
           </AgGridReact>
         </div>
         <img src={require("./ag-grid-logo.png")} style={{ width: 200, margin: '40px auto 0', display: 'block' }} />
