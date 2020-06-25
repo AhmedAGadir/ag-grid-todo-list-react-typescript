@@ -18,6 +18,12 @@ import {
 } from '@material-ui/pickers';
 
 
+
+
+// tooltip for the dates saying you have X days remaining 
+
+
+
 class DateRenderer extends Component {
   //  forwardRef((props, ref) => {
   //   const [selectedDate, setSelectedDate] = useState(null);
@@ -183,17 +189,37 @@ class CompletedRenderer extends Component {
   render() {
     let component;
     if (this.state.completed) {
-      component = <button onClick={() => this.setCompleted(false)}>↶</button>
+      component = <span className="completed-icon" onClick={() => this.setCompleted(false)}>⎌</span>
     } else {
-      component = <button onClick={() => this.setCompleted(true)}>✓</button>
+      component = <span className="uncompleted-icon" onClick={() => this.setCompleted(true)}>✓</span>
     }
 
     return (
-      <div>
+      <>
         {component}
-        {/* {'  '} */}
-        {/* <button onClick={this.deleteToDo}>🗑</button> */}
-      </div>
+      </>
+    )
+  }
+}
+
+
+class DeleteRenderer extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount = () => {
+  }
+
+  deleteToDo = () => {
+    if (window.confirm('Are you sure youd like to delete this row?')) {
+      this.props.deleteToDo(this.props.node.id)
+    }
+  }
+
+  render() {
+    return (
+      <span className="delete-icon" onClick={this.deleteToDo}>⨉</span>
     )
   }
 }
@@ -206,6 +232,7 @@ class App extends Component {
       idSeq: 1,
       columnDefs: [
         {
+          headerName: 'Description',
           field: 'description',
           rowDrag: true,
           suppressMenu: true,
@@ -225,20 +252,27 @@ class App extends Component {
         {
           headerName: 'Due Date',
           field: 'date',
+          // hide: true,
           suppressMenu: true,
-          width: 200,
+          width: 180,
           cellRenderer: 'dateRenderer'
         },
         {
-          headerName: '',
+          headerName: 'Completed',
           field: 'completed',
           suppressMenu: true,
           width: 60,
           cellRenderer: 'completedRenderer',
+        },
+        {
+          headerName: 'Delete',
+          cellRenderer: 'deleteRenderer',
+          hide: true,
+          width: 45,
           cellRendererParams: {
             deleteToDo: id => this.deleteToDo(id)
           }
-        },
+        }
       ],
       rowData: [
         { description: 'Hello World!', id: 0, date: '11/07/20', completed: false },
@@ -249,8 +283,9 @@ class App extends Component {
       ],
       frameworkComponents: {
         toDoRenderer: ToDoRenderer,
+        dateRenderer: DateRenderer,
         completedRenderer: CompletedRenderer,
-        dateRenderer: DateRenderer
+        deleteRenderer: DeleteRenderer
       },
       currentlyEditingId: null,
     }
@@ -290,7 +325,8 @@ class App extends Component {
 
   render() {
     return (
-      <div style={{ width: 650, position: 'absolute', left: '50%', top: 'calc(50% - 100px)', transform: 'translate(-50%, -50%)' }}>
+      <div style={{ width: 600, position: 'absolute', left: '50%', top: 'calc(50% - 100px)', transform: 'translate(-50%, -50%)' }}>
+        {/* <h1 style={{ color: 'white', fontSize: 50, fontFamily: 'Roboto', fontWeight: 400, textAlign: 'center' }}>To-Do List</h1> */}
         <form style={{ display: 'flex' }} onSubmit={e => e.preventDefault()}>
           <input
             ref={this.inputRef}
@@ -327,6 +363,21 @@ class App extends Component {
             }}
             rowDragManaged
             animateRows
+          // sideBar={{
+          //   toolPanels: [{
+          //     id: 'columns',
+          //     labelDefault: '',
+          //     labelKey: 'columns',
+          //     iconKey: 'columns',
+          //     toolPanel: 'agColumnsToolPanel',
+          //     toolPanelParams: {
+          //       suppressRowGroups: true,
+          //       suppressValues: true,
+          //       suppressPivotMode: true,
+          //       suppressColumnFilter: true
+          //     }
+          //   }]
+          // }}
           >
           </AgGridReact>
         </div>

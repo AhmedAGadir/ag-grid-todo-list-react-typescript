@@ -51,3 +51,18 @@ button[type="submit"] {
   font-size: 30px;
   font-weight: bold;
 }
+
+.completed-icon {
+  font-size: 25px;
+  color: grey;
+}
+
+.uncompleted-icon {
+  font-size: 22px;
+  color: grey;
+}
+
+.delete-icon {
+  font-size: 20px;
+  color: grey;
+}
