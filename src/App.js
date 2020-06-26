@@ -19,6 +19,13 @@ import {
 
 
 
+// tags
+// typescript - <> and interfaces etc and more - study
+// modularise 
+
+
+
+
 
 // tooltip for the dates saying you have X days remaining 
 // account for enter
