@@ -57,7 +57,12 @@ button[type="submit"]:active {
   opacity: 0.95;
 }
 
+span {
+  /* background: magenta */
+}
+
 i {
+  /* margin-left: 10px; */
   /* margin: 0 12px; */
   /* position: relative; */
   /* top: 1px; */
@@ -100,6 +105,8 @@ i {
   /* font-weight: bold; */
   color: grey;
   cursor: pointer;
+  margin-left: 15px;
+  color: deeppink;
 }
 
 .cancel-icon {
@@ -109,6 +116,8 @@ i {
   /* font-weight: bold; */
   color: grey;
   cursor: pointer;
+  margin-left: 20px;
+  color: deeppink;
 }
 
 .save-icon:hover, .cancel-icon:hover {
