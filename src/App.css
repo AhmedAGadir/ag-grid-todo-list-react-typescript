@@ -53,19 +53,26 @@ button[type="submit"] {
   font-weight: bold;
 }
 
+button[type="submit"]:active {
+  opacity: 0.95;
+}
+
 .completed-icon {
   display: block;
   margin: 10px 0;
-  font-size: 22px;
-  color: limegreen;
+  font-size: 35px;
+  /* font-weight: bold; */
+  /* color: limegreen; */
+  color: darkslategrey;
   cursor: pointer;
 }
 
 .uncompleted-icon {
   display: block;
   margin: 10px 0;
-  font-size: 22px;
-  color: lightslategray;
+  font-size: 35px;
+  /* font-weight: bold; */
+  color: slategray;
   cursor: pointer;
 }
 
@@ -77,9 +84,9 @@ button[type="submit"] {
   cursor: pointer;
 }
 
-.completed-icon:hover, .uncompleted-icon:hover {
+/* .completed-icon:hover, .uncompleted-icon:hover {
   opacity: 0.7;
-}
+} */
 
 .MuiInput-underline:before {
   border-bottom: none !important;
@@ -119,4 +126,8 @@ button[type="submit"] {
   animation-timing-function: linear;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
+}
+
+[col-id="completed"] .ag-header-cell-text {
+  font-size: 33px;
 }

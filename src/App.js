@@ -21,6 +21,8 @@ import {
 
 
 // tooltip for the dates saying you have X days remaining 
+// account for enter
+// cleanup
 
 
 
@@ -67,7 +69,7 @@ class DateRenderer extends Component {
           onChange={this.handleDateChange}
           // variant="inline"
           disableToolbar
-          placeholder={'Date Due'}
+          placeholder={'Add deadline'}
         // style={{
         //   color: new Date() > this.state.selectedDate ? 'limegreen' : 'red',
         // }}
@@ -119,12 +121,6 @@ class ToDoRenderer extends Component {
       if (this.state.editing) {
         this.taskInputRef.current.focus();
 
-
-        // this.taskInputRef.current.setSelectionRange(2, 7)
-
-        // this.taskInputRef.current.selectionStart = this.taskInputRef.current.value.length;
-        // this.taskInputRef.current.selectionEnd = this.taskInputRef.current.value.length;
-        // this.taskInputRef.current.select();
       }
     });
   }
@@ -203,9 +199,9 @@ class CompletedRenderer extends Component {
   render() {
     let component;
     if (this.state.completed) {
-      component = <span className="completed-icon" onClick={() => this.setCompleted(false)}>✔</span>
+      component = <span className="completed-icon" onClick={() => this.setCompleted(false)}>☑</span>
     } else {
-      component = <span className="uncompleted-icon" onClick={() => this.setCompleted(true)}>✔</span>
+      component = <span className="uncompleted-icon" onClick={() => this.setCompleted(true)}>☐</span>
     }
 
     return (
@@ -285,16 +281,16 @@ class App extends Component {
           }
         },
         {
-          headerName: 'Date Due',
+          headerName: 'Deadline',
           field: 'date',
           // hide: true,
           suppressMenu: true,
-          width: 180,
+          width: 170,
           cellRenderer: 'dateRenderer',
           tooltipValueGetter: this.tooltipValueGetter
         },
         {
-          headerName: 'Completed',
+          headerName: '☑',
           field: 'completed',
           suppressMenu: true,
           width: 60,
