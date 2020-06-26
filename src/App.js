@@ -471,9 +471,10 @@ class App extends Component {
               return this.state.currentlyEditingId
             }
           },
-          tooltipValueGetter: this.tooltipValueGetter
+          tooltipValueGetter: this.tooltipValueGetter,
         },
         {
+          // pinned: 'right',
           headerName: 'actions',
           // hide: true,
           cellRenderer: 'actionsRenderer',
