@@ -76,6 +76,7 @@ i {
   /* color: limegreen; */
   color: grey;
   cursor: pointer;
+  color: magenta;
 }
 
 .uncompleted-icon {
@@ -85,39 +86,43 @@ i {
   /* font-weight: bold; */
   color: grey;
   cursor: pointer;
+  color: magenta;
 }
 
 .edit-icon {
   display: block;
   /* margin: 12px 0; */
-  font-size: 22px;
+  font-size: 20px;
   /* font-weight: bold; */
   color: grey;
   cursor: pointer;
   position: relative;
   bottom: 1px;
+  color: darkcyan;
 }
 
 .save-icon {
   display: block;
   /* margin: 12px 0; */
-  font-size: 22px;
+  font-size: 24px;
   /* font-weight: bold; */
   color: grey;
   cursor: pointer;
   margin-left: 15px;
-  color: deeppink;
+  /* color: magenta; */
+  color: blueviolet;
 }
 
 .cancel-icon {
   display: block;
   /* margin: 12px 0; */
-  font-size: 18px;
+  font-size: 20px;
   /* font-weight: bold; */
   color: grey;
   cursor: pointer;
-  margin-left: 20px;
-  color: deeppink;
+  margin-left: 25px;
+  color: #ffbf00;
+  /* color: blueviolet; */
 }
 
 .save-icon:hover, .cancel-icon:hover {
@@ -143,6 +148,9 @@ i {
 
 .todowrapper {
   cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .ag-cell-value, .ag-cell-wrapper {
@@ -179,3 +187,7 @@ i {
 /* [col-id="completed"] .ag-header-cell-text {
   font-size: 33px;
 } */
+
+.MuiInputBase-root.Mui-disabled {
+  color: black !important;
+}

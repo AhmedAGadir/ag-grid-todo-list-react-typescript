@@ -110,11 +110,15 @@ class DateRenderer extends Component {
           placeholder={'Add deadline'}
           style={{
             // color: new Date() > this.state.selectedDate ? 'limegreen' : 'red',
-            height: 35,
-            background: this.state.editing ? 'whitesmoke' : null,
-            opacity: this.props.data.completed && this.state.editing ? 0.6 : 1
+            // height: 35,
+            // background: this.state.editing ? 'whitesmoke' : null,
+            opacity: this.props.data.completed && this.state.editing ? 0.6 : 1,
+            position: 'relative',
+            bottom: 1,
+            // border: this.state.editing ? '2px solid cyan' : null,
+            borderRadius: 5,
           }}
-
+          disabled={!this.state.editing}
         />
       </MuiPickersUtilsProvider>
     )
@@ -176,7 +180,7 @@ class ToDoRenderer extends Component {
 
   toggleEdit = () => {
     if (this.props.getCurrentlyEditingId() !== null) {
-      alert('You are already editing a row!');
+      alert('You can only edit one task at a time');
       return;
     }
     this.setState(prevState => ({
@@ -226,22 +230,26 @@ class ToDoRenderer extends Component {
           style={{
             width: '100%',
             height: 35,
-            // color: 'darkturquoise',
+            // color: 'deppink',
             fontWeight: 400,
-            background: 'whitesmoke',
+            // background: 'whitesmoke',
             textDecoration: this.props.data.completed ? 'line-through' : 'none',
-            opacity: this.props.data.completed ? 0.6 : 1
+            opacity: this.props.data.completed ? 0.6 : 1,
+            // border: '2px solid cyan',
+            borderRadius: 5,
 
           }} />
       )
     } else {
-      component = <div
-        style={{
-          // textDecoration: this.props.data.completed ? 'line-through' : 'none',
-          // color: this.props.data.completed ? 'darkgrey' : 'black'
-        }}
-      >
-        <span className={this.props.data.completed ? "strike" : ''}>{this.props.value}</span></div>
+      component =
+        // <div
+        // style={{
+        // textDecoration: this.props.data.completed ? 'line-through' : 'none',
+        // color: this.props.data.completed ? 'darkgrey' : 'black'
+        // }}
+        // >
+        <span className={this.props.data.completed ? "strike" : ''}>{this.props.value}</span>
+      // </div>
     }
 
     return (
@@ -367,7 +375,7 @@ class ActionsRenderer extends Component {
 
   startEditing = () => {
     if (this.props.getCurrentlyEditingId() !== null) {
-      alert('You are already editing a row!');
+      alert('You can only edit one task at a time');
       return;
     }
 
@@ -387,7 +395,7 @@ class ActionsRenderer extends Component {
     if (this.state.editing) {
       component = (
         <>
-          <span className="save-icon" onClick={this.saveChanges}><i className="fas fa-save"></i></span>
+          <span className="save-icon" onClick={this.saveChanges}><i className="far fa-save"></i></span>
           <span className="cancel-icon" onClick={this.cancelChanges}><i className="fas fa-undo"></i></span>
         </>
       )
