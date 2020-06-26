@@ -42,20 +42,6 @@ class DateRenderer extends Component {
   }
 
   componentDidMount = () => {
-    if (!this.props.value) {
-      return;
-    }
-    const [_, day, month, year] = this.props.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-    let selectedDate = new Date(year, month - 1, day);
-
-    let editingId = this.props.getCurrentlyEditingId();
-
-    console.log('daterenderer setting editingid to', editingId, editingId === this.props.node.id)
-
-    this.setState({
-      selectedDate,
-      editing: editingId === this.props.node.id
-    });
 
     this.props.api.addEventListener('saveChanges', params => {
       if (params.id === this.props.node.id) {
@@ -67,6 +53,25 @@ class DateRenderer extends Component {
       if (params.id === this.props.node.id) {
         this.finishEdit(false);
       }
+    });
+
+
+    if (!this.props.value) {
+      let editingId = this.props.getCurrentlyEditingId();
+      console.log('daterenderer - componentdidmount - currently editing', editingId);
+      this.setState({
+        editing: editingId === this.props.node.id
+      });
+      return;
+    }
+    const [_, day, month, year] = this.props.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    let selectedDate = new Date(year, month - 1, day);
+
+    let editingId = this.props.getCurrentlyEditingId();
+
+    this.setState({
+      selectedDate,
+      editing: editingId === this.props.node.id
     });
   }
 
@@ -82,12 +87,21 @@ class DateRenderer extends Component {
   }
 
   finishEdit = bool => {
-    console.log('daterenderer - finish editing')
     this.setState({ editing: false }, () => {
       if (bool) {
-        this.props.node.setDataValue('date', format(this.state.selectedDate, 'dd/MM/yyyy'));
+        let dateValue = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
+        this.props.node.setDataValue('date', dateValue);
       } else {
-        console.log(this.props.value, '======')
+        let selectedDate = null;
+        let dateValue = null
+        if (!this.props.value) {
+          const [_, day, month, year] = this.props.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+          selectedDate = new Date(year, month - 1, day);
+          dateValue = format(this.state.selectedDate, 'dd/MM/yyyy')
+        }
+        this.setState({ selectedDate }, () => {
+          this.props.node.setDataValue('date', dateValue);
+        })
       }
     })
   }
@@ -97,6 +111,8 @@ class DateRenderer extends Component {
   // }
 
   render() {
+    // console.log('render datepicker, editing', this.state.editing);
+    console.log('datepicker - render')
     return (
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
@@ -111,8 +127,8 @@ class DateRenderer extends Component {
           style={{
             // color: new Date() > this.state.selectedDate ? 'limegreen' : 'red',
             // height: 35,
-            // background: this.state.editing ? 'whitesmoke' : null,
-            opacity: this.props.data.completed && this.state.editing ? 0.6 : 1,
+            background: this.state.editing ? 'whitesmoke' : null,
+            opacity: this.props.node.selected && this.state.editing ? 0.6 : 1,
             position: 'relative',
             bottom: 1,
             // border: this.state.editing ? '2px solid cyan' : null,
@@ -130,7 +146,7 @@ class DateRenderer extends Component {
 
 class ToDoRenderer extends Component {
   constructor(props) {
-    // console.log('[ToDoRenderer] Constructor')
+    console.log('to do construction')
     super(props);
     this.state = {
       editing: false,
@@ -140,10 +156,10 @@ class ToDoRenderer extends Component {
   }
 
   componentDidMount = () => {
-    console.log('componentDidMount todo');
 
     let editingId = this.props.getCurrentlyEditingId();
 
+    console.log('to do-  componentdidmount - editingId', editingId);
     this.setState({
       editingVal: this.props.value,
       editing: editingId === this.props.node.id
@@ -162,63 +178,46 @@ class ToDoRenderer extends Component {
     });
   }
 
-  // refresh = () => {
-  //   console.log('todo refresh', this.props.node.id);
-  //   return false;
-  // }
-
   destroy = () => {
 
   }
 
   componentDidUpdate() {
-    console.log('cDUpdate todorenderer')
     if (this.state.editing) {
       this.taskInputRef.current.focus();
     }
   }
 
-  toggleEdit = () => {
-    if (this.props.getCurrentlyEditingId() !== null) {
-      alert('You can only edit one task at a time');
-      return;
-    }
-    this.setState(prevState => ({
-      editing: !prevState.editing
-    }), () => {
-      this.props.letGridKnow(this.state.editing ? this.props.data.id : null);
-      this.props.api.refreshCells({ rowNodes: [this.props.node], force: true });
-      if (this.state.editing) {
-        this.taskInputRef.current.focus();
-        // this.props.api.dispatchEvent({ type: 'customRowEditingStarted', id: this.props.node.id });
-      } else {
-        // this.props.api.dispatchEvent({ type: 'customRowEditingStopped', id: this.props.node.id });
-      }
-    });
-  }
+  // toggleEdit = () => {
+  //   if (this.props.getCurrentlyEditingId() !== null) {
+  //     alert('You can only edit one task at a time');
+  //     return;
+  //   }
+  //   this.setState(prevState => ({
+  //     editing: !prevState.editing
+  //   }), () => {
+  //     this.props.letGridKnow(this.state.editing ? this.props.data.id : null);
+  //     this.props.api.refreshCells({ rowNodes: [this.props.node], force: true });
+  //     if (this.state.editing) {
+  //       this.taskInputRef.current.focus();
+  //       // this.props.api.dispatchEvent({ type: 'customRowEditingStarted', id: this.props.node.id });
+  //     } else {
+  //       // this.props.api.dispatchEvent({ type: 'customRowEditingStopped', id: this.props.node.id });
+  //     }
+  //   });
+  // }
 
   finishEdit = (bool) => {
     if (bool) {
       this.props.node.setDataValue(this.props.column.colId, this.state.editingVal);
     }
     this.setState({ editing: false, editingVal: this.props.value })
-    this.props.letGridKnow(null)
-  }
-
-  onKeyPressHandler = (e) => {
-    console.log('onKeyPress');
-    if (e.key === 'Enter') {
-      console.log('enter')
-      this.finishEdit(true);
-    }
+    // this.props.letGridKnow(null)
   }
 
   render() {
-    // console.log('todo render', this.props.node.id)
+    console.log('to do - render')
     let component = null;
-
-    {/* <button onClick={() => this.finishEdit(true)}>Save</button>
-          <button onClick={() => this.finishEdit(false)}>Cancel</button> */}
 
     if (this.state.editing) {
       component = (
@@ -229,12 +228,12 @@ class ToDoRenderer extends Component {
           onKeyPress={this.onKeyPressHandler}
           style={{
             width: '100%',
-            height: 35,
+            height: 30,
             // color: 'deppink',
-            fontWeight: 400,
-            // background: 'whitesmoke',
-            textDecoration: this.props.data.completed ? 'line-through' : 'none',
-            opacity: this.props.data.completed ? 0.6 : 1,
+            // fontWeight: 400,
+            background: 'whitesmoke',
+            // textDecoration: this.props.node.selected ? 'line-through' : 'none',
+            opacity: this.props.node.selected ? 0.6 : 1,
             // border: '2px solid cyan',
             borderRadius: 5,
 
@@ -244,16 +243,16 @@ class ToDoRenderer extends Component {
       component =
         // <div
         // style={{
-        // textDecoration: this.props.data.completed ? 'line-through' : 'none',
-        // color: this.props.data.completed ? 'darkgrey' : 'black'
+        // textDecoration: this.props.node.selected ? 'line-through' : 'none',
+        // color: this.props.node.selected ? 'darkgrey' : 'black'
         // }}
         // >
-        <span className={this.props.data.completed ? "strike" : ''}>{this.props.value}</span>
+        <span className={this.props.node.selected ? "strike" : ''}>{this.props.value}</span>
       // </div>
     }
 
     return (
-      <div onDoubleClick={this.toggleEdit} className="todowrapper">
+      <div className="todowrapper">
         {component}
       </div>
     );
@@ -269,14 +268,15 @@ class CompletedRenderer extends Component {
   }
 
   componentDidMount = () => {
-    this.setState({ completed: this.props.value });
+    this.setState({ completed: this.props.node.selected });
   }
 
 
 
   setCompleted = bool => {
     this.setState({ completed: bool }, () => {
-      this.props.node.setDataValue(this.props.column.colId, bool);
+      this.props.node.setSelected(bool);
+      // this.props.node.setDataValue(this.props.column.colId, bool);
       // this.props.api.redrawRows({ rowNodes: [this.props.node], force: true });
       this.props.api.refreshCells({ rowNodes: [this.props.node], force: true });
     })
@@ -312,7 +312,6 @@ class CompletedRenderer extends Component {
 
 class ActionsRenderer extends Component {
   constructor(props) {
-    console.log('actionsrenderer constructor')
     super(props);
     this.state = {
       editing: false,
@@ -321,37 +320,21 @@ class ActionsRenderer extends Component {
   }
 
   refresh(params) {
-    console.log('actionsrenderer refresh');
-    console.log('visible', this.state.visible);
-    console.log('editing', this.state.editing);
     return true;
   }
 
   componentDidMount = () => {
-    // this.props.api.addEventListener('customRowEditingStarted', params => {
-    //   if (params.id === this.props.node.id) {
-    //     this.setState({ editing: true });
-    //   }
-    // });
-    // this.props.api.addEventListener('customRowEditingStopped', params => {
-    //   if (params.id === this.props.node.id) {
-    //     this.setState({ editing: false });
-    //   }
-    // });
-
     let currentlyEditingId = this.props.getCurrentlyEditingId();
     this.setState({ editing: currentlyEditingId === this.props.node.id })
 
 
     this.props.api.addEventListener('cellMouseOver', params => {
-      // console.log('cellMouseOver')
       if (params.node.id === this.props.node.id) {
         this.setState({ visible: true });
       }
     })
 
     this.props.api.addEventListener('cellMouseOut', params => {
-      // console.log('cellMouseOut')
       if (params.node.id === this.props.node.id) {
         if (this.state.editing) {
           return;
@@ -363,12 +346,14 @@ class ActionsRenderer extends Component {
 
   saveChanges = () => {
     this.setState({ editing: false }, () => {
+      this.props.letGridKnow(null);
       this.props.api.dispatchEvent({ type: 'saveChanges', id: this.props.node.id });
     })
   }
 
   cancelChanges = () => {
     this.setState({ editing: false }, () => {
+      this.props.letGridKnow(null);
       this.props.api.dispatchEvent({ type: 'cancelChanges', id: this.props.node.id });
     })
   }
@@ -383,6 +368,12 @@ class ActionsRenderer extends Component {
       this.props.letGridKnow(this.props.node.id);
       this.props.api.refreshCells({ rowNodes: [this.props.node], force: true })
     })
+  }
+
+  deleteToDo = () => {
+    if (window.confirm('Would you like to delete this task?')) {
+      this.props.deleteToDo(this.props.node.id)
+    }
   }
 
   render() {
@@ -401,7 +392,10 @@ class ActionsRenderer extends Component {
       )
     } else {
       component = (
-        <span className="edit-icon" onClick={this.startEditing}><i className="fas fa-pencil-alt"></i></span>
+        <>
+          <span className="edit-icon" onClick={this.startEditing}><i className="fas fa-pencil-alt"></i></span>
+          <span className="delete-icon" onClick={this.deleteToDo}><i className="fas fa-trash"></i></span>
+        </>
       )
     }
 
@@ -414,28 +408,28 @@ class ActionsRenderer extends Component {
   }
 }
 
-class DeleteRenderer extends Component {
-  constructor(props) {
-    super(props);
-  }
+// class DeleteRenderer extends Component {
+//   constructor(props) {
+//     super(props);
+//   }
 
-  componentDidMount = () => {
-  }
+//   componentDidMount = () => {
+//   }
 
-  deleteToDo = () => {
-    if (window.confirm('Are you sure youd like to delete this row?')) {
-      this.props.deleteToDo(this.props.node.id)
-    }
-  }
+//   deleteToDo = () => {
+//     if (window.confirm('Would you like to delete this task?')) {
+//       this.props.deleteToDo(this.props.node.id)
+//     }
+//   }
 
-  render() {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', height: '100%' }}>
-        <span className="delete-icon" onClick={this.deleteToDo}><i className="fas fa-trash"></i></span>
-      </div >
-    )
-  }
-}
+//   render() {
+//     return (
+//       <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', height: '100%' }}>
+//         <span className="delete-icon" onClick={this.deleteToDo}><i className="fas fa-trash"></i></span>
+//       </div >
+//     )
+//   }
+// }
 
 
 
@@ -447,9 +441,10 @@ class App extends Component {
       idSeq: 1,
       columnDefs: [
         {
+          rowDrag: true,
           headerName: 'Description',
           field: 'description',
-          rowDrag: true,
+          // rowDrag: true,
           suppressMenu: true,
           flex: 3,
           cellRenderer: 'toDoRenderer',
@@ -465,7 +460,7 @@ class App extends Component {
         {
           headerName: 'Deadline',
           field: 'date',
-          // hide: true,
+          hide: true,
           suppressMenu: true,
           width: 170,
           cellRenderer: 'dateRenderer',
@@ -489,7 +484,8 @@ class App extends Component {
             },
             getCurrentlyEditingId: () => {
               return this.state.currentlyEditingId
-            }
+            },
+            deleteToDo: this.deleteToDo
           },
           width: 90,
         },
@@ -500,15 +496,15 @@ class App extends Component {
           width: 50,
           cellRenderer: 'completedRenderer',
         },
-        {
-          headerName: 'delete',
-          hide: true,
-          cellRenderer: 'deleteRenderer',
-          cellRendererParams: {
-            deleteToDo: this.deleteToDo
-          },
-          width: 50,
-        },
+        // {
+        //   headerName: 'delete',
+        //   // hide: true,
+        //   cellRenderer: 'deleteRenderer',
+        //   cellRendererParams: {
+        //     deleteToDo: this.deleteToDo
+        //   },
+        //   width: 40,
+        // },
       ],
       rowData: [
         { description: 'Give Ahmed a raise (300k)', id: 0, date: '11/07/2020', completed: false },
@@ -521,7 +517,7 @@ class App extends Component {
         toDoRenderer: ToDoRenderer,
         dateRenderer: DateRenderer,
         completedRenderer: CompletedRenderer,
-        deleteRenderer: DeleteRenderer,
+        // deleteRenderer: DeleteRenderer,
         actionsRenderer: ActionsRenderer
       },
       currentlyEditingId: null,
@@ -535,7 +531,6 @@ class App extends Component {
 
 
   tooltipValueGetter = params => {
-    console.log('****** GETTING A VALUE', params.value)
     if (!params.value) {
       return;
     }
@@ -544,7 +539,6 @@ class App extends Component {
 
     let difference = differenceInDays(dateValue, new Date());
     // let color = difference > 0 ? 'limegreen' : 'red';
-    // console.log('for', params.value, difference, 'days left')
     return difference > 0 ?
       `${difference} days remaining`
       : `${-difference} days overdue`
@@ -607,13 +601,13 @@ class App extends Component {
             domLayout="autoHeight"
             headerHeight={0}
             rowHeight={65}
-            getRowStyle={params => {
-              if (params.node.data.completed) {
-                return { background: 'lightgreen' }
-              } else {
-                return { background: 'none' }
-              }
-            }}
+            // getRowStyle={params => {
+            //   if (params.node.data.completed) {
+            //     return { background: 'lightgreen' }
+            //   } else {
+            //     return { background: 'none' }
+            //   }
+            // }}
             rowDragManaged
             animateRows
             sideBar={{
@@ -631,7 +625,9 @@ class App extends Component {
                 }
               }]
             }}
-            popupParent={document.body}
+            // popupParent={document.body}
+            rowSelection="multiple"
+            suppressRowClickSelection
           >
           </AgGridReact>
         </div>

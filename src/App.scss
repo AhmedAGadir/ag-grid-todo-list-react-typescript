@@ -12,9 +12,10 @@
     font-size: 16px,
     font-family: ("Roboto", sans-serif),
     // foreground-color: rgb(33, 36, 43),
-    // row-hover-color: null,
+    row-hover-color: null,
     range-selection-border-color: rgba(0,0,0,0),
     cell-horizontal-padding: 10,
+    selected-row-background-color: 'lightgreen'
   ));
 }
 

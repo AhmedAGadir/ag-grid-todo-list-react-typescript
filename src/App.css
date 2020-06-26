@@ -68,74 +68,50 @@ i {
   /* top: 1px; */
 }
 
-.completed-icon {
+[class$="-icon"] {
   display: block;
-  /* margin: 12px 0; */
-  font-size: 22px;
-  /* font-weight: bold; */
-  /* color: limegreen; */
-  color: grey;
+  color: silver;
   cursor: pointer;
+}
+
+.completed-icon {
+  font-size: 22px;
   color: magenta;
 }
 
 .uncompleted-icon {
-  display: block;
-  /* margin: 12px 0; */
   font-size: 22px;
-  /* font-weight: bold; */
-  color: grey;
-  cursor: pointer;
   color: magenta;
 }
 
 .edit-icon {
-  display: block;
-  /* margin: 12px 0; */
   font-size: 20px;
-  /* font-weight: bold; */
-  color: grey;
-  cursor: pointer;
-  position: relative;
-  bottom: 1px;
-  color: darkcyan;
+  /* position: relative; */
+  /* bottom: 1px; */
+  margin-left: 15px;
+  /* color: blueviolet; */
+}
+
+.delete-icon {
+  font-size: 18px;
+  margin-left: 30px;
+  /* color: #ffbf00; */
 }
 
 .save-icon {
-  display: block;
-  /* margin: 12px 0; */
-  font-size: 24px;
-  /* font-weight: bold; */
-  color: grey;
-  cursor: pointer;
+  font-size: 22px;
   margin-left: 15px;
-  /* color: magenta; */
   color: blueviolet;
 }
 
 .cancel-icon {
-  display: block;
-  /* margin: 12px 0; */
   font-size: 20px;
-  /* font-weight: bold; */
-  color: grey;
-  cursor: pointer;
-  margin-left: 25px;
+  margin-left: 30px;
   color: #ffbf00;
-  /* color: blueviolet; */
 }
 
 .save-icon:hover, .cancel-icon:hover {
   opacity: 0.7;
-}
-
-.delete-icon {
-  display: block;
-  /* margin: 12px 0; */
-  font-size: 18px;
-  /* font-weight: bold; */
-  color: grey;
-  cursor: pointer;
 }
 
 /* .completed-icon:hover, .uncompleted-icon:hover {
