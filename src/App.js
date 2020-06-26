@@ -393,7 +393,7 @@ class ActionsRenderer extends Component {
     } else {
       component = (
         <>
-          <span className="edit-icon" onClick={this.startEditing}><i className="fas fa-pencil-alt"></i></span>
+          <span className="edit-icon" onClick={this.startEditing}><i className="fas fa-pen"></i></span>
           <span className="delete-icon" onClick={this.deleteToDo}><i className="fas fa-trash"></i></span>
         </>
       )
