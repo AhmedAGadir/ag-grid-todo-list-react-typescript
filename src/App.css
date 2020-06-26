@@ -15,9 +15,7 @@ body {
   height: 100%;
 }
 
-input {}
-
-.to-do-input {
+input {
   border: none;
   background-image: none;
   background-color: transparent;
@@ -25,6 +23,9 @@ input {}
   -moz-box-shadow: none;
   box-shadow: none;
   outline: none;
+}
+
+.to-do-input {
   background: #3B465C;
   color: #ccc;
   height: 60px;
@@ -90,4 +91,32 @@ button[type="submit"] {
 
 .ag-cell-value, .ag-cell-wrapper {
   width: 100%;
+}
+
+@keyframes strike {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.strike {
+  position: relative;
+}
+
+.strike::after {
+  content: ' ';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: black;
+  animation-name: strike;
+  animation-duration: 0.4s;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
 }

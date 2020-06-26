@@ -9,9 +9,9 @@ import 'normalize.css';
 import './App.scss'
 
 
-import { useState, forwardRef, useImperativeHandle } from "react";
+// import { useState, forwardRef, useImperativeHandle } from "react";
 import DateFnsUtils from '@date-io/date-fns';
-import { format } from 'date-fns';
+import { format, differenceInDays } from 'date-fns';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
@@ -25,58 +25,53 @@ import {
 
 
 class DateRenderer extends Component {
-  //  forwardRef((props, ref) => {
-  //   const [selectedDate, setSelectedDate] = useState(null);
-
-  //   function handleDateChange(d) {
-  //     if (d) {
-  //       d.setHours(0, 0, 0, 0);
-  //     }
-  //     setSelectedDate(d);
-  //   }
-
-  //   useImperativeHandle(ref, () => {
-  //     return {
-  //       getValue: () => {
-  //         let dateString = null;
-  //         if (selectedDate) {
-  //           dateString = format(selectedDate, 'dd/MM/yyyy');
-  //         }
-  //         return dateString;
-  //       },
-  //       isCancelAfterEnd: () => {
-  //         return !selectedDate;
-  //       },
-  //       afterGuiAttached: () => {
-  //         if (!props.value) {
-  //           return;
-  //         }
-  //         const [_, day, month, year] = props.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-  //         let selectedDate = new Date(year, month - 1, day);
-  //         setSelectedDate(selectedDate);
-  //       }
-  //     };
-  //   });
-
   constructor(props) {
     super(props);
+    this.state = {
+      selectedDate: null
+    }
+  }
+
+  componentDidMount = () => {
+    if (!this.props.value) {
+      return;
+    }
+    const [_, day, month, year] = this.props.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    let selectedDate = new Date(year, month - 1, day);
+    this.setState({ selectedDate });
+  }
+
+  handleDateChange = d => {
+    if (d) {
+      d.setHours(0, 0, 0, 0);
+    }
+    this.setState({
+      selectedDate: d
+    }, () => {
+      this.props.node.setDataValue('date', format(this.state.selectedDate, 'dd/MM/yyyy'));
+    });
+  }
+
+  refresh(params) {
+    debugger;
   }
 
   render() {
-
     return (
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
-          style={{ width: '100%', margin: '10px 0', padding: '6px 10px', }}
           margin="normal"
-          id="date-picker-dialog"
+          id={`date-picker-dialog-${this.props.node.id}`}
           format="dd/MM/yyyy"
-          // value={selectedDate}
-          // onChange={handleDateChange}
-          value={new Date()}
-          variant="inline"
+          value={this.state.selectedDate}
+          onChange={this.handleDateChange}
+          // variant="inline"
           disableToolbar
-        // placeholder={'Enter ' + props.column.colId}
+          placeholder={'Date Due'}
+        // style={{
+        //   color: new Date() > this.state.selectedDate ? 'limegreen' : 'red',
+        // }}
+
         />
       </MuiPickersUtilsProvider>
     )
@@ -93,7 +88,8 @@ class ToDoRenderer extends Component {
     this.state = {
       editing: false,
       editingVal: null
-    }
+    };
+    this.taskInputRef = React.createRef()
   }
 
   componentDidMount = () => {
@@ -112,45 +108,62 @@ class ToDoRenderer extends Component {
   }
 
   toggleEdit = () => {
-    console.log(this.props.getCurrentlyEditingId())
     if (this.props.getCurrentlyEditingId() !== null) {
-      alert('youre already editing');
+      alert('You are already editing a row!');
       return;
     }
     this.setState(prevState => ({
       editing: !prevState.editing
     }), () => {
-      console.log('letting grid know', this.state.editing, this.props.data.id)
       this.props.letGridKnow(this.state.editing ? this.props.data.id : null);
+      if (this.state.editing) {
+        this.taskInputRef.current.focus();
+
+
+        // this.taskInputRef.current.setSelectionRange(2, 7)
+
+        // this.taskInputRef.current.selectionStart = this.taskInputRef.current.value.length;
+        // this.taskInputRef.current.selectionEnd = this.taskInputRef.current.value.length;
+        // this.taskInputRef.current.select();
+      }
     });
   }
 
-  finishEdit = (bool) => {
-    if (bool) {
-      this.props.node.setDataValue(this.props.column.colId, this.state.editingVal);
-    }
-    this.setState({ editing: false, editingVal: this.props.value })
-    this.props.letGridKnow(null)
-  }
+  // finishEdit = (bool) => {
+  //   if (bool) {
+  //     this.props.node.setDataValue(this.props.column.colId, this.state.editingVal);
+  //   }
+  //   this.setState({ editing: false, editingVal: this.props.value })
+  //   this.props.letGridKnow(null)
+  // }
 
   render() {
     let component = null;
 
+    {/* <button onClick={() => this.finishEdit(true)}>Save</button>
+          <button onClick={() => this.finishEdit(false)}>Cancel</button> */}
+
     if (this.state.editing) {
       component = (
-        <div>
-          <input value={this.state.editingVal} onChange={e => this.setState({ editingVal: e.target.value })} />
-          <button onClick={() => this.finishEdit(true)}>Save</button>
-          <button onClick={() => this.finishEdit(false)}>Cancel</button>
-        </div>
+        <input
+          ref={this.taskInputRef}
+          value={this.state.editingVal}
+          onChange={e => this.setState({ editingVal: e.target.value })}
+          style={{
+            width: '100%',
+            height: 35,
+            color: 'slategrey',
+            background: 'whitesmoke'
+          }} />
       )
     } else {
       component = <div
         style={{
-          textDecoration: this.props.data.completed ? 'line-through' : 'none',
+          // textDecoration: this.props.data.completed ? 'line-through' : 'none',
           // color: this.props.data.completed ? 'darkgrey' : 'black'
-        }}>{
-          this.props.value}</div>
+        }}
+      >
+        <span className={this.props.data.completed ? "strike" : ''}>{this.props.value}</span></div>
     }
 
     return (
@@ -176,7 +189,8 @@ class CompletedRenderer extends Component {
   setCompleted = bool => {
     this.setState({ completed: bool }, () => {
       this.props.node.setDataValue(this.props.column.colId, bool);
-      this.props.api.redrawRows({ rowNodes: [this.props.node], force: true })
+      // this.props.api.redrawRows({ rowNodes: [this.props.node], force: true });
+      this.props.api.refreshCells({ rowNodes: [this.props.node], force: true });
     })
   }
 
@@ -224,6 +238,29 @@ class DeleteRenderer extends Component {
   }
 }
 
+
+// class DateTooltip extends Component {
+//   constructor(props) {
+//     super(props);
+//   }
+
+//   componentDidMount = () => {
+//   }
+
+//   deleteToDo = () => {
+//     if (window.confirm('Are you sure youd like to delete this row?')) {
+//       this.props.deleteToDo(this.props.node.id)
+//     }
+//   }
+
+//   render() {
+//     return (
+//       <span>{JSON.stringify(this.props.value)}</span>
+//     )
+//   }
+// }
+
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -240,22 +277,21 @@ class App extends Component {
           cellRenderer: 'toDoRenderer',
           cellRendererParams: {
             letGridKnow: id => {
-              console.log('letGridKnow', id)
               this.setState({ currentlyEditingId: id }, () => { console.log('this.state.currentlyEditingId', this.state.currentlyEditingId) })
             },
             getCurrentlyEditingId: () => {
-              console.log('getCurrentlyEditingId invoked')
               return this.state.currentlyEditingId
             }
           }
         },
         {
-          headerName: 'Due Date',
+          headerName: 'Date Due',
           field: 'date',
           // hide: true,
           suppressMenu: true,
           width: 180,
-          cellRenderer: 'dateRenderer'
+          cellRenderer: 'dateRenderer',
+          tooltipValueGetter: this.tooltipValueGetter
         },
         {
           headerName: 'Completed',
@@ -275,17 +311,17 @@ class App extends Component {
         }
       ],
       rowData: [
-        { description: 'Hello World!', id: 0, date: '11/07/20', completed: false },
-        { description: 'World Hello!', id: 999, date: '23/04/20', completed: true },
-        { description: 'Hello! Sudan', id: 987, date: '19/11/20', completed: true },
-        { description: 'Goodbye Latin America Hello!', id: 599, date: '01/08/20', completed: false },
-        { description: 'Buy Coca-Cola', id: 666, date: '12/03/20', completed: true },
+        { description: 'Give Ahmed a raise (300k)', id: 0, date: '11/07/2020', completed: false },
+        { description: 'Move the team to Barcelona', id: 987, date: '19/11/2020', completed: false },
+        { description: 'Buy the team lunch', id: 999, date: '23/04/2020', completed: true },
+        // { description: 'Goodbye Latin America Hello!', id: 599, date: '01/08/2020', completed: false },
+        // { description: 'Buy Coca-Cola', id: 666, date: '12/03/2020', completed: true },
       ],
       frameworkComponents: {
         toDoRenderer: ToDoRenderer,
         dateRenderer: DateRenderer,
         completedRenderer: CompletedRenderer,
-        deleteRenderer: DeleteRenderer
+        deleteRenderer: DeleteRenderer,
       },
       currentlyEditingId: null,
     }
@@ -296,17 +332,28 @@ class App extends Component {
     this.inputRef.current.focus();
   }
 
+
+  tooltipValueGetter = params => {
+    if (!params.value) {
+      return;
+    }
+    const [_, day, month, year] = params.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    let dateValue = new Date(year, month - 1, day);
+
+    let difference = differenceInDays(dateValue, new Date());
+    // let color = difference > 0 ? 'limegreen' : 'red';
+    return `${difference} days remaining`;
+  }
+
   addToDo = () => {
-    console.log('add to do')
     if (!this.state.inputVal) {
       return;
     }
     let rowData = this.state.rowData.map(row => ({ ...row }));
-    console.log('adding a row with id', this.state.idSeq)
     rowData.push({
       description: this.state.inputVal,
       id: this.state.idSeq,
-      date: '',
+      date: null,
       completed: false
     });
     this.setState(prevState => ({
@@ -314,7 +361,6 @@ class App extends Component {
       inputVal: '',
       idSeq: prevState.idSeq + 1
     }), () => {
-      console.log('idSeq is now', this.state.idSeq)
     });
   }
 
@@ -325,7 +371,7 @@ class App extends Component {
 
   render() {
     return (
-      <div style={{ width: 600, position: 'absolute', left: '50%', top: '20vh', transform: 'translateX(-50%)' }}>
+      <div style={{ width: 600, position: 'absolute', left: '50%', top: '30vh', transform: 'translateX(-50%)' }}>
         {/* <h1 style={{ color: 'white', fontSize: 50, fontFamily: 'Roboto', fontWeight: 400, textAlign: 'center' }}>To-Do List</h1> */}
         <form style={{ display: 'flex' }} onSubmit={e => e.preventDefault()}>
           <input
@@ -350,7 +396,6 @@ class App extends Component {
             frameworkComponents={this.state.frameworkComponents}
             immutableData
             getRowNodeId={data => {
-              console.log('getting id for ', data)
               return data.id
             }}
             domLayout="autoHeight"
@@ -359,25 +404,28 @@ class App extends Component {
             getRowStyle={params => {
               if (params.node.data.completed) {
                 return { background: 'lightgreen' }
+              } else {
+                return { background: 'none' }
               }
             }}
             rowDragManaged
             animateRows
-          // sideBar={{
-          //   toolPanels: [{
-          //     id: 'columns',
-          //     labelDefault: '',
-          //     labelKey: 'columns',
-          //     iconKey: 'columns',
-          //     toolPanel: 'agColumnsToolPanel',
-          //     toolPanelParams: {
-          //       suppressRowGroups: true,
-          //       suppressValues: true,
-          //       suppressPivotMode: true,
-          //       suppressColumnFilter: true
-          //     }
-          //   }]
-          // }}
+            // sideBar={{
+            //   toolPanels: [{
+            //     id: 'columns',
+            //     labelDefault: '',
+            //     labelKey: 'columns',
+            //     iconKey: 'columns',
+            //     toolPanel: 'agColumnsToolPanel',
+            //     toolPanelParams: {
+            //       suppressRowGroups: true,
+            //       suppressValues: true,
+            //       suppressPivotMode: true,
+            //       suppressColumnFilter: true
+            //     }
+            //   }]
+            // }}
+            popupParent={document.body}
           >
           </AgGridReact>
         </div>
