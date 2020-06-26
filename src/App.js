@@ -444,7 +444,6 @@ class App extends Component {
           rowDrag: true,
           headerName: 'Description',
           field: 'description',
-          // rowDrag: true,
           suppressMenu: true,
           flex: 3,
           cellRenderer: 'toDoRenderer',
@@ -491,7 +490,6 @@ class App extends Component {
         },
         {
           headerName: 'complete',
-          field: 'completed',
           suppressMenu: true,
           width: 50,
           cellRenderer: 'completedRenderer',
@@ -508,11 +506,9 @@ class App extends Component {
         // },
       ],
       rowData: [
-        { description: 'Give Ahmed a raise (300k)', id: 0, date: '11/07/2020', completed: false },
-        { description: 'Move the team to Barcelona', id: 987, date: '19/11/2020', completed: false },
-        { description: 'Buy the team lunch', id: 999, date: '23/04/2020', completed: true },
-        // { description: 'Goodbye Latin America Hello!', id: 599, date: '01/08/2020', completed: false },
-        // { description: 'Buy Coca-Cola', id: 666, date: '12/03/2020', completed: true },
+        { description: 'Go to Japan', id: 0, date: '11/07/2020' },
+        { description: 'Defeat Kaido', id: 987, date: '19/11/2020' },
+        { description: 'Find One Peice', id: 999, date: '23/04/2020' },
       ],
       frameworkComponents: {
         toDoRenderer: ToDoRenderer,
