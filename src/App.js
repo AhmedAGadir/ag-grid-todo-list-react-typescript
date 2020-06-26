@@ -488,6 +488,7 @@ class App extends Component {
           suppressMenu: true,
           width: 50,
           cellRenderer: 'completedRenderer',
+          pinned: 'left'
         },
         // {
         //   headerName: 'delete',

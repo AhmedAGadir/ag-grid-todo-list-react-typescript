@@ -99,15 +99,17 @@ i {
 }
 
 .save-icon {
-  font-size: 22px;
+  font-size: 23px;
   margin-left: 15px;
+  /* color: #ffbf00; */
   color: blueviolet;
 }
 
 .cancel-icon {
   font-size: 20px;
   margin-left: 30px;
-  color: #ffbf00;
+  /* color: #ffbf00; */
+  color: blueviolet;
 }
 
 .save-icon:hover, .cancel-icon:hover {
