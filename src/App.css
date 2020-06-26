@@ -53,16 +53,41 @@ button[type="submit"] {
 }
 
 .completed-icon {
-  font-size: 25px;
-  color: grey;
+  display: block;
+  margin: 10px 0;
+  font-size: 22px;
+  color: limegreen;
+  cursor: pointer;
 }
 
 .uncompleted-icon {
+  display: block;
+  margin: 10px 0;
   font-size: 22px;
-  color: grey;
+  color: lightslategray;
+  cursor: pointer;
 }
 
 .delete-icon {
+  display: block;
+  margin: 10px 0;
   font-size: 20px;
   color: grey;
+  cursor: pointer;
+}
+
+.completed-icon:hover, .uncompleted-icon:hover {
+  opacity: 0.7;
+}
+
+.MuiInput-underline:before {
+  border-bottom: none !important;
+}
+
+.todowrapper {
+  cursor: pointer;
+}
+
+.ag-cell-value, .ag-cell-wrapper {
+  width: 100%;
 }

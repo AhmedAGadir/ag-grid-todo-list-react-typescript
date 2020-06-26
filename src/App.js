@@ -67,7 +67,7 @@ class DateRenderer extends Component {
     return (
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
-          style={{ width: '100%', margin: 0, padding: '6px 10px', }}
+          style={{ width: '100%', margin: '10px 0', padding: '6px 10px', }}
           margin="normal"
           id="date-picker-dialog"
           format="dd/MM/yyyy"
@@ -154,7 +154,7 @@ class ToDoRenderer extends Component {
     }
 
     return (
-      <div onDoubleClick={this.toggleEdit}>
+      <div onDoubleClick={this.toggleEdit} className="todowrapper">
         {component}
       </div>
     );
@@ -189,9 +189,9 @@ class CompletedRenderer extends Component {
   render() {
     let component;
     if (this.state.completed) {
-      component = <span className="completed-icon" onClick={() => this.setCompleted(false)}>⎌</span>
+      component = <span className="completed-icon" onClick={() => this.setCompleted(false)}>✔</span>
     } else {
-      component = <span className="uncompleted-icon" onClick={() => this.setCompleted(true)}>✓</span>
+      component = <span className="uncompleted-icon" onClick={() => this.setCompleted(true)}>✔</span>
     }
 
     return (
@@ -325,7 +325,7 @@ class App extends Component {
 
   render() {
     return (
-      <div style={{ width: 600, position: 'absolute', left: '50%', top: 'calc(50% - 100px)', transform: 'translate(-50%, -50%)' }}>
+      <div style={{ width: 600, position: 'absolute', left: '50%', top: '20vh', transform: 'translateX(-50%)' }}>
         {/* <h1 style={{ color: 'white', fontSize: 50, fontFamily: 'Roboto', fontWeight: 400, textAlign: 'center' }}>To-Do List</h1> */}
         <form style={{ display: 'flex' }} onSubmit={e => e.preventDefault()}>
           <input
