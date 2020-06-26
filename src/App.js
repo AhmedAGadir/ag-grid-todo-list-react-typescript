@@ -33,7 +33,6 @@ import {
 
 class DateRenderer extends Component {
   constructor(props) {
-    console.log('daterenderer constructor')
     super(props);
     this.state = {
       selectedDate: null,
@@ -58,7 +57,6 @@ class DateRenderer extends Component {
 
     if (!this.props.value) {
       let editingId = this.props.getCurrentlyEditingId();
-      console.log('daterenderer - componentdidmount - currently editing', editingId);
       this.setState({
         editing: editingId === this.props.node.id
       });
@@ -94,7 +92,7 @@ class DateRenderer extends Component {
       } else {
         let selectedDate = null;
         let dateValue = null
-        if (!this.props.value) {
+        if (this.props.value) {
           const [_, day, month, year] = this.props.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
           selectedDate = new Date(year, month - 1, day);
           dateValue = format(this.state.selectedDate, 'dd/MM/yyyy')
@@ -111,8 +109,6 @@ class DateRenderer extends Component {
   // }
 
   render() {
-    // console.log('render datepicker, editing', this.state.editing);
-    console.log('datepicker - render')
     return (
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
@@ -146,7 +142,6 @@ class DateRenderer extends Component {
 
 class ToDoRenderer extends Component {
   constructor(props) {
-    console.log('to do construction')
     super(props);
     this.state = {
       editing: false,
@@ -159,7 +154,6 @@ class ToDoRenderer extends Component {
 
     let editingId = this.props.getCurrentlyEditingId();
 
-    console.log('to do-  componentdidmount - editingId', editingId);
     this.setState({
       editingVal: this.props.value,
       editing: editingId === this.props.node.id
@@ -216,7 +210,6 @@ class ToDoRenderer extends Component {
   }
 
   render() {
-    console.log('to do - render')
     let component = null;
 
     if (this.state.editing) {
