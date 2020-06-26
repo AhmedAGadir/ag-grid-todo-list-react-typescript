@@ -57,23 +57,62 @@ button[type="submit"]:active {
   opacity: 0.95;
 }
 
+i {
+  margin: 0 12px;
+  position: relative;
+  top: 1px;
+}
+
 .completed-icon {
   display: block;
-  margin: 10px 0;
-  font-size: 35px;
+  /* margin: 12px 0; */
+  font-size: 22px;
   /* font-weight: bold; */
   /* color: limegreen; */
-  color: darkslategrey;
+  color: grey;
   cursor: pointer;
 }
 
 .uncompleted-icon {
   display: block;
-  margin: 10px 0;
-  font-size: 35px;
+  /* margin: 12px 0; */
+  font-size: 22px;
   /* font-weight: bold; */
-  color: slategray;
+  color: grey;
   cursor: pointer;
+}
+
+.edit-icon {
+  display: block;
+  /* margin: 12px 0; */
+  font-size: 22px;
+  /* font-weight: bold; */
+  color: grey;
+  cursor: pointer;
+  position: relative;
+  bottom: 1px;
+}
+
+.save-icon {
+  display: block;
+  /* margin: 12px 0; */
+  font-size: 22px;
+  /* font-weight: bold; */
+  color: grey;
+  cursor: pointer;
+}
+
+.cancel-icon {
+  display: block;
+  /* margin: 12px 0; */
+  font-size: 18px;
+  /* font-weight: bold; */
+  color: grey;
+  cursor: pointer;
+}
+
+.save-icon:hover, .cancel-icon:hover {
+  opacity: 0.7;
 }
 
 .delete-icon {

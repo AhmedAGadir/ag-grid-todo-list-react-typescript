@@ -23,6 +23,11 @@ import {
 // tooltip for the dates saying you have X days remaining 
 // account for enter
 // cleanup
+// hover 
+// save / cancel edits 
+// stop other dates from editing
+// instead of using events, use the letgridknow stuff and refreshing 
+// checkboxes shouldnt share a renderer with save/cancel - they should be their own column
 
 
 
@@ -55,7 +60,7 @@ class DateRenderer extends Component {
   }
 
   refresh(params) {
-    debugger;
+    // debugger;
   }
 
   render() {
@@ -97,13 +102,25 @@ class ToDoRenderer extends Component {
   componentDidMount = () => {
     this.setState({
       editingVal: this.props.value
-    })
+    });
+
+    this.props.api.addEventListener('saveChanges', params => {
+      if (params.id === this.props.node.id) {
+        this.finishEdit(true);
+      }
+    });
+
+    this.props.api.addEventListener('cancelChanges', params => {
+      if (params.id === this.props.node.id) {
+        this.finishEdit(false);
+      }
+    });
   }
 
-  // refresh = () => {
-  //   console.log('refresh');
-  //   return true;
-  // }
+  refresh = () => {
+    console.log('todo refresh', this.props.node.id);
+    return false;
+  }
 
   destroy = () => {
 
@@ -120,20 +137,23 @@ class ToDoRenderer extends Component {
       this.props.letGridKnow(this.state.editing ? this.props.data.id : null);
       if (this.state.editing) {
         this.taskInputRef.current.focus();
-
+        this.props.api.dispatchEvent({ type: 'customRowEditingStarted', id: this.props.node.id });
+      } else {
+        this.props.api.dispatchEvent({ type: 'customRowEditingStopped', id: this.props.node.id });
       }
     });
   }
 
-  // finishEdit = (bool) => {
-  //   if (bool) {
-  //     this.props.node.setDataValue(this.props.column.colId, this.state.editingVal);
-  //   }
-  //   this.setState({ editing: false, editingVal: this.props.value })
-  //   this.props.letGridKnow(null)
-  // }
+  finishEdit = (bool) => {
+    if (bool) {
+      this.props.node.setDataValue(this.props.column.colId, this.state.editingVal);
+    }
+    this.setState({ editing: false, editingVal: this.props.value })
+    this.props.letGridKnow(null)
+  }
 
   render() {
+    console.log('todo render', this.props.node.id)
     let component = null;
 
     {/* <button onClick={() => this.finishEdit(true)}>Save</button>
@@ -148,8 +168,11 @@ class ToDoRenderer extends Component {
           style={{
             width: '100%',
             height: 35,
-            color: 'slategrey',
-            background: 'whitesmoke'
+            // color: 'darkslategrey',
+            fontWeight: 400,
+            background: 'whitesmoke',
+            textDecoration: this.props.data.completed ? 'line-through' : 'none',
+            opacity: this.props.data.completed ? 0.6 : 1
           }} />
       )
     } else {
@@ -174,13 +197,28 @@ class CompletedRenderer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      completed: null
+      completed: null,
+      editing: false
     }
   }
 
   componentDidMount = () => {
-    this.setState({ completed: this.props.value })
+    this.setState({ completed: this.props.value });
+
+    this.props.api.addEventListener('customRowEditingStarted', params => {
+      if (params.id === this.props.node.id) {
+        console.log('this one')
+        this.setState({ editing: true });
+      }
+    });
+    this.props.api.addEventListener('customRowEditingStopped', params => {
+      if (params.id === this.props.node.id) {
+        this.setState({ editing: false });
+      }
+    })
   }
+
+
 
   setCompleted = bool => {
     this.setState({ completed: bool }, () => {
@@ -196,18 +234,50 @@ class CompletedRenderer extends Component {
     }
   }
 
+  saveChanges = () => {
+    this.setState({ editing: false }, () => {
+      this.props.api.dispatchEvent({ type: 'saveChanges', id: this.props.node.id });
+    })
+  }
+
+  cancelChanges = () => {
+    this.setState({ editing: false }, () => {
+      this.props.api.dispatchEvent({ type: 'cancelChanges', id: this.props.node.id });
+    })
+  }
+
   render() {
     let component;
     if (this.state.completed) {
-      component = <span className="completed-icon" onClick={() => this.setCompleted(false)}>☑</span>
+      component = (
+        <>
+          {/* <span className="edit-icon" onClick={() => null}><i className="far fa-edit"></i></span> */}
+          <span className="completed-icon" onClick={() => this.setCompleted(false)}><i className="far fa-check-square"></i></span>
+
+        </>
+      )
     } else {
-      component = <span className="uncompleted-icon" onClick={() => this.setCompleted(true)}>☐</span>
+      component = (
+        <>
+          {/* <span className="edit-icon" onClick={() => null}><i className="far fa-edit"></i></span> */}
+          <span className="uncompleted-icon" onClick={() => this.setCompleted(true)}><i className="far fa-square"></i></span>
+        </>
+      )
+    }
+
+    if (this.state.editing) {
+      component = (
+        <>
+          <span className="save-icon" onClick={this.saveChanges}><i className="fas fa-save"></i></span>
+          <span className="cancel-icon" onClick={this.cancelChanges}><i className="fas fa-undo"></i></span>
+        </>
+      )
     }
 
     return (
-      <>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', height: '100%' }}>
         {component}
-      </>
+      </div>
     )
   }
 }
@@ -273,7 +343,7 @@ class App extends Component {
           cellRenderer: 'toDoRenderer',
           cellRendererParams: {
             letGridKnow: id => {
-              this.setState({ currentlyEditingId: id }, () => { console.log('this.state.currentlyEditingId', this.state.currentlyEditingId) })
+              this.setState({ currentlyEditingId: id })
             },
             getCurrentlyEditingId: () => {
               return this.state.currentlyEditingId
@@ -293,7 +363,7 @@ class App extends Component {
           headerName: '☑',
           field: 'completed',
           suppressMenu: true,
-          width: 60,
+          width: 85,
           cellRenderer: 'completedRenderer',
         },
         {
@@ -330,6 +400,7 @@ class App extends Component {
 
 
   tooltipValueGetter = params => {
+    console.log('****** GETTING A VALUE', params.value)
     if (!params.value) {
       return;
     }
@@ -338,6 +409,7 @@ class App extends Component {
 
     let difference = differenceInDays(dateValue, new Date());
     // let color = difference > 0 ? 'limegreen' : 'red';
+    console.log('for', params.value, difference, 'days left')
     return `${difference} days remaining`;
   }
 
@@ -367,7 +439,7 @@ class App extends Component {
 
   render() {
     return (
-      <div style={{ width: 600, position: 'absolute', left: '50%', top: '30vh', transform: 'translateX(-50%)' }}>
+      <div style={{ width: 650, position: 'absolute', left: '50%', top: '30vh', transform: 'translateX(-50%)' }}>
         {/* <h1 style={{ color: 'white', fontSize: 50, fontFamily: 'Roboto', fontWeight: 400, textAlign: 'center' }}>To-Do List</h1> */}
         <form style={{ display: 'flex' }} onSubmit={e => e.preventDefault()}>
           <input
