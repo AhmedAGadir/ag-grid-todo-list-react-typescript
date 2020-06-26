@@ -58,9 +58,9 @@ button[type="submit"]:active {
 }
 
 i {
-  margin: 0 12px;
-  position: relative;
-  top: 1px;
+  /* margin: 0 12px; */
+  /* position: relative; */
+  /* top: 1px; */
 }
 
 .completed-icon {
@@ -117,8 +117,9 @@ i {
 
 .delete-icon {
   display: block;
-  margin: 10px 0;
-  font-size: 20px;
+  /* margin: 12px 0; */
+  font-size: 18px;
+  /* font-weight: bold; */
   color: grey;
   cursor: pointer;
 }
@@ -157,7 +158,6 @@ i {
   position: absolute;
   top: 50%;
   left: 0;
-  width: 100%;
   height: 1px;
   background: black;
   animation-name: strike;
@@ -167,6 +167,6 @@ i {
   animation-fill-mode: forwards;
 }
 
-[col-id="completed"] .ag-header-cell-text {
+/* [col-id="completed"] .ag-header-cell-text {
   font-size: 33px;
-}
+} */

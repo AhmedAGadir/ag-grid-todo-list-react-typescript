@@ -198,24 +198,11 @@ class CompletedRenderer extends Component {
     super(props);
     this.state = {
       completed: null,
-      editing: false
     }
   }
 
   componentDidMount = () => {
     this.setState({ completed: this.props.value });
-
-    this.props.api.addEventListener('customRowEditingStarted', params => {
-      if (params.id === this.props.node.id) {
-        console.log('this one')
-        this.setState({ editing: true });
-      }
-    });
-    this.props.api.addEventListener('customRowEditingStopped', params => {
-      if (params.id === this.props.node.id) {
-        this.setState({ editing: false });
-      }
-    })
   }
 
 
@@ -225,24 +212,6 @@ class CompletedRenderer extends Component {
       this.props.node.setDataValue(this.props.column.colId, bool);
       // this.props.api.redrawRows({ rowNodes: [this.props.node], force: true });
       this.props.api.refreshCells({ rowNodes: [this.props.node], force: true });
-    })
-  }
-
-  deleteToDo = () => {
-    if (window.confirm('Are you sure youd like to delete this row?')) {
-      this.props.deleteToDo(this.props.node.id)
-    }
-  }
-
-  saveChanges = () => {
-    this.setState({ editing: false }, () => {
-      this.props.api.dispatchEvent({ type: 'saveChanges', id: this.props.node.id });
-    })
-  }
-
-  cancelChanges = () => {
-    this.setState({ editing: false }, () => {
-      this.props.api.dispatchEvent({ type: 'cancelChanges', id: this.props.node.id });
     })
   }
 
@@ -265,23 +234,65 @@ class CompletedRenderer extends Component {
       )
     }
 
-    if (this.state.editing) {
-      component = (
-        <>
-          <span className="save-icon" onClick={this.saveChanges}><i className="fas fa-save"></i></span>
-          <span className="cancel-icon" onClick={this.cancelChanges}><i className="fas fa-undo"></i></span>
-        </>
-      )
-    }
-
     return (
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', height: '100%' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
         {component}
       </div>
     )
   }
 }
 
+
+class ActionsRenderer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      editing: false
+    }
+  }
+
+  componentDidMount = () => {
+    this.props.api.addEventListener('customRowEditingStarted', params => {
+      if (params.id === this.props.node.id) {
+        this.setState({ editing: true });
+      }
+    });
+    this.props.api.addEventListener('customRowEditingStopped', params => {
+      if (params.id === this.props.node.id) {
+        this.setState({ editing: false });
+      }
+    })
+  }
+
+  saveChanges = () => {
+    this.setState({ editing: false }, () => {
+      this.props.api.dispatchEvent({ type: 'saveChanges', id: this.props.node.id });
+    })
+  }
+
+  cancelChanges = () => {
+    this.setState({ editing: false }, () => {
+      this.props.api.dispatchEvent({ type: 'cancelChanges', id: this.props.node.id });
+    })
+  }
+
+  render() {
+    let component;
+
+    component = (
+      <>
+        <span className="save-icon" onClick={this.saveChanges}><i className="fas fa-save"></i></span>
+        <span className="cancel-icon" onClick={this.cancelChanges}><i className="fas fa-undo"></i></span>
+      </>
+    )
+
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
+        {component}
+      </div>
+    )
+  }
+}
 
 class DeleteRenderer extends Component {
   constructor(props) {
@@ -299,32 +310,13 @@ class DeleteRenderer extends Component {
 
   render() {
     return (
-      <span className="delete-icon" onClick={this.deleteToDo}>⨉</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
+        <span className="delete-icon" onClick={this.deleteToDo}><i className="fas fa-trash"></i></span>
+      </div >
     )
   }
 }
 
-
-// class DateTooltip extends Component {
-//   constructor(props) {
-//     super(props);
-//   }
-
-//   componentDidMount = () => {
-//   }
-
-//   deleteToDo = () => {
-//     if (window.confirm('Are you sure youd like to delete this row?')) {
-//       this.props.deleteToDo(this.props.node.id)
-//     }
-//   }
-
-//   render() {
-//     return (
-//       <span>{JSON.stringify(this.props.value)}</span>
-//     )
-//   }
-// }
 
 
 class App extends Component {
@@ -353,28 +345,34 @@ class App extends Component {
         {
           headerName: 'Deadline',
           field: 'date',
-          // hide: true,
+          hide: true,
           suppressMenu: true,
           width: 170,
           cellRenderer: 'dateRenderer',
           tooltipValueGetter: this.tooltipValueGetter
         },
         {
-          headerName: '☑',
+          headerName: 'actions',
+          hide: true,
+          cellRenderer: 'actionsRenderer',
+          width: 90,
+        },
+        {
+          headerName: 'complete',
           field: 'completed',
           suppressMenu: true,
           width: 85,
           cellRenderer: 'completedRenderer',
         },
         {
-          headerName: 'Delete',
-          cellRenderer: 'deleteRenderer',
+          headerName: 'delete',
           hide: true,
-          width: 45,
+          cellRenderer: 'deleteRenderer',
           cellRendererParams: {
-            deleteToDo: id => this.deleteToDo(id)
-          }
-        }
+            deleteToDo: this.deleteToDo
+          },
+          width: 50,
+        },
       ],
       rowData: [
         { description: 'Give Ahmed a raise (300k)', id: 0, date: '11/07/2020', completed: false },
@@ -388,6 +386,7 @@ class App extends Component {
         dateRenderer: DateRenderer,
         completedRenderer: CompletedRenderer,
         deleteRenderer: DeleteRenderer,
+        actionsRenderer: ActionsRenderer
       },
       currentlyEditingId: null,
     }
@@ -409,8 +408,11 @@ class App extends Component {
 
     let difference = differenceInDays(dateValue, new Date());
     // let color = difference > 0 ? 'limegreen' : 'red';
-    console.log('for', params.value, difference, 'days left')
-    return `${difference} days remaining`;
+    // console.log('for', params.value, difference, 'days left')
+    return difference > 0 ?
+      `${difference} days remaining`
+      : `${-difference} days overdue`
+      ;
   }
 
   addToDo = () => {
@@ -478,21 +480,21 @@ class App extends Component {
             }}
             rowDragManaged
             animateRows
-            // sideBar={{
-            //   toolPanels: [{
-            //     id: 'columns',
-            //     labelDefault: '',
-            //     labelKey: 'columns',
-            //     iconKey: 'columns',
-            //     toolPanel: 'agColumnsToolPanel',
-            //     toolPanelParams: {
-            //       suppressRowGroups: true,
-            //       suppressValues: true,
-            //       suppressPivotMode: true,
-            //       suppressColumnFilter: true
-            //     }
-            //   }]
-            // }}
+            sideBar={{
+              toolPanels: [{
+                id: 'columns',
+                labelDefault: '',
+                labelKey: 'columns',
+                iconKey: 'columns',
+                toolPanel: 'agColumnsToolPanel',
+                toolPanelParams: {
+                  suppressRowGroups: true,
+                  suppressValues: true,
+                  suppressPivotMode: true,
+                  suppressColumnFilter: true
+                }
+              }]
+            }}
             popupParent={document.body}
           >
           </AgGridReact>
