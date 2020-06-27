@@ -460,6 +460,7 @@ class App extends Component {
           headerName: 'Deadline',
           field: 'date',
           hide: true,
+          // pinned: 'right',
           suppressMenu: true,
           width: 170,
           cellRenderer: 'dateRenderer',
