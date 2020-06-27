@@ -59,7 +59,7 @@ button[type="submit"]:active {
 
 [class$="-icon"] {
   display: block;
-  color: silver;
+  color: darkgrey;
   cursor: pointer;
 }
 
@@ -75,7 +75,6 @@ button[type="submit"]:active {
 
 .edit-icon {
   font-size: 20px;
-  /* color: blueviolet; */
 }
 
 .delete-icon {
@@ -85,10 +84,12 @@ button[type="submit"]:active {
 
 .save-icon {
   font-size: 23px;
+  color: black;
 }
 
 .cancel-icon {
   font-size: 20px;
+  color: black;
 }
 
 .delete-icon, .cancel-icon {
@@ -105,6 +106,7 @@ button[type="submit"]:active {
 
 .save-icon:hover, .cancel-icon:hover {
   color: magenta;
+  /* color: #ffbf00;  */
 }
 
 /* .completed-icon:hover, .uncompleted-icon:hover {
