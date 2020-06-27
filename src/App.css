@@ -57,17 +57,6 @@ button[type="submit"]:active {
   opacity: 0.95;
 }
 
-span {
-  /* background: magenta */
-}
-
-i {
-  /* margin-left: 10px; */
-  /* margin: 0 12px; */
-  /* position: relative; */
-  /* top: 1px; */
-}
-
 [class$="-icon"] {
   display: block;
   color: silver;
@@ -86,34 +75,36 @@ i {
 
 .edit-icon {
   font-size: 20px;
-  /* position: relative; */
-  /* bottom: 1px; */
-  margin-left: 15px;
   /* color: blueviolet; */
 }
 
 .delete-icon {
   font-size: 18px;
-  margin-left: 30px;
   /* color: #ffbf00; */
 }
 
 .save-icon {
   font-size: 23px;
-  margin-left: 15px;
-  /* color: #ffbf00; */
-  color: blueviolet;
 }
 
 .cancel-icon {
   font-size: 20px;
+}
+
+.delete-icon, .cancel-icon {
   margin-left: 30px;
-  /* color: #ffbf00; */
-  color: blueviolet;
+}
+
+.edit-icon, .save-icon {
+  margin-left: 15px;
+}
+
+.edit-icon:hover, .delete-icon:hover {
+  color: magenta;
 }
 
 .save-icon:hover, .cancel-icon:hover {
-  opacity: 0.7;
+  color: magenta;
 }
 
 /* .completed-icon:hover, .uncompleted-icon:hover {
@@ -156,7 +147,7 @@ i {
   height: 1px;
   background: black;
   animation-name: strike;
-  animation-duration: 0.4s;
+  animation-duration: 0.5s;
   animation-timing-function: linear;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;

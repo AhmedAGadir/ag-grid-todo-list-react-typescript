@@ -438,7 +438,7 @@ class App extends Component {
     super(props);
     this.state = {
       inputVal: '',
-      idSeq: 1,
+      idSeq: 3,
       columnDefs: [
         {
           rowDrag: true,
@@ -507,9 +507,9 @@ class App extends Component {
         // },
       ],
       rowData: [
-        { description: 'Go to Japan', id: 0, date: '11/07/2020' },
-        { description: 'Defeat Kaido', id: 987, date: '19/11/2020' },
-        { description: 'Find One Peice', id: 999, date: '23/04/2020' },
+        { description: 'Go to Wano', id: 0, date: '11/07/2020' },
+        { description: 'Defeat Kaido', id: 1, date: '19/11/2020' },
+        { description: 'Find One Peice', id: 2, date: '23/04/2020' },
       ],
       frameworkComponents: {
         toDoRenderer: ToDoRenderer,
@@ -626,6 +626,13 @@ class App extends Component {
             // popupParent={document.body}
             rowSelection="multiple"
             suppressRowClickSelection
+            onFirstDataRendered={params => {
+              setTimeout(() => {
+                let node0 = params.api.getRowNode(0);
+                node0.setSelected(true);
+                params.api.refreshCells({ rowNodes: [node0], force: true })
+              }, 500)
+            }}
           >
           </AgGridReact>
         </div>
