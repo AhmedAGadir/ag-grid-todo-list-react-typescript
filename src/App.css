@@ -165,10 +165,11 @@ button[type="submit"]:active {
   color: black !important;
 }
 
-/* .MuiInput-underline:after {
+.MuiInput-underline:after {
   border-bottom-color: magenta !important;
 }
 
+/*
 .MuiSvgIcon-root {
   fill: darkgrey !important;
 }

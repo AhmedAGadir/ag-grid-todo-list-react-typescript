@@ -440,7 +440,7 @@ class App extends Component {
     super(props);
     this.state = {
       inputVal: '',
-      idSeq: 3,
+      idSeq: 2,
       columnDefs: [
         {
           rowDrag: true,
@@ -512,7 +512,6 @@ class App extends Component {
       rowData: [
         { description: 'Go to Wano', id: 0, date: '11/07/2020' },
         { description: 'Defeat Kaido', id: 1, date: '19/11/2020' },
-        { description: 'Find One Peice', id: 2, date: '23/04/2020' },
       ],
       frameworkComponents: {
         toDoRenderer: ToDoRenderer,
