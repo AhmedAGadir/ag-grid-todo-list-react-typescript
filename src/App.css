@@ -61,6 +61,7 @@ button[type="submit"]:active {
   display: block;
   color: darkgrey;
   cursor: pointer;
+  /* transition: 0.4s ease all; */
 }
 
 .completed-icon {
@@ -78,18 +79,18 @@ button[type="submit"]:active {
 }
 
 .delete-icon {
-  font-size: 18px;
+  font-size: 20px;
   /* color: #ffbf00; */
 }
 
 .save-icon {
-  font-size: 23px;
-  color: black;
+  font-size: 21px;
+  color: dimgrey;
 }
 
 .cancel-icon {
-  font-size: 20px;
-  color: black;
+  font-size: 19px;
+  color: dimgrey;
 }
 
 .delete-icon, .cancel-icon {
@@ -163,3 +164,19 @@ button[type="submit"]:active {
 .MuiInputBase-root.Mui-disabled {
   color: black !important;
 }
+
+/* .MuiInput-underline:after {
+  border-bottom-color: magenta !important;
+}
+
+.MuiSvgIcon-root {
+  fill: darkgrey !important;
+}
+
+.MuiTextField-root:not(.strike) .MuiSvgIcon-root {
+  fill: black !important;
+}
+
+.ag-row-selected .MuiSvgIcon-root:hover {
+  fill: magenta !important;
+} */

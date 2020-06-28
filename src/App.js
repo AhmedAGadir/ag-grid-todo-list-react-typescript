@@ -132,7 +132,7 @@ class DateRenderer extends Component {
             // color: new Date() > this.state.selectedDate ? 'limegreen' : 'red',
             // height: 35,
             background: this.state.editing ? 'whitesmoke' : null,
-            opacity: this.props.node.selected && this.state.editing ? 0.6 : 1,
+            // opacity: this.props.node.selected && this.state.editing ? 0.6 : 1,
             position: 'relative',
             bottom: 1,
             // border: this.state.editing ? '2px solid cyan' : null,
@@ -235,7 +235,7 @@ class ToDoRenderer extends Component {
             // fontWeight: 400,
             background: 'whitesmoke',
             // textDecoration: this.props.node.selected ? 'line-through' : 'none',
-            opacity: this.props.node.selected ? 0.6 : 1,
+            // opacity: this.props.node.selected ? 0.6 : 1,
             // border: '2px solid cyan',
             borderRadius: 5,
 
@@ -533,10 +533,10 @@ class App extends Component {
 
   tooltipValueGetter = params => {
     if (!params.value) {
-      return;
+      return 'no deadline';
     }
     if (params.node.selected) {
-      return 'Completed'
+      return 'completed'
     }
     const [_, day, month, year] = params.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
     let dateValue = new Date(year, month - 1, day);
