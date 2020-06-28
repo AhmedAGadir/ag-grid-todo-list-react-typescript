@@ -119,7 +119,7 @@ class DateRenderer extends Component {
     return (
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
-          // className={this.props.node.selected ? "strike" : ''}
+          className={this.props.node.selected && !this.state.editing ? "strike" : ''}
           margin="normal"
           id={`date-picker-dialog-${this.props.node.id}`}
           format="dd/MM/yyyy"
@@ -137,7 +137,7 @@ class DateRenderer extends Component {
             bottom: 1,
             // border: this.state.editing ? '2px solid cyan' : null,
             borderRadius: 5,
-            textDecoration: this.props.node.selected ? 'line-through' : 'none',
+            // textDecoration: this.props.node.selected ? 'line-through' : 'none',
           }}
           disabled={!this.state.editing}
         />
@@ -461,7 +461,7 @@ class App extends Component {
         {
           headerName: 'Deadline',
           field: 'date',
-          hide: true,
+          // hide: true,
           // pinned: 'right',
           suppressMenu: true,
           width: 170,
@@ -534,6 +534,9 @@ class App extends Component {
   tooltipValueGetter = params => {
     if (!params.value) {
       return;
+    }
+    if (params.node.selected) {
+      return 'Completed'
     }
     const [_, day, month, year] = params.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
     let dateValue = new Date(year, month - 1, day);
@@ -611,21 +614,21 @@ class App extends Component {
             // }}
             rowDragManaged
             animateRows
-            sideBar={{
-              toolPanels: [{
-                id: 'columns',
-                labelDefault: '',
-                labelKey: 'columns',
-                iconKey: 'columns',
-                toolPanel: 'agColumnsToolPanel',
-                toolPanelParams: {
-                  suppressRowGroups: true,
-                  suppressValues: true,
-                  suppressPivotMode: true,
-                  suppressColumnFilter: true
-                }
-              }]
-            }}
+            // sideBar={{
+            //   toolPanels: [{
+            //     id: 'columns',
+            //     labelDefault: '',
+            //     labelKey: 'columns',
+            //     iconKey: 'columns',
+            //     toolPanel: 'agColumnsToolPanel',
+            //     toolPanelParams: {
+            //       suppressRowGroups: true,
+            //       suppressValues: true,
+            //       suppressPivotMode: true,
+            //       suppressColumnFilter: true
+            //     }
+            //   }]
+            // }}
             popupParent={document.body}
             rowSelection="multiple"
             suppressRowClickSelection
