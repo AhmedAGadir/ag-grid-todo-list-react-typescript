@@ -97,14 +97,14 @@ class DateRenderer extends Component {
         let dateValue = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
         this.props.node.setDataValue('date', dateValue);
       } else {
-        let selectedDate = null;
+        let prevDate = null;
         let dateValue = null
         if (this.props.value) {
           const [_, day, month, year] = this.props.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-          selectedDate = new Date(year, month - 1, day);
-          dateValue = format(this.state.selectedDate, 'dd/MM/yyyy')
+          prevDate = new Date(year, month - 1, day);
+          dateValue = format(prevDate, 'dd/MM/yyyy')
         }
-        this.setState({ selectedDate }, () => {
+        this.setState({ selectedDate: prevDate }, () => {
           this.props.node.setDataValue('date', dateValue);
         })
       }
@@ -119,6 +119,7 @@ class DateRenderer extends Component {
     return (
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
+          // className={this.props.node.selected ? "strike" : ''}
           margin="normal"
           id={`date-picker-dialog-${this.props.node.id}`}
           format="dd/MM/yyyy"
@@ -136,6 +137,7 @@ class DateRenderer extends Component {
             bottom: 1,
             // border: this.state.editing ? '2px solid cyan' : null,
             borderRadius: 5,
+            textDecoration: this.props.node.selected ? 'line-through' : 'none',
           }}
           disabled={!this.state.editing}
         />
@@ -624,7 +626,7 @@ class App extends Component {
                 }
               }]
             }}
-            // popupParent={document.body}
+            popupParent={document.body}
             rowSelection="multiple"
             suppressRowClickSelection
             onFirstDataRendered={params => {
