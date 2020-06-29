@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { ICellRenderer } from 'ag-grid-community';
+import { ICellRenderer, RowNode, GridApi, AgEvent } from 'ag-grid-community';
 import './ActionsRenderer.scss'
-
 interface ActionsRendererProps {
-    getCurrentlyEditingId: any,
-    setCurrentlyEditingId: any,
-    api: any,
-    node: any,
-    deleteToDo: any
+    getCurrentlyEditingId: () => string,
+    setCurrentlyEditingId: (id: string) => void,
+    deleteTask: (id: string) => void,
+    api: GridApi,
+    node: RowNode,
 }
 
 interface ActionsRendererState {
@@ -26,43 +25,37 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
         }
     }
 
-    refresh(params) {
+    refresh() {
         return true;
     }
 
     componentDidMount = () => {
-        let currentlyEditingId = this.props.getCurrentlyEditingId();
-        this.setState({ editing: currentlyEditingId === this.props.node.id })
+        this.props.api.addEventListener('cellMouseOver', this.onCellMouseOver);
+        this.props.api.addEventListener('cellMouseOut', this.onCellMouseOut);
 
+        const isEditing = this.props.getCurrentlyEditingId() === this.props.node.id;
+        this.setState({ editing: isEditing });
 
-        this.props.api.addEventListener('cellMouseOver', params => {
-            if (params.node.id === this.props.node.id) {
-                this.setState({ visible: true });
-            }
-        })
-
-        this.props.api.addEventListener('cellMouseOut', params => {
-            if (params.node.id === this.props.node.id) {
-                if (this.state.editing) {
-                    return;
-                }
-                this.setState({ visible: false });
-            }
-        })
     }
 
-    saveChanges = () => {
-        this.setState({ editing: false }, () => {
-            this.props.setCurrentlyEditingId(null);
-            this.props.api.dispatchEvent({ type: 'saveChanges', id: this.props.node.id });
-        })
+    componentWillUnmount = () => {
+        this.props.api.removeEventListener('cellMouseOver', this.onCellMouseOver);
+        this.props.api.removeEventListener('cellMouseOut', this.onCellMouseOut);
     }
 
-    cancelChanges = () => {
-        this.setState({ editing: false }, () => {
-            this.props.setCurrentlyEditingId(null);
-            this.props.api.dispatchEvent({ type: 'cancelChanges', id: this.props.node.id });
-        })
+    onCellMouseOver = params => {
+        if (params.node.id === this.props.node.id) {
+            this.setState({ visible: true });
+        }
+    }
+
+    onCellMouseOut = params => {
+        if (params.node.id === this.props.node.id) {
+            if (this.state.editing) {
+                return;
+            }
+            this.setState({ visible: false });
+        }
     }
 
     startEditing = () => {
@@ -71,16 +64,26 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
             return;
         }
 
-        this.setState({ editing: true }, () => {
+        this.setState({
+            editing: true
+        }, () => {
             this.props.setCurrentlyEditingId(this.props.node.id);
             this.props.api.refreshCells({ rowNodes: [this.props.node], force: true })
         })
     }
 
-    deleteToDo = () => {
+    deleteTask = () => {
         if (window.confirm('Would you like to delete this task?')) {
-            this.props.deleteToDo(this.props.node.id)
+            this.props.deleteTask(this.props.node.id);
         }
+    }
+
+    commitChanges = (bool) => {
+        const eventType = bool ? 'saveChanges' : 'cancelChanges';
+        this.setState({ editing: false }, () => {
+            this.props.setCurrentlyEditingId(null);
+            this.props.api.dispatchEvent({ type: eventType, id: this.props.node.id });
+        })
     }
 
     render() {
@@ -88,29 +91,23 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
             return null;
         }
 
-        let component;
+        const editingIcons = (
+            <>
+                <span className="save-icon" onClick={() => this.commitChanges(true)} > <i className="far fa-save" > </i></span >
+                <span className="cancel-icon" onClick={() => this.commitChanges(false)} > <i className="fas fa-undo" > </i></span >
+            </>
+        );
 
-        if (this.state.editing) {
-            component = (
-                <>
-                    <span className="save-icon" onClick={this.saveChanges} > <i className="far fa-save" > </i></span >
-                    <span className="cancel-icon" onClick={this.cancelChanges} > <i className="fas fa-undo" > </i></span >
-                </>
-            )
-        } else {
-            component = (
-                <>
-                    <span className="edit-icon" onClick={this.startEditing} > <i className="fas fa-pen" > </i></span >
-                    <span className="delete-icon" onClick={this.deleteToDo} > <i className="fas fa-trash" > </i></span >
-                </>
-            )
-        }
-
+        const notEditingIcons = (
+            <>
+                <span className="edit-icon" onClick={this.startEditing} > <i className="fas fa-pen" > </i></span >
+                <span className="delete-icon" onClick={this.deleteTask} > <i className="fas fa-trash" > </i></span >
+            </>
+        );
 
         return (
-            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', height: '100%' }
-            }>
-                {component}
+            <div className="actions-wrapper" >
+                {this.state.editing ? editingIcons : notEditingIcons}
             </div>
         )
     }

@@ -3,14 +3,14 @@ import React, { Component } from 'react';
 import { format } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { ICellRenderer } from 'ag-grid-community';
-import './DateRenderer.css';
+import { ICellRenderer, GridApi, RowNode } from 'ag-grid-community';
+import './DateRenderer.scss';
 
 interface DateRendererProps {
-    api: any,
-    node: any,
-    value: any,
-    getCurrentlyEditingId: any
+    api: GridApi,
+    node: RowNode,
+    value: string,
+    getCurrentlyEditingId: () => string,
 }
 
 interface DateRendererState {

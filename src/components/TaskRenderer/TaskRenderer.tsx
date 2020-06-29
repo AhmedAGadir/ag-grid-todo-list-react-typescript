@@ -1,6 +1,6 @@
 import React, { Component, createRef } from 'react';
 import { ICellRenderer } from 'ag-grid-community';
-import './TaskRenderer.css';
+import './TaskRenderer.scss';
 
 interface TaskRendererProps {
     value: any,

@@ -4,8 +4,7 @@ import { AgGridReact } from 'ag-grid-react';
 // import 'ag-grid-community/dist/styles/ag-grid.css';
 // import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import 'ag-grid-enterprise';
-import 'normalize.css';
-
+// import 'normalize.css';
 import './App.scss'
 
 
@@ -151,8 +150,6 @@ class DateRenderer extends Component {
   }
 }
 // })
-
-
 
 class ToDoRenderer extends Component {
   constructor(props) {

@@ -63,13 +63,13 @@ class App extends Component<{}, AppState> {
           width: 90,
         },
       ],
-      rowData: tasks,
       defaultColDef: {
         cellRendererParams: {
           setCurrentlyEditingId: this.setCurrentlyEditingId,
           getCurrentlyEditingId: this.getCurrentlyEditingId
         }
       },
+      rowData: tasks,
       frameworkComponents: {
         taskRenderer: TaskRenderer,
         dateRenderer: DateRenderer,

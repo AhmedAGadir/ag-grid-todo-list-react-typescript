@@ -1,15 +1,11 @@
-/* 
-mixin for 
+@import '../../_mixin/mixin.scss';
 
-*/
-
-@mixin icon-styles {
-    [class$="-icon"] {
-        display: block;
-        color: darkgrey;
-        cursor: pointer;
-        transition: 0.4s ease all;
-    }
+.actions-wrapper {
+    @include strike-animation;
+    display: flex; 
+    justify-content: flex-end; 
+    align-items: center;
+    height: 100%;
 }
 
 .edit-icon {
@@ -21,12 +17,12 @@ mixin for
 }
 
 .save-icon {
-    font-size: 21px;
+    font-size: 22px;
     color: dimgrey;
 }
 
 .cancel-icon {
-    font-size: 19px;
+    font-size: 20px;
     color: dimgrey;
 }
 

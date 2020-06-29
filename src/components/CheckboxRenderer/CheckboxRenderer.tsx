@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { ICellRenderer } from 'ag-grid-community';
+import { ICellRenderer, RowNode, GridApi } from 'ag-grid-community';
 import './CheckboxRenderer.scss';
 
 interface CheckboxRendererProps {
-    node: any,
-    api: any,
+    node: RowNode,
+    api: GridApi,
 }
 
 interface CheckboxRendererState {
@@ -19,41 +19,44 @@ export default class CompletedRenderer extends Component<CheckboxRendererProps, 
         this.state = { completed: false };
     }
 
+    refresh = () => {
+        return true;
+    }
+
     componentDidMount = () => {
-        this.setState({ completed: this.props.node.selected });
+        const isNodeSelected = this.props.node.isSelected();
+        this.setState({ completed: isNodeSelected });
     }
 
     setCompleted = bool => {
-        this.setState({ completed: bool }, () => {
+        this.setState({
+            completed: bool
+        }, () => {
             this.props.node.setSelected(bool);
             this.props.api.refreshCells({ rowNodes: [this.props.node], force: true });
         })
     }
 
     render() {
-        let component;
-        if (this.state.completed) {
-            component = (
-                <>
-                    {/* <span className="edit-icon" onClick={() => null}><i className="far fa-edit"></i></span> */}
-                    < span className="completed-icon" onClick={() => this.setCompleted(false)
-                    }> <i className="far fa-check-square" > </i></span >
+        const completedIcon = (
+            <span
+                className="completed-icon"
+                onClick={() => this.setCompleted(false)}>
+                <i className="far fa-check-square" ></i>
+            </span>
+        );
 
-                </>
-            )
-        } else {
-            component = (
-                <>
-                    {/* <span className="edit-icon" onClick={() => null}><i className="far fa-edit"></i></span> */}
-                    < span className="uncompleted-icon" onClick={() => this.setCompleted(true)
-                    }> <i className="far fa-square" > </i></span >
-                </>
-            )
-        }
+        const uncompletedIcon = (
+            <span
+                className="uncompleted-icon"
+                onClick={() => this.setCompleted(true)}>
+                <i className="far fa-square" ></i>
+            </span>
+        )
 
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                {component}
+            <div className="checkbox-wrapper">
+                {this.state.completed ? completedIcon : uncompletedIcon}
             </div>
         )
     }

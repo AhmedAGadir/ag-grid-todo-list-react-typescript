@@ -1,9 +1,18 @@
-.completed-icon {
+@import '../../_mixin/mixin.scss';
+
+.checkbox-wrapper {
+    display: flex; 
+    justify-content: center;
+    align-items: center; 
+    height: 100%; 
+}
+
+.checkbox-wrapper .completed-icon {
     font-size: 22px;
     color: magenta;
 }
 
-.uncompleted-icon {
+.checkbox-wrapper .uncompleted-icon {
     font-size: 22px;
     color: magenta;
 }
