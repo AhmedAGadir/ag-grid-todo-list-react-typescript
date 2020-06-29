@@ -1,0 +1,11 @@
+.MuiInput-underline:before {
+    border-bottom: none !important;
+}
+
+.MuiInputBase-root.Mui-disabled {
+    color: black !important;
+}
+
+.MuiInput-underline:after {
+    border-bottom-color: magenta !important;
+}

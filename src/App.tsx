@@ -1,44 +1,26 @@
-// tags
-// typescript - <> and interfaces etc and more - study
-// modularise 
-
-// handle key presses in date 
-// add ag-grid interfaces, and loads of typescript goodies,
-// read typescript
-
-// tooltip for the dates saying you have X days remaining 
-// account for enter
-// cleanup
-// hover 
-// save / cancel edits 
-// stop other dates from editing
-// instead of using events, use the setCurrentlyEditingId stuff and refreshing 
-// checkboxes shouldnt share a renderer with save/cancel - they should be their own column
-
-import React, { Component, createRef } from 'react';
+import React, { Component } from 'react';
 import { AgGridReact } from 'ag-grid-react';
+import { ColDef, FirstDataRenderedEvent } from 'ag-grid-community'
 import 'ag-grid-enterprise';
+
+import TaskAdder from './components/TaskAdder/TaskAdder.tsx';
+import DateRenderer from './components/DateRenderer/DateRenderer.tsx';
+import TaskRenderer from './components/TaskRenderer/TaskRenderer.tsx';
+import CheckboxRenderer from './components/CheckboxRenderer/CheckboxRenderer.tsx';
+import ActionsRenderer from './components/ActionsRenderer/ActionsRenderer.tsx';
+
+import { differenceInDays } from 'date-fns';
+import tasks, { createNewTask, task } from './data.ts';
+
 import 'normalize.css';
 import './App.scss'
 
-import TaskAdder from './components/TaskAdder.tsx';
-
-import tasks, { createNewTask } from './data.ts';
-
-import DateRenderer from './components/DateRenderer.tsx';
-import TaskRenderer from './components/TaskRenderer.tsx';
-import CheckboxRenderer from './components/CheckboxRenderer.tsx';
-import ActionsRenderer from './components/ActionsRenderer.tsx';
-
-import { differenceInDays } from 'date-fns';
-
-import { ColDef } from 'ag-grid-community'
 
 interface AppState {
   currentlyEditingId: number,
   columnDefs: ColDef[],
   defaultColDef: ColDef,
-  rowData: any[],
+  rowData: task[],
   frameworkComponents: {
     [propName: string]: any
   }
@@ -74,7 +56,7 @@ class App extends Component<{}, AppState> {
           headerName: 'Actions',
           cellRenderer: 'actionsRenderer',
           cellRendererParams: {
-            deleteToDo: this.deleteToDo,
+            deleteTask: this.deleteTask,
             setCurrentlyEditingId: this.setCurrentlyEditingId,
             getCurrentlyEditingId: this.getCurrentlyEditingId
           },
@@ -97,38 +79,37 @@ class App extends Component<{}, AppState> {
     }
   }
 
-  onFirstDataRendered = params => {
+  onFirstDataRendered = (params: FirstDataRenderedEvent): void => {
     setTimeout(() => {
       let node0 = params.api.getRowNode('0');
       node0.setSelected(true);
       params.api.refreshCells({ rowNodes: [node0], force: true })
-    }, 500)
+    }, 500);
   }
 
-  setCurrentlyEditingId = id => {
-    this.setState({ currentlyEditingId: id });
-  }
-
-  getCurrentlyEditingId = () => {
-    return this.state.currentlyEditingId;
-  }
-
-  tooltipValueGetter = params => {
+  tooltipValueGetter = (params): string => {
     if (!params.value) {
       return 'no deadline';
     }
     if (params.node.selected) {
-      return 'completed'
+      return 'completed';
     }
     const [_, day, month, year] = params.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-    let dateValue = new Date(year, month - 1, day);
-    let difference = differenceInDays(dateValue, new Date());
-    return difference > 0 ?
-      `${difference} days remaining`
-      : `${-difference} days overdue`;
+    let deadlineDate = new Date(year, month - 1, day);
+
+    let difference = differenceInDays(deadlineDate, new Date());
+    return difference > 0 ? `${difference} days remaining` : `${-difference} days overdue`;
   }
 
-  addTaskHandler = (description) => {
+  setCurrentlyEditingId = (id: number): void => {
+    this.setState({ currentlyEditingId: id });
+  }
+
+  getCurrentlyEditingId = (): number => {
+    return this.state.currentlyEditingId;
+  }
+
+  addTask = (description: string): void => {
     let updatedRowData = this.state.rowData.map(row => ({ ...row }));
     let newTask = createNewTask(description);
     updatedRowData.push(newTask);
@@ -136,22 +117,16 @@ class App extends Component<{}, AppState> {
     this.setState({ rowData: updatedRowData });
   }
 
-  deleteToDo = id => {
+  deleteTask = (id: number): void => {
     let rowData = this.state.rowData.filter(row => row.id !== id);
     this.setState({ rowData });
   }
 
   render() {
     return (
-      <div style={{ width: 650, position: 'absolute', left: '50%', top: '30vh', transform: 'translateX(-50%)' }
-      }>
-        <TaskAdder addTask={this.addTaskHandler} />
-        < div
-          className="ag-theme-alpine"
-          style={{
-            height: '100%',
-          }}
-        >
+      <div className="app-component">
+        <TaskAdder addTask={this.addTask} />
+        <div className="ag-theme-alpine">
           <AgGridReact
             columnDefs={this.state.columnDefs}
             defaultColDef={this.state.defaultColDef}
@@ -168,10 +143,9 @@ class App extends Component<{}, AppState> {
             rowSelection="multiple"
             suppressRowClickSelection
             onFirstDataRendered={this.onFirstDataRendered}
-          >
-          </AgGridReact>
+          />
         </div>
-        < img src={require("./ag-grid-logo.png")} style={{ width: 200, margin: '40px auto 0', display: 'block' }} />
+        < img src={require("./ag-grid-logo.png")} />
       </div>
     );
   }

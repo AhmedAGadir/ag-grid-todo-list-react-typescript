@@ -1,4 +1,4 @@
-type task = {
+export type task = {
     id: number,
     task: string,
     deadline: string | null

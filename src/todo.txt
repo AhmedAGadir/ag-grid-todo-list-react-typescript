@@ -1,0 +1,16 @@
+// tags
+// typescript - <> and interfaces etc and more - study
+// modularise 
+
+// handle key presses in date 
+// add ag-grid interfaces, and loads of typescript goodies,
+// read typescript
+
+// tooltip for the dates saying you have X days remaining 
+// account for enter
+// cleanup
+// hover 
+// save / cancel edits 
+// stop other dates from editing
+// instead of using events, use the setCurrentlyEditingId stuff and refreshing 
+// checkboxes shouldnt share a renderer with save/cancel - they should be their own column

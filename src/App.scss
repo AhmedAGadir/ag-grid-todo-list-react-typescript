@@ -1,19 +1,25 @@
-// body {
-//     background: blue !important;
-// }
-
 @import "../node_modules/ag-grid-community/src/styles/ag-grid.scss";
 @import "../node_modules/ag-grid-community/src/styles/ag-theme-alpine/sass/ag-theme-alpine-mixin.scss";
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+.app-component {
+    width: 650px;
+    position: absolute;
+    left: 50%;
+    top: 30vh;
+    transform: translateX(-50%);
+}
+
+.app-component > img {
+    width: 200px; 
+    margin: 40px auto 0;
+    display: block;
+}
 
 .ag-theme-alpine {
   @include ag-theme-alpine((
-    // odd-row-background-color: rgb(236, 234, 234),
     odd-row-background-color: null,
     font-size: 16px,
     font-family: ("Roboto", sans-serif),
-    // foreground-color: rgb(33, 36, 43),
     row-hover-color: null,
     range-selection-border-color: rgba(0,0,0,0),
     cell-horizontal-padding: 10,
@@ -21,190 +27,10 @@
   ));
 }
 
-// @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-// body {
-//   font-family: 'Roboto', sans-serif;
-// }
-
-body {
-  font-family: 'Roboto', sans-serif;
-}
-
-body {
-  position: relative;
-  min-height: 100vh;
-  /* background: rgb(82, 244, 246); */
-  /* background: radial-gradient(circle, rgba(82, 244, 246, 1) 39%, rgba(0, 212, 255, 1) 55%, rgba(158, 160, 214, 1) 97%); */
-  background: blueviolet;
-}
-
 .ag-react-container {
-  height: 100%;
-}
-
-input {
-  border: none;
-  background-image: none;
-  background-color: transparent;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  outline: none;
-}
-
-.to-do-input {
-  background: #3B465C;
-  color: #ccc;
-  height: 60px;
-  flex-grow: 1;
-  padding: 0 10px;
-  font-size: 20px;
-}
-
-.to-do-input::placeholder {
-  color: #ddd;
-}
-
-button[type="submit"] {
-  background: none;
-  color: inherit;
-  border: none;
-  padding: 0;
-  font: inherit;
-  cursor: pointer;
-  outline: inherit;
-  background: rgb(10, 209, 209);
-  width: 60px;
-  color: white;
-  font-size: 30px;
-  font-weight: bold;
-}
-
-button[type="submit"]:active {
-  opacity: 0.95;
-}
-
-[class$="-icon"] {
-  display: block;
-  color: darkgrey;
-  cursor: pointer;
-  /* transition: 0.4s ease all; */
-}
-
-.completed-icon {
-  font-size: 22px;
-  color: magenta;
-}
-
-.uncompleted-icon {
-  font-size: 22px;
-  color: magenta;
-}
-
-.edit-icon {
-  font-size: 20px;
-}
-
-.delete-icon {
-  font-size: 20px;
-  /* color: #ffbf00; */
-}
-
-.save-icon {
-  font-size: 21px;
-  color: dimgrey;
-}
-
-.cancel-icon {
-  font-size: 19px;
-  color: dimgrey;
-}
-
-.delete-icon, .cancel-icon {
-  margin-left: 25px;
-  margin-right: 10px;
-}
-
-.edit-icon, .save-icon {
-  margin-left: 15px;
-}
-
-.edit-icon:hover, .delete-icon:hover {
-  color: magenta;
-}
-
-.save-icon:hover, .cancel-icon:hover {
-  color: magenta;
-  /* color: #ffbf00;  */
-}
-
-/* .completed-icon:hover, .uncompleted-icon:hover {
-  opacity: 0.7;
-} */
-
-.MuiInput-underline:before {
-  border-bottom: none !important;
-}
-
-.todowrapper {
-  cursor: pointer;
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.ag-cell-value, .ag-cell-wrapper {
-  width: 100%;
-}
-
-@keyframes strike {
-  0% {
-    width: 0;
+    height: 100%;
   }
-  100% {
+  
+.ag-cell-value, .ag-cell-wrapper {
     width: 100%;
   }
-}
-
-.strike {
-  position: relative;
-}
-
-.strike::after {
-  content: ' ';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  height: 1px;
-  background: black;
-  animation-name: strike;
-  animation-duration: 0.5s;
-  animation-timing-function: linear;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-}
-
-/* [col-id="completed"] .ag-header-cell-text {
-  font-size: 33px;
-} */
-
-.MuiInputBase-root.Mui-disabled {
-  color: black !important;
-}
-
-.MuiInput-underline:after {
-  border-bottom-color: magenta !important;
-}
-
-/*
-.MuiSvgIcon-root {
-  fill: darkgrey !important;
-}
-
-.MuiTextField-root:not(.strike) .MuiSvgIcon-root {
-  fill: black !important;
-}
-
-.ag-row-selected .MuiSvgIcon-root:hover {
-  fill: magenta !important;
-} */

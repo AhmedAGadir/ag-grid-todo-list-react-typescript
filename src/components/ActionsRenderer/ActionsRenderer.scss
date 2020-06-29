@@ -1,0 +1,48 @@
+/* 
+mixin for 
+
+*/
+
+@mixin icon-styles {
+    [class$="-icon"] {
+        display: block;
+        color: darkgrey;
+        cursor: pointer;
+        transition: 0.4s ease all;
+    }
+}
+
+.edit-icon {
+    font-size: 20px;
+}
+
+.delete-icon {
+    font-size: 20px;
+}
+
+.save-icon {
+    font-size: 21px;
+    color: dimgrey;
+}
+
+.cancel-icon {
+    font-size: 19px;
+    color: dimgrey;
+}
+
+.delete-icon, .cancel-icon {
+    margin-left: 25px;
+    margin-right: 10px;
+}
+
+.edit-icon, .save-icon {
+    margin-left: 15px;
+}
+
+.edit-icon:hover, .delete-icon:hover {
+    color: magenta;
+}
+
+.save-icon:hover, .cancel-icon:hover {
+    color: magenta;
+}
