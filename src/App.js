@@ -41,8 +41,13 @@ import {
 class DateRenderer extends Component {
   constructor(props) {
     super(props);
+    let selectedDate = null;
+    if (this.props.value) {
+      const [_, day, month, year] = this.props.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+      selectedDate = new Date(year, month - 1, day);
+    }
     this.state = {
-      selectedDate: null,
+      selectedDate: selectedDate,
       editing: false
     }
   }
@@ -127,11 +132,11 @@ class DateRenderer extends Component {
           onChange={this.handleDateChange}
           // variant="inline"
           disableToolbar
-          placeholder={'Add deadline'}
+          placeholder={'No deadline'}
           style={{
             // color: new Date() > this.state.selectedDate ? 'limegreen' : 'red',
             // height: 35,
-            background: this.state.editing ? 'whitesmoke' : null,
+            background: this.state.editing ? this.props.node.selected ? '#D5F1D1' : 'whitesmoke' : null,
             // opacity: this.props.node.selected && this.state.editing ? 0.6 : 1,
             position: 'relative',
             bottom: 1,
@@ -233,7 +238,7 @@ class ToDoRenderer extends Component {
             height: 30,
             // color: 'deppink',
             // fontWeight: 400,
-            background: 'whitesmoke',
+            background: this.props.node.selected ? '#D5F1D1' : 'whitesmoke',
             // textDecoration: this.props.node.selected ? 'line-through' : 'none',
             // opacity: this.props.node.selected ? 0.6 : 1,
             // border: '2px solid cyan',
@@ -440,14 +445,14 @@ class App extends Component {
     super(props);
     this.state = {
       inputVal: '',
-      idSeq: 2,
+      idSeq: 4,
       columnDefs: [
         {
           rowDrag: true,
           headerName: 'Description',
           field: 'description',
           suppressMenu: true,
-          flex: 3,
+          flex: 1,
           cellRenderer: 'toDoRenderer',
           cellRendererParams: {
             letGridKnow: id => {
@@ -510,8 +515,9 @@ class App extends Component {
         // },
       ],
       rowData: [
-        { description: 'Go to Wano', id: 0, date: '11/07/2020' },
-        { description: 'Defeat Kaido', id: 1, date: '19/11/2020' },
+        { id: 0, description: 'Go to Wano', date: '07/11/2020' },
+        { id: 1, description: 'Defeat Kaido', date: '08/25/2020' },
+        { id: 2, description: 'Find Raftel', date: '09/06/2020' },
       ],
       frameworkComponents: {
         toDoRenderer: ToDoRenderer,
@@ -563,8 +569,7 @@ class App extends Component {
       rowData,
       inputVal: '',
       idSeq: prevState.idSeq + 1
-    }), () => {
-    });
+    }));
   }
 
   deleteToDo = id => {
