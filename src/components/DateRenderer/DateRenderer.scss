@@ -1,13 +1,19 @@
 @import '../../_mixin/mixin.scss';
 
-.MuiInput-underline:before {
+.my-datepicker {
+    position: relative;
+    bottom: 1;
+    border-radius: 5px;
+}
+
+.my-datepicker .MuiInput-underline:before {
     border-bottom: none !important;
 }
 
-.MuiInputBase-root.Mui-disabled {
+.my-datepicker .MuiInputBase-root.Mui-disabled {
     color: black !important;
 }
 
-.MuiInput-underline:after {
+.my-datepicker .MuiInput-underline:after {
     border-bottom-color: magenta !important;
 }

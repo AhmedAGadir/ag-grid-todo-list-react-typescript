@@ -24,50 +24,77 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
     constructor(props: DateRendererProps) {
         super(props);
         let selectedDate = null;
-        if (this.props.value) {
-            const [_, day, month, year] = this.props.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-            selectedDate = new Date(year, month - 1, day);
-        }
         this.state = {
             selectedDate: selectedDate,
             editing: false,
         }
     }
 
-    componentDidMount = () => {
 
-        this.props.api.addEventListener('saveChanges', params => {
-            if (params.id === this.props.node.id) {
-                this.finishEdit(true);
-            }
-        });
-
-        this.props.api.addEventListener('cancelChanges', params => {
-            if (params.id === this.props.node.id) {
-                this.finishEdit(false);
-            }
-        });
-
-
-        if (!this.props.value) {
-            let editingId = this.props.getCurrentlyEditingId();
-            this.setState({
-                editing: editingId === this.props.node.id
-            });
-            return;
-        }
-        const [_, day, month, year] = this.props.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-        let selectedDate = new Date(year, month - 1, day);
-
-        let editingId = this.props.getCurrentlyEditingId();
-
-        this.setState({
-            selectedDate,
-            editing: editingId === this.props.node.id
-        });
+    refresh = () => {
+        return false;
     }
 
-    handleDateChange = d => {
+    componentWillMount = () => {
+        if (this.props.value) {
+            const [_, day, month, year] = this.props.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            const selectedDate = new Date(+year, +month - 1, +day);
+            this.setState({ selectedDate })
+        }
+    }
+
+    componentDidMount = () => {
+        this.props.api.addEventListener('saveChanges', this.saveChanges);
+        this.props.api.addEventListener('cancelChanges', this.cancelChanges);
+
+        const editingId = this.props.getCurrentlyEditingId();
+        this.setState({ editing: editingId === this.props.node.id });
+    }
+
+    componentWillUnmount = () => {
+        this.props.api.removeEventListener('saveChanges', this.saveChanges);
+        this.props.api.removeEventListener('cancelChanges', this.cancelChanges);
+    }
+
+    saveChanges = params => {
+        if (params.id === this.props.node.id) {
+            this.commitChanges(true);
+        }
+    }
+
+    cancelChanges = params => {
+        if (params.id === this.props.node.id) {
+            this.commitChanges(false);
+        }
+    }
+
+    commitChanges = bool => {
+        this.setState({ editing: false }, () => {
+            if (bool) {
+                let dateValue = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
+                this.props.node.setDataValue('deadline', dateValue);
+            } else {
+                let prevDateString = this.props.value;
+
+                if (!prevDateString) {
+                    this.setState({
+                        selectedDate: null
+                    }, () => {
+                        this.props.node.setDataValue('deadline', null);
+                    });
+                    return;
+                };
+
+                const [_, day, month, year] = prevDateString.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+                const prevDate = new Date(+year, +month - 1, +day);
+                this.setState({
+                    selectedDate: prevDate
+                })
+            }
+        })
+    }
+
+    handleDateChange = (d: Date) => {
         if (d) {
             d.setHours(0, 0, 0, 0);
         }
@@ -76,51 +103,20 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
         });
     }
 
-    finishEdit = bool => {
-        this.setState({ editing: false }, () => {
-            if (bool) {
-                let dateValue = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
-                this.props.node.setDataValue('deadline', dateValue);
-            } else {
-                let prevDate = null;
-                let dateValue = null
-                if (this.props.value) {
-                    const [_, day, month, year] = this.props.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-                    prevDate = new Date(year, month - 1, day);
-                    dateValue = format(prevDate, 'dd/MM/yyyy')
-                }
-                this.setState({ selectedDate: prevDate }, () => {
-                    this.props.node.setDataValue('deadline', dateValue);
-                })
-            }
-        })
-    }
-
     render() {
         return (
             <MuiPickersUtilsProvider utils={DateFnsUtils} >
                 <KeyboardDatePicker
-                    className={this.props.node.selected && !this.state.editing ? "strike" : ''}
-                    margin="normal"
-                    id={`date-picker-dialog-${this.props.node.id}`}
-                    format="dd/MM/yyyy"
+                    className={this.props.node.isSelected() && !this.state.editing ? "my-datepicker strike" : 'my-datepicker'}
+                    style={{ background: this.state.editing ? this.props.node.isSelected() ? '#D5F1D1' : 'whitesmoke' : null }}
                     value={this.state.selectedDate}
                     onChange={this.handleDateChange}
-                    // variant="inline"
-                    disableToolbar
-                    placeholder={'No deadline'}
-                    style={{
-                        // color: new Date() > this.state.selectedDate ? 'limegreen' : 'red',
-                        // height: 35,
-                        background: this.state.editing ? this.props.node.selected ? '#D5F1D1' : 'whitesmoke' : null,
-                        // opacity: this.props.node.selected && this.state.editing ? 0.6 : 1,
-                        position: 'relative',
-                        bottom: 1,
-                        // border: this.state.editing ? '2px solid cyan' : null,
-                        borderRadius: 5,
-                        // textDecoration: this.props.node.selected ? 'line-through' : 'none',
-                    }}
                     disabled={!this.state.editing}
+                    id={`date-picker-dialog-${this.props.node.id}`}
+                    format="dd/MM/yyyy"
+                    placeholder={'No deadline'}
+                    margin="normal"
+                    disableToolbar
                 />
             </MuiPickersUtilsProvider>
         )
