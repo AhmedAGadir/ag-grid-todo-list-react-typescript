@@ -19,3 +19,5 @@ make the sass mixin work
 flickering checkboxes
 
 t2
+
+account for row dragging order
