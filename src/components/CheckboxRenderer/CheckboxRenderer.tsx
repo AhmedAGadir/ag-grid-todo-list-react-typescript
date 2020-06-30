@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ICellRenderer, RowNode, GridApi } from 'ag-grid-community';
+import { ICellRenderer, RowNode, GridApi, RefreshCellsParams } from 'ag-grid-community';
 import './CheckboxRenderer.scss';
 
 interface CheckboxRendererProps {
@@ -19,8 +19,9 @@ export default class CompletedRenderer extends Component<CheckboxRendererProps, 
         this.state = { completed: false };
     }
 
-    refresh = () => {
-        return true;
+    refresh = (params) => {
+        this.setState({ completed: params.node.isSelected() })
+        return false;
     }
 
     componentDidMount = () => {

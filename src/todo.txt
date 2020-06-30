@@ -15,5 +15,7 @@
 // instead of using events, use the setCurrentlyEditingId stuff and refreshing 
 // checkboxes shouldnt share a renderer with save/cancel - they should be their own column
 
-
 make the sass mixin work
+flickering checkboxes
+
+t2

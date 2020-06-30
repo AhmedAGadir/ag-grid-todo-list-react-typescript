@@ -1,18 +1,18 @@
 import React, { Component, createRef } from 'react';
-import { ICellRenderer } from 'ag-grid-community';
+import { ICellRenderer, RowNode, GridApi, Column } from 'ag-grid-community';
 import './TaskRenderer.scss';
 
 interface TaskRendererProps {
-    value: any,
-    node: any,
-    api: any,
-    getCurrentlyEditingId: any,
-    column: any,
+    value: string,
+    node: RowNode,
+    api: GridApi,
+    getCurrentlyEditingId: () => string,
+    column: Column,
 };
 
 interface TaskRendererState {
     editing: boolean,
-    editingVal: string
+    inputValue: string
 };
 
 
@@ -24,34 +24,39 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
         super(props);
         this.state = {
             editing: false,
-            editingVal: null
+            inputValue: null
         };
     }
 
-    componentDidMount = () => {
+    refresh = () => {
+        return false;
+    }
 
-        let editingId = this.props.getCurrentlyEditingId();
+    componentDidMount = () => {
+        this.props.api.addEventListener('commitChanges', this.commitChanges);
+        this.props.api.addEventListener('cancelChanges', this.cancelChanges);
 
         this.setState({
-            editingVal: this.props.value,
-            editing: editingId === this.props.node.id
-        });
-
-        this.props.api.addEventListener('saveChanges', params => {
-            if (params.id === this.props.node.id) {
-                this.finishEdit(true);
-            }
-        });
-
-        this.props.api.addEventListener('cancelChanges', params => {
-            if (params.id === this.props.node.id) {
-                this.finishEdit(false);
-            }
+            inputValue: this.props.value,
+            editing: this.props.getCurrentlyEditingId() === this.props.node.id,
         });
     }
 
-    destroy = () => {
+    componentWillUnmount = () => {
+        this.props.api.removeEventListener('commitChanges', this.commitChanges);
+        this.props.api.removeEventListener('cancelChanges', this.cancelChanges);
+    }
 
+    commitChanges = params => {
+        if (params.id === this.props.node.id) {
+            this.stopEditing(true);
+        }
+    }
+
+    cancelChanges = params => {
+        if (params.id === this.props.node.id) {
+            this.stopEditing(false);
+        }
     }
 
     componentDidUpdate() {
@@ -60,52 +65,31 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
         }
     }
 
-    finishEdit = (bool) => {
+    stopEditing = (bool) => {
         if (bool) {
-            this.props.node.setDataValue(this.props.column.colId, this.state.editingVal);
+            this.props.node.setDataValue(this.props.column.getColId(), this.state.inputValue);
         }
-        this.setState({ editing: false, editingVal: this.props.value })
-        // this.props.letGridKnow(null)
+        this.setState({
+            editing: false,
+            inputValue: this.props.value
+        });
     }
 
     render() {
-        let component = null;
+        const inputTask =
+            <input
+                ref={this.inputRef}
+                value={this.state.inputValue}
+                onChange={e => this.setState({ inputValue: e.target.value })}
+                style={{ background: this.props.node.isSelected() ? '#D5F1D1' : 'whitesmoke' }
+                } />
 
-        if (this.state.editing) {
-            component = (
-                <input
-                    ref={this.inputRef}
-                    value={this.state.editingVal}
-                    onChange={e => this.setState({ editingVal: e.target.value })}
-                    // onKeyPress={this.onKeyPressHandler}
-                    style={{
-                        width: '100%',
-                        height: 30,
-                        // color: 'deppink',
-                        // fontWeight: 400,
-                        background: this.props.node.selected ? '#D5F1D1' : 'whitesmoke',
-                        // textDecoration: this.props.node.selected ? 'line-through' : 'none',
-                        // opacity: this.props.node.selected ? 0.6 : 1,
-                        // border: '2px solid cyan',
-                        borderRadius: 5,
-
-                    }
-                    } />
-            )
-        } else {
-            component = <span className={this.props.node.selected ? "strike" : ''}> {this.props.value}</span>
-            // <div
-            // style={{
-            // textDecoration: this.props.node.selected ? 'line-through' : 'none',
-            // color: this.props.node.selected ? 'darkgrey' : 'black'
-            // }}
-            // >
-
-        }
+        const spanTask =
+            <span className={this.props.node.isSelected() ? "strike" : ''}> {this.props.value}</span>
 
         return (
             <div className="task-wrapper" >
-                {component}
+                {this.state.editing ? inputTask : spanTask}
             </div>
         );
     }

@@ -33,9 +33,7 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
         this.props.api.addEventListener('cellMouseOver', this.onCellMouseOver);
         this.props.api.addEventListener('cellMouseOut', this.onCellMouseOut);
 
-        const isEditing = this.props.getCurrentlyEditingId() === this.props.node.id;
-        this.setState({ editing: isEditing });
-
+        this.setState({ editing: this.props.getCurrentlyEditingId() === this.props.node.id });
     }
 
     componentWillUnmount = () => {
@@ -61,7 +59,6 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
     startEditing = () => {
         if (this.props.getCurrentlyEditingId() !== null) {
             alert('You can only edit one task at a time');
-            return;
         }
 
         this.setState({
@@ -78,8 +75,8 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
         }
     }
 
-    commitChanges = (bool) => {
-        const eventType = bool ? 'saveChanges' : 'cancelChanges';
+    stopEditing = (bool) => {
+        const eventType = bool ? 'commitChanges' : 'cancelChanges';
         this.setState({ editing: false }, () => {
             this.props.setCurrentlyEditingId(null);
             this.props.api.dispatchEvent({ type: eventType, id: this.props.node.id });
@@ -93,8 +90,8 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
 
         const editingIcons = (
             <>
-                <span className="save-icon" onClick={() => this.commitChanges(true)} > <i className="far fa-save" > </i></span >
-                <span className="cancel-icon" onClick={() => this.commitChanges(false)} > <i className="fas fa-undo" > </i></span >
+                <span className="save-icon" onClick={() => this.stopEditing(true)} > <i className="far fa-save" > </i></span >
+                <span className="cancel-icon" onClick={() => this.stopEditing(false)} > <i className="fas fa-undo" > </i></span >
             </>
         );
 

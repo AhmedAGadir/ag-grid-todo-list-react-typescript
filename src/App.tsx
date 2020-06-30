@@ -94,6 +94,7 @@ class App extends Component<{}, AppState> {
     if (params.node.selected) {
       return 'completed';
     }
+    // change the whole app to use MM/dd/yyyy; - here and daterenderer
     const [_, day, month, year] = params.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
     let deadlineDate = new Date(year, month - 1, day);
 

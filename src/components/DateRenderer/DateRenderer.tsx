@@ -1,10 +1,16 @@
 
 import React, { Component } from 'react';
-import { format } from 'date-fns';
+import { format, getDate } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { ICellRenderer, GridApi, RowNode } from 'ag-grid-community';
 import './DateRenderer.scss';
+
+
+function convertToDate(str) {
+    const [_, day, month, year] = str.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    return new Date(+year, +month - 1, +day);
+}
 
 interface DateRendererProps {
     api: GridApi,
@@ -37,14 +43,12 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
 
     componentWillMount = () => {
         if (this.props.value) {
-            const [_, day, month, year] = this.props.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-            const selectedDate = new Date(+year, +month - 1, +day);
-            this.setState({ selectedDate })
+            this.setState({ selectedDate: convertToDate(this.props.value) })
         }
     }
 
     componentDidMount = () => {
-        this.props.api.addEventListener('saveChanges', this.saveChanges);
+        this.props.api.addEventListener('commitChanges', this.commitChanges);
         this.props.api.addEventListener('cancelChanges', this.cancelChanges);
 
         const editingId = this.props.getCurrentlyEditingId();
@@ -52,44 +56,30 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
     }
 
     componentWillUnmount = () => {
-        this.props.api.removeEventListener('saveChanges', this.saveChanges);
+        this.props.api.removeEventListener('commitChanges', this.commitChanges);
         this.props.api.removeEventListener('cancelChanges', this.cancelChanges);
     }
 
-    saveChanges = params => {
+    commitChanges = params => {
         if (params.id === this.props.node.id) {
-            this.commitChanges(true);
+            this.stopEditing(true);
         }
     }
 
     cancelChanges = params => {
         if (params.id === this.props.node.id) {
-            this.commitChanges(false);
+            this.stopEditing(false);
         }
     }
 
-    commitChanges = bool => {
+    stopEditing = bool => {
         this.setState({ editing: false }, () => {
             if (bool) {
                 let dateValue = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
                 this.props.node.setDataValue('deadline', dateValue);
             } else {
-                let prevDateString = this.props.value;
-
-                if (!prevDateString) {
-                    this.setState({
-                        selectedDate: null
-                    }, () => {
-                        this.props.node.setDataValue('deadline', null);
-                    });
-                    return;
-                };
-
-                const [_, day, month, year] = prevDateString.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-                const prevDate = new Date(+year, +month - 1, +day);
-                this.setState({
-                    selectedDate: prevDate
-                })
+                let prevValue = this.props.value;
+                this.setState({ selectedDate: prevValue ? convertToDate(prevValue) : null });
             }
         })
     }
@@ -122,4 +112,3 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
         )
     }
 }
-  // })
