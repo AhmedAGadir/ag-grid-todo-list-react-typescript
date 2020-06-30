@@ -21,7 +21,7 @@ export default class CompletedRenderer extends Component<CheckboxRendererProps, 
 
     refresh = (params) => {
         this.setState({ completed: params.node.isSelected() })
-        return false;
+        return true;
     }
 
     componentDidMount = () => {

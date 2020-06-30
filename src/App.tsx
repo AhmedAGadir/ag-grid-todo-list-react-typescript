@@ -10,7 +10,7 @@ import CheckboxRenderer from './components/CheckboxRenderer/CheckboxRenderer.tsx
 import ActionsRenderer from './components/ActionsRenderer/ActionsRenderer.tsx';
 
 import { differenceInDays } from 'date-fns';
-import tasks, { createNewTask, task } from './data.ts';
+import tasks, { createNewTask, ITask } from './tasks.ts';
 
 import 'normalize.css';
 import './App.scss'
@@ -20,7 +20,7 @@ interface AppState {
   currentlyEditingId: number,
   columnDefs: ColDef[],
   defaultColDef: ColDef,
-  rowData: task[],
+  rowData: ITask[],
   frameworkComponents: {
     [propName: string]: any
   }
