@@ -13,7 +13,7 @@ interface TaskRendererProps {
 
 interface TaskRendererState {
     editing: boolean,
-    inputValue: string
+    value: string
 };
 
 
@@ -25,7 +25,7 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
         super(props);
         this.state = {
             editing: false,
-            inputValue: ''
+            value: ''
         };
     }
 
@@ -39,7 +39,7 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
         this.props.api.addEventListener('cancelChanges', this.cancelChanges);
 
         this.setState({
-            inputValue: this.props.getValue(),
+            value: this.props.getValue(),
         });
     }
 
@@ -54,24 +54,28 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
         }
     }
 
-    commitChanges: React.MouseEventHandler = (): void => {
+    commitChanges = (): void => {
         if (this.state.editing) {
-            this.props.node.setDataValue(this.props.column.getColId(), this.state.inputValue);
+            this.props.node.setDataValue(this.props.column.getColId(), this.state.value);
         }
     }
 
-    cancelChanges: React.MouseEventHandler = (): void => {
+    cancelChanges = (): void => {
         if (this.state.editing) {
-            this.setState({ inputValue: this.props.getValue() });
+            this.setState({ value: this.props.getValue() });
         }
+    }
+
+    inputChangedHandler: React.ChangeEventHandler<HTMLInputElement> = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        this.setState({ value: event.target.value });
     }
 
     render(): React.ReactElement {
         const inputTask =
             <input
                 ref={this.inputRef}
-                value={this.state.inputValue}
-                onChange={e => this.setState({ inputValue: e.target.value })}
+                value={this.state.value}
+                onChange={this.inputChangedHandler}
                 style={{ background: this.props.node.isSelected() ? '#D5F1D1' : 'whitesmoke' }
                 } />
 
