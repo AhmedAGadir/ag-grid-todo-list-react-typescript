@@ -44,7 +44,7 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
 
 
     refresh(): boolean {
-        const editing: boolean = this.props.getEditingId() == this.props.node.id;
+        const editing: boolean = this.props.getEditingId() === this.props.node.id;
         this.setState({ editing });
         return true;
     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ICellRenderer, RowNode, GridApi, ICellRendererParams, RefreshCellsParams } from 'ag-grid-community';
+import { ICellRenderer, RowNode, GridApi, RefreshCellsParams } from 'ag-grid-community';
 import './CheckboxRenderer.scss';
 
 interface CheckboxRendererProps {

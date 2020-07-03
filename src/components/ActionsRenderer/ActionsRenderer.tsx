@@ -28,7 +28,7 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
     }
 
     refresh(): boolean {
-        const editing: boolean = this.props.getEditingId() == this.props.node.id;
+        const editing: boolean = this.props.getEditingId() === this.props.node.id;
         this.setState({ editing });
         return true;
     }

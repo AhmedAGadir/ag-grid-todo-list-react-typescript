@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { FirstDataRenderedEvent, GridReadyEvent, GridApi, ColumnApi, RowNode, RefreshCellsParams, GridOptions, GetRowNodeIdFunc, ITooltipParams, } from 'ag-grid-community'
+import {
+  FirstDataRenderedEvent,
+  GridReadyEvent,
+  GridApi,
+  ColumnApi,
+  RowNode,
+  RefreshCellsParams,
+  GridOptions,
+  GetRowNodeIdFunc,
+  ITooltipParams
+} from 'ag-grid-community'
 import 'ag-grid-enterprise';
 
 import TaskAdder from './components/TaskAdder/TaskAdder';
@@ -10,28 +20,42 @@ import CheckboxRenderer from './components/CheckboxRenderer/CheckboxRenderer';
 import ActionsRenderer from './components/ActionsRenderer/ActionsRenderer';
 
 import { differenceInDays } from 'date-fns';
-import tasks, { createNewTask, Task } from './tasks';
+// import tasks,{ createNewTask, Task } from './tasks';
 
 import 'normalize.css';
 import './App.scss'
 
+import { uuid } from 'uuidv4';
 
-export type ID = number | null;
+export interface Task {
+  id: string,
+  description: string,
+  deadline: string | null
+}
+
+export const createNewTask = (description: string): Task => {
+  return {
+    description,
+    id: uuid(),
+    deadline: null,
+  }
+}
+
 export interface IGetEditingId {
-  (): ID;
+  (): string;
 }
 export interface ISetEditingId {
-  (id: ID): void
+  (id: string): void
 }
 
 export interface IDeleteTask {
-  (id: ID): void
+  (id: string): void
 }
 
 interface AppProps { }
 
 interface AppState {
-  editingId: ID,
+  editingId: string,
   rowData: Task[],
   gridOptions: GridOptions
 }
@@ -45,7 +69,11 @@ class App extends Component<AppProps, AppState> {
     super(props);
     this.state = {
       editingId: null,
-      rowData: tasks,
+      rowData: [
+        { id: uuid(), description: 'Go to Wano', deadline: '11/07/2020' },
+        { id: uuid(), description: 'Defeat Kaido', deadline: '25/08/2020' },
+        { id: uuid(), description: 'Find Raftel', deadline: '06/09/2020' },
+      ],
       gridOptions: {
         columnDefs: [
           {
@@ -103,7 +131,7 @@ class App extends Component<AppProps, AppState> {
     }
   }
 
-  componentDidUpdate(_: any, prevState: any): void {
+  componentDidUpdate(_: AppProps, prevState: AppState): void {
     if (prevState.editingId !== this.state.editingId) {
       const idToUpdate: string = this.state.editingId === null ? prevState.editingId : this.state.editingId;
       const nodeToUpdate: RowNode = this.gridApi.getRowNode(idToUpdate);
@@ -147,11 +175,11 @@ class App extends Component<AppProps, AppState> {
     this.gridApi.refreshCells(refreshCellsParams);
   }
 
-  setEditingId: ISetEditingId = (id: ID): void => {
+  setEditingId: ISetEditingId = (id: string): void => {
     this.setState({ editingId: id });
   }
 
-  getEditingId: IGetEditingId = (): ID => {
+  getEditingId: IGetEditingId = (): string => {
     return this.state.editingId;
   }
 
@@ -162,7 +190,7 @@ class App extends Component<AppProps, AppState> {
     this.setState({ rowData });
   }
 
-  deleteTask: IDeleteTask = (id: number): void => {
+  deleteTask: IDeleteTask = (id: string): void => {
     const rowData: Task[] = this.state.rowData.filter(row => row.id !== id);
     this.setState({ rowData });
   }

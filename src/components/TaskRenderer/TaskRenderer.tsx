@@ -31,7 +31,7 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
     }
 
     refresh(): boolean {
-        this.setState({ editing: this.props.getEditingId() == this.props.node.id });
+        this.setState({ editing: this.props.getEditingId() === this.props.node.id });
         return true;
     }
 
