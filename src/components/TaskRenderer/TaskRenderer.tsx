@@ -6,7 +6,7 @@ interface TaskRendererProps {
     value: string,
     node: RowNode,
     api: GridApi,
-    getCurrentlyEditingId: () => string,
+    getEditingId: () => string,
     column: Column,
 };
 
@@ -19,6 +19,7 @@ interface TaskRendererState {
 export default class TaskRenderer extends Component<TaskRendererProps, TaskRendererState> implements ICellRenderer {
     state: TaskRendererState;
     private inputRef = createRef<HTMLInputElement>();
+    refreshParams: any;
 
     constructor(props: TaskRendererProps) {
         super(props);
@@ -28,8 +29,10 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
         };
     }
 
-    refresh = () => {
-        return false;
+    refresh = (params) => {
+        this.refreshParams = params;
+        this.setState({ editing: this.props.getEditingId() === this.props.node.id });
+        return true;
     }
 
     componentDidMount = () => {
@@ -38,25 +41,7 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
 
         this.setState({
             inputValue: this.props.value,
-            editing: this.props.getCurrentlyEditingId() === this.props.node.id,
         });
-    }
-
-    componentWillUnmount = () => {
-        this.props.api.removeEventListener('commitChanges', this.commitChanges);
-        this.props.api.removeEventListener('cancelChanges', this.cancelChanges);
-    }
-
-    commitChanges = params => {
-        if (params.id === this.props.node.id) {
-            this.stopEditing(true);
-        }
-    }
-
-    cancelChanges = params => {
-        if (params.id === this.props.node.id) {
-            this.stopEditing(false);
-        }
     }
 
     componentDidUpdate() {
@@ -65,14 +50,22 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
         }
     }
 
-    stopEditing = (bool) => {
-        if (bool) {
+    componentWillUnmount = () => {
+        this.props.api.removeEventListener('commitChanges', this.commitChanges);
+        this.props.api.removeEventListener('cancelChanges', this.cancelChanges);
+    }
+
+    commitChanges = () => {
+        if (this.state.editing) {
             this.props.node.setDataValue(this.props.column.getColId(), this.state.inputValue);
+            console.log(this.props.node, this.refreshParams.node, this.props.node === this.refreshParams.node);
         }
-        this.setState({
-            editing: false,
-            inputValue: this.props.value
-        });
+    }
+
+    cancelChanges = () => {
+        if (this.state.editing) {
+            this.setState({ inputValue: this.props.value });
+        }
     }
 
     render() {

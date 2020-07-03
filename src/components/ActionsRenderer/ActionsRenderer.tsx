@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { ICellRenderer, RowNode, GridApi, AgEvent } from 'ag-grid-community';
+import { ICellRenderer, RowNode, GridApi } from 'ag-grid-community';
 import './ActionsRenderer.scss'
 interface ActionsRendererProps {
-    getCurrentlyEditingId: () => string,
-    setCurrentlyEditingId: (id: string) => void,
+    getEditingId: () => string,
+    setEditingId: (id: string) => void,
     deleteTask: (id: string) => void,
     api: GridApi,
     node: RowNode,
@@ -26,6 +26,7 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
     }
 
     refresh() {
+        this.setState({ editing: this.props.getEditingId() === this.props.node.id });
         return true;
     }
 
@@ -33,7 +34,6 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
         this.props.api.addEventListener('cellMouseOver', this.onCellMouseOver);
         this.props.api.addEventListener('cellMouseOut', this.onCellMouseOut);
 
-        this.setState({ editing: this.props.getCurrentlyEditingId() === this.props.node.id });
     }
 
     componentWillUnmount = () => {
@@ -56,17 +56,12 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
         }
     }
 
-    startEditing = () => {
-        if (this.props.getCurrentlyEditingId() !== null) {
+    editTask = () => {
+        if (this.props.getEditingId() !== null) {
             alert('You can only edit one task at a time');
+            return;
         }
-
-        this.setState({
-            editing: true
-        }, () => {
-            this.props.setCurrentlyEditingId(this.props.node.id);
-            this.props.api.refreshCells({ rowNodes: [this.props.node], force: true })
-        })
+        this.props.setEditingId(this.props.node.id);
     }
 
     deleteTask = () => {
@@ -75,12 +70,14 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
         }
     }
 
-    stopEditing = (bool) => {
-        const eventType = bool ? 'commitChanges' : 'cancelChanges';
-        this.setState({ editing: false }, () => {
-            this.props.setCurrentlyEditingId(null);
-            this.props.api.dispatchEvent({ type: eventType, id: this.props.node.id });
-        })
+    commitChanges = () => {
+        this.props.api.dispatchEvent({ type: 'commitChanges' });
+        setTimeout(() => this.props.setEditingId(null), 0);
+    }
+
+    cancelChanges = () => {
+        this.props.api.dispatchEvent({ type: 'cancelChanges' });
+        setTimeout(() => this.props.setEditingId(null), 0);
     }
 
     render() {
@@ -90,14 +87,14 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
 
         const editingIcons = (
             <>
-                <span className="save-icon" onClick={() => this.stopEditing(true)} > <i className="far fa-save" > </i></span >
-                <span className="cancel-icon" onClick={() => this.stopEditing(false)} > <i className="fas fa-undo" > </i></span >
+                <span className="save-icon" onClick={this.commitChanges} > <i className="far fa-save" > </i></span >
+                <span className="cancel-icon" onClick={this.cancelChanges} > <i className="fas fa-undo" > </i></span >
             </>
         );
 
         const notEditingIcons = (
             <>
-                <span className="edit-icon" onClick={this.startEditing} > <i className="fas fa-pen" > </i></span >
+                <span className="edit-icon" onClick={this.editTask} > <i className="fas fa-pen" > </i></span >
                 <span className="delete-icon" onClick={this.deleteTask} > <i className="fas fa-trash" > </i></span >
             </>
         );

@@ -17,7 +17,7 @@ import './App.scss'
 
 
 interface AppState {
-  currentlyEditingId: number,
+  editingId: number,
   columnDefs: ColDef[],
   defaultColDef: ColDef,
   rowData: ITask[],
@@ -26,11 +26,27 @@ interface AppState {
   }
 }
 
+interface ListRendererProps<TYPE> {
+  list: TYPE[];
+  mapper: (from: TYPE) => string;
+}
+
+function ListRenderer<TYPE>({
+  list,
+  mapper
+}: ListRendererProps<TYPE>): React.ReactElement {
+  const result: string = list.map(mapper).join(',');
+  return <span>{result}</span>;
+}
+
 class App extends Component<{}, AppState> {
+  gridApi;
+  columnApi;
+
   constructor(props) {
     super(props);
     this.state = {
-      currentlyEditingId: null,
+      editingId: null,
       columnDefs: [
         {
           headerName: 'Complete',
@@ -57,16 +73,15 @@ class App extends Component<{}, AppState> {
           cellRenderer: 'actionsRenderer',
           cellRendererParams: {
             deleteTask: this.deleteTask,
-            setCurrentlyEditingId: this.setCurrentlyEditingId,
-            getCurrentlyEditingId: this.getCurrentlyEditingId
+            setEditingId: this.setEditingId,
+            getEditingId: this.getEditingId
           },
           width: 90,
         },
       ],
       defaultColDef: {
         cellRendererParams: {
-          setCurrentlyEditingId: this.setCurrentlyEditingId,
-          getCurrentlyEditingId: this.getCurrentlyEditingId
+          getEditingId: this.getEditingId
         }
       },
       rowData: tasks,
@@ -77,6 +92,19 @@ class App extends Component<{}, AppState> {
         actionsRenderer: ActionsRenderer
       },
     }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.editingId !== this.state.editingId) {
+      let idToUpdate = this.state.editingId === null ? prevState.editingId : this.state.editingId;
+      let nodeToUpdate = this.gridApi.getRowNode(idToUpdate);
+      this.gridApi.refreshCells({ rowNodes: [nodeToUpdate], force: true });
+    }
+  }
+
+  onGridReady = params => {
+    this.gridApi = params.api;
+    this.columnApi = params.columnApi;
   }
 
   onFirstDataRendered = (params: FirstDataRenderedEvent): void => {
@@ -102,12 +130,12 @@ class App extends Component<{}, AppState> {
     return difference > 0 ? `${difference} days remaining` : `${-difference} days overdue`;
   }
 
-  setCurrentlyEditingId = (id: number): void => {
-    this.setState({ currentlyEditingId: id });
+  setEditingId = (id: number): void => {
+    this.setState({ editingId: id });
   }
 
-  getCurrentlyEditingId = (): number => {
-    return this.state.currentlyEditingId;
+  getEditingId = (): number => {
+    return this.state.editingId;
   }
 
   addTask = (description: string): void => {
@@ -126,6 +154,10 @@ class App extends Component<{}, AppState> {
   render() {
     return (
       <div className="app-component">
+        <ListRenderer<number>
+          list={[1, 2, 3]}
+          mapper={(number) => ``}
+        ></ListRenderer>
         <TaskAdder addTask={this.addTask} />
         <div className="ag-theme-alpine">
           <AgGridReact
@@ -144,6 +176,7 @@ class App extends Component<{}, AppState> {
             rowSelection="multiple"
             suppressRowClickSelection
             onFirstDataRendered={this.onFirstDataRendered}
+            onGridReady={this.onGridReady}
           />
         </div>
         < img src={require("./ag-grid-logo.png")} />

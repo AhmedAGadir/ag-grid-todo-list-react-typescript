@@ -16,7 +16,7 @@ interface DateRendererProps {
     api: GridApi,
     node: RowNode,
     value: string,
-    getCurrentlyEditingId: () => string,
+    getEditingId: () => string,
 }
 
 interface DateRendererState {
@@ -38,7 +38,8 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
 
 
     refresh = () => {
-        return false;
+        this.setState({ editing: this.props.getEditingId() === this.props.node.id });
+        return true;
     }
 
     componentWillMount = () => {
@@ -50,9 +51,6 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
     componentDidMount = () => {
         this.props.api.addEventListener('commitChanges', this.commitChanges);
         this.props.api.addEventListener('cancelChanges', this.cancelChanges);
-
-        const editingId = this.props.getCurrentlyEditingId();
-        this.setState({ editing: editingId === this.props.node.id });
     }
 
     componentWillUnmount = () => {
@@ -60,34 +58,25 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
         this.props.api.removeEventListener('cancelChanges', this.cancelChanges);
     }
 
-    commitChanges = params => {
-        if (params.id === this.props.node.id) {
-            this.stopEditing(true);
+    commitChanges = () => {
+        if (this.state.editing) {
+            let dateBeforeEditing = this.props.value ? convertToDate(this.props.value) : null;
+            this.setState({ selectedDate: dateBeforeEditing });
         }
     }
 
-    cancelChanges = params => {
-        if (params.id === this.props.node.id) {
-            this.stopEditing(false);
+    cancelChanges = () => {
+        if (this.state.editing) {
+            let dateValue = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
+            this.props.node.setDataValue('deadline', dateValue);
         }
     }
 
-    stopEditing = bool => {
-        this.setState({ editing: false }, () => {
-            if (bool) {
-                let dateValue = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
-                this.props.node.setDataValue('deadline', dateValue);
-            } else {
-                let prevValue = this.props.value;
-                this.setState({ selectedDate: prevValue ? convertToDate(prevValue) : null });
-            }
-        })
-    }
-
-    handleDateChange = (d: Date) => {
-        if (d) {
-            d.setHours(0, 0, 0, 0);
+    handleDateChange = (d: Date | 'Invalid Date') => {
+        if (d === 'Invalid Date') {
+            return;
         }
+        d.setHours(0, 0, 0, 0);
         this.setState({
             selectedDate: d
         });
