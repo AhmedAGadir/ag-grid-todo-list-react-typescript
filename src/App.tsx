@@ -92,7 +92,7 @@ class App extends Component<AppProps, AppState> {
           },
           {
             headerName: 'Task',
-            field: 'task',
+            field: 'description',
             cellRenderer: 'taskRenderer',
             rowDrag: true,
             flex: 1,
@@ -176,7 +176,7 @@ class App extends Component<AppProps, AppState> {
   }
 
   completeFirstTask = (): void => {
-    const firstNode: RowNode = this.gridApi.getRowNode('0');
+    const firstNode: RowNode = this.gridApi.getDisplayedRowAtIndex(0);
     firstNode.setSelected(true);
     const refreshCellsParams: RefreshCellsParams = { rowNodes: [firstNode], force: true }
     this.gridApi.refreshCells(refreshCellsParams);
