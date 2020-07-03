@@ -54,14 +54,14 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
         this.props.api.removeEventListener('cancelChanges', this.cancelChanges);
     }
 
-    commitChanges = (): void => {
+    commitChanges: Function = (): void => {
         if (this.state.editing) {
             const dateValue: string = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
             this.props.node.setDataValue('deadline', dateValue);
         }
     }
 
-    cancelChanges = (): void => {
+    cancelChanges: Function = (): void => {
         if (this.state.editing) {
             const dateBeforeEditing: Date = this.props.getValue() ? convertToDate(this.props.getValue()) : null;
             this.setState({ selectedDate: dateBeforeEditing });

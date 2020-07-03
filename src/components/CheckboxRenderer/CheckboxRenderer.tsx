@@ -21,7 +21,7 @@ export default class CompletedRenderer extends Component<CheckboxRendererProps, 
         };
     }
 
-    refresh = (): boolean => {
+    refresh(): boolean {
         const isNodeSelected: boolean = this.props.node.isSelected();
         this.setState({ completed: isNodeSelected })
         return true;

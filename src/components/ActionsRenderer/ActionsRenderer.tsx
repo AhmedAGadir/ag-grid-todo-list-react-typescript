@@ -44,14 +44,14 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
         this.props.api.removeEventListener('cellMouseOut', this.onCellMouseOut);
     }
 
-    onCellMouseOver = (params: CellMouseOverEvent): void => {
+    onCellMouseOver: Function = (params: CellMouseOverEvent): void => {
         if (params.node.id === this.props.node.id) {
             const visible: boolean = true;
             this.setState({ visible });
         }
     }
 
-    onCellMouseOut = (params: CellMouseOutEvent): void => {
+    onCellMouseOut: Function = (params: CellMouseOutEvent): void => {
         if (params.node.id === this.props.node.id) {
             if (this.state.editing) {
                 return;
