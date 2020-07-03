@@ -1,5 +1,5 @@
 import React from 'react';
-import { ICellRenderer, RowNode, GridApi, CellMouseOverEvent, CellMouseOutEvent } from 'ag-grid-community';
+import { ICellRenderer, RowNode, GridApi, CellMouseOverEvent, CellMouseOutEvent, AgEvent } from 'ag-grid-community';
 import './ActionsRenderer.scss'
 interface ActionsRendererProps {
     getEditingId: () => string,
@@ -71,12 +71,14 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
     }
 
     commitChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
-        this.props.api.dispatchEvent({ type: 'commitChanges' });
+        const commitChangesEvent: AgEvent = { type: 'commitChanges' };
+        this.props.api.dispatchEvent(commitChangesEvent);
         setTimeout(() => this.props.setEditingId(null), 0);
     }
 
     cancelChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
-        this.props.api.dispatchEvent({ type: 'cancelChanges' });
+        const cancelChangesEvent: AgEvent = { type: 'cancelChanges' };
+        this.props.api.dispatchEvent(cancelChangesEvent);
         setTimeout(() => this.props.setEditingId(null), 0);
     }
 
