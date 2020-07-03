@@ -5,14 +5,15 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { ICellRenderer, GridApi, RowNode } from 'ag-grid-community';
 import './DateRenderer.scss';
+import { IGetEditingId } from '../../App';
 
 
-function convertToDate(str: string) {
-    const [_, day, month, year] = str.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+function convertToDate(dateString: string) {
+    const [_, day, month, year] = dateString.match(/(\d{2})\/(\d{2})\/(\d{4})/);
     return new Date(+year, +month - 1, +day);
 }
 
-function isValidDate(d: Date) {
+function isValidDate(d: Date): boolean {
     return d instanceof Date && !isNaN(d as any);
 }
 
@@ -20,7 +21,7 @@ interface DateRendererProps {
     api: GridApi,
     node: RowNode,
     value: string,
-    getEditingId: () => string,
+    getEditingId: IGetEditingId,
     getValue: () => any
 }
 
@@ -43,7 +44,8 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
 
 
     refresh(): boolean {
-        this.setState({ editing: this.props.getEditingId() === this.props.node.id });
+        const editing: boolean = this.props.getEditingId() == this.props.node.id;
+        this.setState({ editing });
         return true;
     }
 
@@ -52,7 +54,8 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
         this.props.api.addEventListener('cancelChanges', this.cancelChanges);
 
         if (this.props.getValue()) {
-            this.setState({ selectedDate: convertToDate(this.props.getValue()) })
+            const selectedDate: Date = convertToDate(this.props.getValue());
+            this.setState({ selectedDate });
         }
     }
 
@@ -63,14 +66,14 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
 
     commitChanges = (): void => {
         if (this.state.editing) {
-            let dateValue = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
+            const dateValue: string = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
             this.props.node.setDataValue('deadline', dateValue);
         }
     }
 
     cancelChanges = (): void => {
         if (this.state.editing) {
-            let dateBeforeEditing = this.props.getValue() ? convertToDate(this.props.getValue()) : null;
+            const dateBeforeEditing: Date = this.props.getValue() ? convertToDate(this.props.getValue()) : null;
             this.setState({ selectedDate: dateBeforeEditing });
         }
     }

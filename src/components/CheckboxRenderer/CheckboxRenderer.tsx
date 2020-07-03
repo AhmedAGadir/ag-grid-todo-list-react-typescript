@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ICellRenderer, RowNode, GridApi, ICellRendererParams } from 'ag-grid-community';
+import { ICellRenderer, RowNode, GridApi, ICellRendererParams, RefreshCellsParams } from 'ag-grid-community';
 import './CheckboxRenderer.scss';
 
 interface CheckboxRendererProps {
@@ -16,27 +16,32 @@ export default class CompletedRenderer extends Component<CheckboxRendererProps, 
 
     constructor(props: CheckboxRendererProps) {
         super(props);
-        this.state = { completed: false };
+        this.state = {
+            completed: false
+        };
     }
 
-    refresh = (params: ICellRendererParams): boolean => {
-        this.setState({ completed: params.node.isSelected() })
+    refresh = (): boolean => {
+        const isNodeSelected: boolean = this.props.node.isSelected();
+        this.setState({ completed: isNodeSelected })
         return true;
     }
 
     componentDidMount(): void {
-        const isNodeSelected = this.props.node.isSelected();
+        const isNodeSelected: boolean = this.props.node.isSelected();
         this.setState({ completed: isNodeSelected });
     }
 
     completeTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         this.props.node.setSelected(true);
-        this.props.api.refreshCells({ rowNodes: [this.props.node], force: true });
+        const refreshCellsParams: RefreshCellsParams = { rowNodes: [this.props.node], force: true };
+        this.props.api.refreshCells(refreshCellsParams);
     }
 
     uncompleteTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         this.props.node.setSelected(false);
-        this.props.api.refreshCells({ rowNodes: [this.props.node], force: true });
+        const refreshCellsParams: RefreshCellsParams = { rowNodes: [this.props.node], force: true };
+        this.props.api.refreshCells(refreshCellsParams);
     }
 
     render(): React.ReactElement {

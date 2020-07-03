@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef, FirstDataRenderedEvent, GridReadyEvent } from 'ag-grid-community'
+import { FirstDataRenderedEvent, GridReadyEvent, GridApi, ColumnApi, RowNode, RefreshCellsParams, GridOptions, GetRowNodeIdFunc, ITooltipParams, } from 'ag-grid-community'
 import 'ag-grid-enterprise';
 
 import TaskAdder from './components/TaskAdder/TaskAdder';
@@ -10,113 +10,113 @@ import CheckboxRenderer from './components/CheckboxRenderer/CheckboxRenderer';
 import ActionsRenderer from './components/ActionsRenderer/ActionsRenderer';
 
 import { differenceInDays } from 'date-fns';
-import tasks, { createNewTask, ITask } from './tasks';
+import tasks, { createNewTask, Task } from './tasks';
 
 import 'normalize.css';
 import './App.scss'
 
-type ID = number | null;
+
+export type ID = number | null;
+export interface IGetEditingId {
+  (): ID;
+}
+export interface ISetEditingId {
+  (id: ID): void
+}
+
+export interface IDeleteTask {
+  (id: ID): void
+}
+
+interface AppProps { }
 
 interface AppState {
   editingId: ID,
-  columnDefs: ColDef[],
-  defaultColDef: ColDef,
-  rowData: ITask[],
-  frameworkComponents: {
-    [propName: string]: any
-  }
+  rowData: Task[],
+  gridOptions: GridOptions
 }
 
-interface ListRendererProps<TYPE> {
-  list: TYPE[];
-  mapper: (from: TYPE) => string;
-}
+class App extends Component<AppProps, AppState> {
+  state: AppState;
+  private gridApi: GridApi;
+  private columnApi: ColumnApi;
 
-function ListRenderer<TYPE>({
-  list,
-  mapper
-}: ListRendererProps<TYPE>): React.ReactElement {
-  const result: string = list.map(mapper).join(',');
-  return <span>{result}</span>;
-}
-
-class App extends Component<{}, AppState> {
-  gridApi: any;
-  columnApi: any;
-
-  constructor(props: any) {
+  constructor(props: AppProps) {
     super(props);
     this.state = {
       editingId: null,
-      columnDefs: [
-        {
-          headerName: 'Complete',
-          cellRenderer: 'checkboxRenderer',
-          pinned: 'left',
-          width: 50,
-        },
-        {
-          headerName: 'Task',
-          field: 'task',
-          cellRenderer: 'taskRenderer',
-          rowDrag: true,
-          flex: 1,
-        },
-        {
-          headerName: 'deadline',
-          field: 'deadline',
-          cellRenderer: 'dateRenderer',
-          tooltipValueGetter: this.tooltipValueGetter,
-          width: 170,
-        },
-        {
-          headerName: 'Actions',
-          cellRenderer: 'actionsRenderer',
-          cellRendererParams: {
-            deleteTask: this.deleteTask,
-            setEditingId: this.setEditingId,
-            getEditingId: this.getEditingId
-          },
-          width: 90,
-        },
-      ],
-      defaultColDef: {
-        cellRendererParams: {
-          getEditingId: this.getEditingId
-        }
-      },
       rowData: tasks,
-      frameworkComponents: {
-        taskRenderer: TaskRenderer,
-        dateRenderer: DateRenderer,
-        checkboxRenderer: CheckboxRenderer,
-        actionsRenderer: ActionsRenderer
-      },
+      gridOptions: {
+        columnDefs: [
+          {
+            headerName: 'Complete',
+            cellRenderer: 'checkboxRenderer',
+            pinned: 'left',
+            width: 50,
+          },
+          {
+            headerName: 'Task',
+            field: 'task',
+            cellRenderer: 'taskRenderer',
+            rowDrag: true,
+            flex: 1,
+          },
+          {
+            headerName: 'deadline',
+            field: 'deadline',
+            cellRenderer: 'dateRenderer',
+            tooltipValueGetter: this.tooltipValueGetter,
+            width: 170,
+          },
+          {
+            headerName: 'Actions',
+            cellRenderer: 'actionsRenderer',
+            cellRendererParams: {
+              deleteTask: this.deleteTask,
+              setEditingId: this.setEditingId,
+              getEditingId: this.getEditingId
+            },
+            width: 90,
+          },
+        ],
+        defaultColDef: {
+          cellRendererParams: {
+            getEditingId: this.getEditingId
+          }
+        },
+        frameworkComponents: {
+          taskRenderer: TaskRenderer,
+          dateRenderer: DateRenderer,
+          checkboxRenderer: CheckboxRenderer,
+          actionsRenderer: ActionsRenderer
+        },
+        immutableData: true,
+        domLayout: "autoHeight",
+        headerHeight: 0,
+        rowHeight: 65,
+        rowDragManaged: true,
+        animateRows: true,
+        popupParent: document.body,
+        rowSelection: 'multiple',
+        suppressRowClickSelection: true,
+      }
     }
   }
 
   componentDidUpdate(_: any, prevState: any): void {
     if (prevState.editingId !== this.state.editingId) {
-      let idToUpdate = this.state.editingId === null ? prevState.editingId : this.state.editingId;
-      let nodeToUpdate = this.gridApi.getRowNode(idToUpdate);
-      this.gridApi.refreshCells({ rowNodes: [nodeToUpdate], force: true });
+      const idToUpdate: string = this.state.editingId === null ? prevState.editingId : this.state.editingId;
+      const nodeToUpdate: RowNode = this.gridApi.getRowNode(idToUpdate);
+      const refreshCellsParams: RefreshCellsParams = { rowNodes: [nodeToUpdate], force: true };
+      this.gridApi.refreshCells(refreshCellsParams);
     }
   }
 
-  onGridReady = (params: GridReadyEvent): void => {
-    this.gridApi = params.api;
-    this.columnApi = params.columnApi;
+  getRowNodeId: GetRowNodeIdFunc = (data: Task): any => {
+    return data.id;
   }
 
-  onFirstDataRendered = (params: FirstDataRenderedEvent): void => {
-    setTimeout(() => {
-      let node0 = params.api.getRowNode('0');
-      node0.setSelected(true);
-      params.api.refreshCells({ rowNodes: [node0], force: true })
-    }, 500);
-  }
-
-  tooltipValueGetter = (params: any): string => {
+  tooltipValueGetter = (params: ITooltipParams): string => {
     if (!params.value) {
       return 'no deadline';
     }
@@ -125,57 +125,57 @@ class App extends Component<{}, AppState> {
     }
     // change the whole app to use MM/dd/yyyy; - here and daterenderer
     const [_, day, month, year] = params.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-    let deadlineDate = new Date(year, month - 1, day);
+    const deadlineDate: Date = new Date(year, month - 1, day);
 
-    let difference = differenceInDays(deadlineDate, new Date());
+    const difference: number = differenceInDays(deadlineDate, new Date());
     return difference > 0 ? `${difference} days remaining` : `${-difference} days overdue`;
   }
 
-  setEditingId = (id: ID): void => {
+  onGridReady = (params: GridReadyEvent): void => {
+    this.gridApi = params.api;
+    this.columnApi = params.columnApi;
+  }
+
+  onFirstDataRendered = (): void => {
+    setTimeout(this.completeFirstTask, 500);
+  }
+
+  completeFirstTask = (): void => {
+    const firstNode: RowNode = this.gridApi.getRowNode('0');
+    firstNode.setSelected(true);
+    const refreshCellsParams: RefreshCellsParams = { rowNodes: [firstNode], force: true }
+    this.gridApi.refreshCells(refreshCellsParams);
+  }
+
+  setEditingId: ISetEditingId = (id: ID): void => {
     this.setState({ editingId: id });
   }
 
-  getEditingId = (): ID => {
+  getEditingId: IGetEditingId = (): ID => {
     return this.state.editingId;
   }
 
-  addTask = (description: string): void => {
-    let updatedRowData = this.state.rowData.map(row => ({ ...row }));
-    let newTask = createNewTask(description);
-    updatedRowData.push(newTask);
-
-    this.setState({ rowData: updatedRowData });
-  }
-
-  deleteTask = (id: number): void => {
-    let rowData = this.state.rowData.filter(row => row.id !== id);
+  addTask = (taskDescription: string): void => {
+    const rowData: Task[] = this.state.rowData.map(row => ({ ...row }));
+    const newTask: Task = createNewTask(taskDescription);
+    rowData.push(newTask);
     this.setState({ rowData });
   }
 
-  render() {
+  deleteTask: IDeleteTask = (id: number): void => {
+    const rowData: Task[] = this.state.rowData.filter(row => row.id !== id);
+    this.setState({ rowData });
+  }
+
+  render(): React.ReactElement {
     return (
       <div className="app-component">
-        {/* <ListRenderer<number>
-          list={[1, 2, 3]}
-          mapper={(number) => ``}
-        ></ListRenderer> */}
         <TaskAdder addTask={this.addTask} />
         <div className="ag-theme-alpine">
           <AgGridReact
-            columnDefs={this.state.columnDefs}
-            defaultColDef={this.state.defaultColDef}
+            gridOptions={this.state.gridOptions}
             rowData={this.state.rowData}
-            frameworkComponents={this.state.frameworkComponents}
-            immutableData
-            getRowNodeId={data => data.id}
-            domLayout="autoHeight"
-            headerHeight={0}
-            rowHeight={65}
-            rowDragManaged
-            animateRows
-            popupParent={document.body}
-            rowSelection="multiple"
-            suppressRowClickSelection
+            getRowNodeId={this.getRowNodeId}
             onFirstDataRendered={this.onFirstDataRendered}
             onGridReady={this.onGridReady}
           />

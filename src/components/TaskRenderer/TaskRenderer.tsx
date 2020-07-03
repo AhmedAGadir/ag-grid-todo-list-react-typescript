@@ -1,12 +1,13 @@
 import React, { Component, createRef } from 'react';
 import { ICellRenderer, RowNode, GridApi, Column } from 'ag-grid-community';
 import './TaskRenderer.scss';
+import { IGetEditingId } from '../../App';
 
 interface TaskRendererProps {
     value: string,
     node: RowNode,
     api: GridApi,
-    getEditingId: () => string,
+    getEditingId: IGetEditingId,
     column: Column,
     getValue: () => any,
 };
@@ -30,7 +31,7 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
     }
 
     refresh(): boolean {
-        this.setState({ editing: this.props.getEditingId() === this.props.node.id });
+        this.setState({ editing: this.props.getEditingId() == this.props.node.id });
         return true;
     }
 
@@ -71,16 +72,18 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
     }
 
     render(): React.ReactElement {
+        const isSelected: boolean = this.props.node.isSelected();
+
         const inputTask =
             <input
                 ref={this.inputRef}
                 value={this.state.value}
                 onChange={this.inputChangedHandler}
-                style={{ background: this.props.node.isSelected() ? '#D5F1D1' : 'whitesmoke' }
+                style={{ background: isSelected ? '#D5F1D1' : 'whitesmoke' }
                 } />
 
         const spanTask =
-            <span className={this.props.node.isSelected() ? "strike" : ''}> {this.props.getValue()}</span>
+            <span className={isSelected ? "strike" : ''}> {this.state.value}</span>
 
         return (
             <div className="task-wrapper" >

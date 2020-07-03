@@ -1,20 +1,20 @@
-export interface ITask {
+export interface Task {
     id: number,
-    task: string,
+    description: string,
     deadline: string | null
 }
 
 let idSequence = 3;
 
-const data: ITask[] = [
-    { id: 0, task: 'Go to Wano', deadline: '11/07/2020' },
-    { id: 1, task: 'Defeat Kaido', deadline: '25/08/2020' },
-    { id: 2, task: 'Find Raftel', deadline: '06/09/2020' },
+const data: Task[] = [
+    { id: 0, description: 'Go to Wano', deadline: '11/07/2020' },
+    { id: 1, description: 'Defeat Kaido', deadline: '25/08/2020' },
+    { id: 2, description: 'Find Raftel', deadline: '06/09/2020' },
 ]
 
-export const createNewTask = (description: string): ITask => {
+export const createNewTask = (description: string): Task => {
     return {
-        task: description,
+        description,
         id: idSequence++,
         deadline: null,
     }

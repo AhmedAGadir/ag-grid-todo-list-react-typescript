@@ -1,10 +1,12 @@
 import React from 'react';
 import { ICellRenderer, RowNode, GridApi, CellMouseOverEvent, CellMouseOutEvent, AgEvent } from 'ag-grid-community';
 import './ActionsRenderer.scss'
+import { IGetEditingId, ISetEditingId, IDeleteTask } from '../../App';
+
 interface ActionsRendererProps {
-    getEditingId: () => string,
-    setEditingId: (id: string) => void,
-    deleteTask: (id: string) => void,
+    getEditingId: IGetEditingId,
+    setEditingId: ISetEditingId,
+    deleteTask: IDeleteTask,
     api: GridApi,
     node: RowNode,
 }
@@ -26,7 +28,8 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
     }
 
     refresh(): boolean {
-        this.setState({ editing: this.props.getEditingId() === this.props.node.id });
+        const editing: boolean = this.props.getEditingId() == this.props.node.id;
+        this.setState({ editing });
         return true;
     }
 
@@ -43,7 +46,8 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
 
     onCellMouseOver = (params: CellMouseOverEvent): void => {
         if (params.node.id === this.props.node.id) {
-            this.setState({ visible: true });
+            const visible: boolean = true;
+            this.setState({ visible });
         }
     }
 
@@ -52,7 +56,8 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
             if (this.state.editing) {
                 return;
             }
-            this.setState({ visible: false });
+            const visible: boolean = false;
+            this.setState({ visible });
         }
     }
 
@@ -61,12 +66,14 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
             alert('You can only edit one task at a time');
             return;
         }
-        this.props.setEditingId(this.props.node.id);
+        const nodeId: string = this.props.node.id;
+        this.props.setEditingId(nodeId);
     }
 
     deleteTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         if (window.confirm('Would you like to delete this task?')) {
-            this.props.deleteTask(this.props.node.id);
+            const nodeId: string = this.props.node.id;
+            this.props.deleteTask(nodeId);
         }
     }
 

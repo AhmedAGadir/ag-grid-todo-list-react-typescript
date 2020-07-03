@@ -37,35 +37,35 @@
 }
 
 
-	[class$="-icon"] {
-			display: block;
-			color: darkgrey;
-			cursor: pointer;
-			// transition: 0.4s ease all;
+[class$="-icon"] {
+		display: block;
+		color: darkgrey;
+		cursor: pointer;
+}
+
+@keyframes strike {
+	0% {
+		width: 0;
 	}
-	@keyframes strike {
-			0% {
-				width: 0;
-			}
-			100% {
-				width: 100%;
-			}
-		}
-		
-		.strike {
-			position: relative;
-		}
-		
-		.strike::after {
-			content: ' ';
-			position: absolute;
-			top: 50%;
-			left: 0;
-			height: 1px;
-			background: black;
-			animation-name: strike;
-			animation-duration: 0.5s;
-			animation-timing-function: linear;
-			animation-iteration-count: 1;
-			animation-fill-mode: forwards;
-		}
+	100% {
+		width: 100%;
+	}
+}
+	
+.strike {
+	position: relative;
+}
+
+.strike::after {
+	content: ' ';
+	position: absolute;
+	top: 50%;
+	left: 0;
+	height: 1px;
+	background: black;
+	animation-name: strike;
+	animation-duration: 0.5s;
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+	animation-fill-mode: forwards;
+}
