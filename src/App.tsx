@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef, FirstDataRenderedEvent } from 'ag-grid-community'
+import { ColDef, FirstDataRenderedEvent, GridReadyEvent } from 'ag-grid-community'
 import 'ag-grid-enterprise';
 
-import TaskAdder from './components/TaskAdder/TaskAdder.tsx';
-import DateRenderer from './components/DateRenderer/DateRenderer.tsx';
-import TaskRenderer from './components/TaskRenderer/TaskRenderer.tsx';
-import CheckboxRenderer from './components/CheckboxRenderer/CheckboxRenderer.tsx';
-import ActionsRenderer from './components/ActionsRenderer/ActionsRenderer.tsx';
+import TaskAdder from './components/TaskAdder/TaskAdder';
+import DateRenderer from './components/DateRenderer/DateRenderer';
+import TaskRenderer from './components/TaskRenderer/TaskRenderer';
+import CheckboxRenderer from './components/CheckboxRenderer/CheckboxRenderer';
+import ActionsRenderer from './components/ActionsRenderer/ActionsRenderer';
 
 import { differenceInDays } from 'date-fns';
-import tasks, { createNewTask, ITask } from './tasks.ts';
+import tasks, { createNewTask, ITask } from './tasks';
 
 import 'normalize.css';
 import './App.scss'
 
+type ID = number | null;
 
 interface AppState {
-  editingId: number,
+  editingId: ID,
   columnDefs: ColDef[],
   defaultColDef: ColDef,
   rowData: ITask[],
@@ -40,10 +41,10 @@ function ListRenderer<TYPE>({
 }
 
 class App extends Component<{}, AppState> {
-  gridApi;
-  columnApi;
+  gridApi: any;
+  columnApi: any;
 
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = {
       editingId: null,
@@ -94,7 +95,7 @@ class App extends Component<{}, AppState> {
     }
   }
 
-  componentDidUpdate(_, prevState) {
+  componentDidUpdate(_: any, prevState: any): void {
     if (prevState.editingId !== this.state.editingId) {
       let idToUpdate = this.state.editingId === null ? prevState.editingId : this.state.editingId;
       let nodeToUpdate = this.gridApi.getRowNode(idToUpdate);
@@ -102,7 +103,7 @@ class App extends Component<{}, AppState> {
     }
   }
 
-  onGridReady = params => {
+  onGridReady = (params: GridReadyEvent): void => {
     this.gridApi = params.api;
     this.columnApi = params.columnApi;
   }
@@ -115,7 +116,7 @@ class App extends Component<{}, AppState> {
     }, 500);
   }
 
-  tooltipValueGetter = (params): string => {
+  tooltipValueGetter = (params: any): string => {
     if (!params.value) {
       return 'no deadline';
     }
@@ -130,11 +131,11 @@ class App extends Component<{}, AppState> {
     return difference > 0 ? `${difference} days remaining` : `${-difference} days overdue`;
   }
 
-  setEditingId = (id: number): void => {
+  setEditingId = (id: ID): void => {
     this.setState({ editingId: id });
   }
 
-  getEditingId = (): number => {
+  getEditingId = (): ID => {
     return this.state.editingId;
   }
 

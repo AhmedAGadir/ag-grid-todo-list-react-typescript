@@ -21,3 +21,12 @@ flickering checkboxes
 t2
 
 account for row dragging order
+
+null checks??
+
+fix the id types
+
+if you are reusing types put the in the same folder 
+
+
+

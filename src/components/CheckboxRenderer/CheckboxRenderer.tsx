@@ -19,30 +19,31 @@ export default class CompletedRenderer extends Component<CheckboxRendererProps, 
         this.state = { completed: false };
     }
 
-    refresh = (params: ICellRendererParams) => {
+    refresh = (params: ICellRendererParams): boolean => {
         this.setState({ completed: params.node.isSelected() })
         return true;
     }
 
-    componentDidMount = (): void => {
+    componentDidMount(): void {
         const isNodeSelected = this.props.node.isSelected();
         this.setState({ completed: isNodeSelected });
     }
 
-    setCompleted = bool => {
-        this.setState({
-            completed: bool
-        }, () => {
-            this.props.node.setSelected(bool);
-            this.props.api.refreshCells({ rowNodes: [this.props.node], force: true });
-        })
+    completeTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+        this.props.node.setSelected(true);
+        this.props.api.refreshCells({ rowNodes: [this.props.node], force: true });
+    }
+
+    uncompleteTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+        this.props.node.setSelected(false);
+        this.props.api.refreshCells({ rowNodes: [this.props.node], force: true });
     }
 
     render(): React.ReactElement {
         const completedIcon = (
             <span
                 className="completed-icon"
-                onClick={() => this.setCompleted(false)}>
+                onClick={this.uncompleteTask}>
                 <i className="far fa-check-square" ></i>
             </span>
         );
@@ -50,7 +51,7 @@ export default class CompletedRenderer extends Component<CheckboxRendererProps, 
         const uncompletedIcon = (
             <span
                 className="uncompleted-icon"
-                onClick={() => this.setCompleted(true)}>
+                onClick={this.completeTask}>
                 <i className="far fa-square" ></i>
             </span>
         )

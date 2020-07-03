@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { ICellRenderer, RowNode, GridApi } from 'ag-grid-community';
+import React from 'react';
+import { ICellRenderer, RowNode, GridApi, CellMouseOverEvent, CellMouseOutEvent } from 'ag-grid-community';
 import './ActionsRenderer.scss'
 interface ActionsRendererProps {
     getEditingId: () => string,
@@ -14,7 +14,7 @@ interface ActionsRendererState {
     visible: boolean
 }
 
-export default class ActionsRenderer extends Component<ActionsRendererProps, ActionsRendererState> implements ICellRenderer {
+export default class ActionsRenderer extends React.Component<ActionsRendererProps, ActionsRendererState> implements ICellRenderer {
     state: ActionsRendererState;
 
     constructor(props: ActionsRendererProps) {
@@ -25,29 +25,29 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
         }
     }
 
-    refresh() {
+    refresh(): boolean {
         this.setState({ editing: this.props.getEditingId() === this.props.node.id });
         return true;
     }
 
-    componentDidMount = () => {
+    componentDidMount(): void {
         this.props.api.addEventListener('cellMouseOver', this.onCellMouseOver);
         this.props.api.addEventListener('cellMouseOut', this.onCellMouseOut);
 
     }
 
-    componentWillUnmount = () => {
+    componentWillUnmount(): void {
         this.props.api.removeEventListener('cellMouseOver', this.onCellMouseOver);
         this.props.api.removeEventListener('cellMouseOut', this.onCellMouseOut);
     }
 
-    onCellMouseOver = params => {
+    onCellMouseOver = (params: CellMouseOverEvent): void => {
         if (params.node.id === this.props.node.id) {
             this.setState({ visible: true });
         }
     }
 
-    onCellMouseOut = params => {
+    onCellMouseOut = (params: CellMouseOutEvent): void => {
         if (params.node.id === this.props.node.id) {
             if (this.state.editing) {
                 return;
@@ -56,7 +56,7 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
         }
     }
 
-    editTask = () => {
+    editTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         if (this.props.getEditingId() !== null) {
             alert('You can only edit one task at a time');
             return;
@@ -64,23 +64,23 @@ export default class ActionsRenderer extends Component<ActionsRendererProps, Act
         this.props.setEditingId(this.props.node.id);
     }
 
-    deleteTask = () => {
+    deleteTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         if (window.confirm('Would you like to delete this task?')) {
             this.props.deleteTask(this.props.node.id);
         }
     }
 
-    commitChanges = () => {
+    commitChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         this.props.api.dispatchEvent({ type: 'commitChanges' });
         setTimeout(() => this.props.setEditingId(null), 0);
     }
 
-    cancelChanges = () => {
+    cancelChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         this.props.api.dispatchEvent({ type: 'cancelChanges' });
         setTimeout(() => this.props.setEditingId(null), 0);
     }
 
-    render() {
+    render(): React.ReactElement {
         if (!this.state.visible) {
             return null;
         }

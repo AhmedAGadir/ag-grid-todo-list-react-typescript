@@ -1,15 +1,19 @@
 
 import React, { Component } from 'react';
-import { format, getDate } from 'date-fns';
+import { format } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { ICellRenderer, GridApi, RowNode } from 'ag-grid-community';
 import './DateRenderer.scss';
 
 
-function convertToDate(str) {
+function convertToDate(str: string) {
     const [_, day, month, year] = str.match(/(\d{2})\/(\d{2})\/(\d{4})/);
     return new Date(+year, +month - 1, +day);
+}
+
+function isValidDate(d: Date) {
+    return d instanceof Date && !isNaN(d as any);
 }
 
 interface DateRendererProps {
@@ -38,12 +42,12 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
     }
 
 
-    refresh = () => {
+    refresh(): boolean {
         this.setState({ editing: this.props.getEditingId() === this.props.node.id });
         return true;
     }
 
-    componentDidMount = () => {
+    componentDidMount(): void {
         this.props.api.addEventListener('commitChanges', this.commitChanges);
         this.props.api.addEventListener('cancelChanges', this.cancelChanges);
 
@@ -52,27 +56,27 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
         }
     }
 
-    componentWillUnmount = () => {
+    componentWillUnmount(): void {
         this.props.api.removeEventListener('commitChanges', this.commitChanges);
         this.props.api.removeEventListener('cancelChanges', this.cancelChanges);
     }
 
-    commitChanges = () => {
+    commitChanges = (): void => {
         if (this.state.editing) {
             let dateValue = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
             this.props.node.setDataValue('deadline', dateValue);
         }
     }
 
-    cancelChanges = () => {
+    cancelChanges = (): void => {
         if (this.state.editing) {
             let dateBeforeEditing = this.props.getValue() ? convertToDate(this.props.getValue()) : null;
             this.setState({ selectedDate: dateBeforeEditing });
         }
     }
 
-    handleDateChange = (d: Date | 'Invalid Date') => {
-        if (d === 'Invalid Date') {
+    handleDateChange = (d: Date | null) => {
+        if (!isValidDate(d)) {
             return;
         }
         d.setHours(0, 0, 0, 0);
@@ -81,7 +85,7 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
         });
     }
 
-    render() {
+    render(): React.ReactElement {
         return (
             <MuiPickersUtilsProvider utils={DateFnsUtils} >
                 <KeyboardDatePicker
