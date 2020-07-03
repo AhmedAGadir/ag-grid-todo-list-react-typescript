@@ -154,10 +154,10 @@ class App extends Component<{}, AppState> {
   render() {
     return (
       <div className="app-component">
-        <ListRenderer<number>
+        {/* <ListRenderer<number>
           list={[1, 2, 3]}
           mapper={(number) => ``}
-        ></ListRenderer>
+        ></ListRenderer> */}
         <TaskAdder addTask={this.addTask} />
         <div className="ag-theme-alpine">
           <AgGridReact
