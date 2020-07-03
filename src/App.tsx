@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import {
-  FirstDataRenderedEvent,
   GridReadyEvent,
   GridApi,
   ColumnApi,
@@ -50,6 +49,15 @@ export interface ISetEditingId {
 
 export interface IDeleteTask {
   (id: string): void
+}
+
+export const convertToDate = (dateString: string) => {
+  const [_, day, month, year] = dateString.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+  return new Date(+year, +month - 1, +day);
+}
+
+export const isValidDate = (d: Date): boolean => {
+  return d instanceof Date && !isNaN(d as any);
 }
 
 interface AppProps { }
@@ -152,8 +160,7 @@ class App extends Component<AppProps, AppState> {
       return 'completed';
     }
     // change the whole app to use MM/dd/yyyy; - here and daterenderer
-    const [_, day, month, year] = params.value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-    const deadlineDate: Date = new Date(year, month - 1, day);
+    const deadlineDate: Date = convertToDate(params.value);
 
     const difference: number = differenceInDays(deadlineDate, new Date());
     return difference > 0 ? `${difference} days remaining` : `${-difference} days overdue`;
@@ -208,7 +215,7 @@ class App extends Component<AppProps, AppState> {
             onGridReady={this.onGridReady}
           />
         </div>
-        < img src={require("./ag-grid-logo.png")} />
+        < img src={require("./ag-grid-logo.png")} alt="ag-Grid Logo" />
       </div>
     );
   }

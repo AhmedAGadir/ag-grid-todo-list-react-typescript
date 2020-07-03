@@ -5,17 +5,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { ICellRenderer, GridApi, RowNode } from 'ag-grid-community';
 import './DateRenderer.scss';
-import { IGetEditingId } from '../../App';
-
-
-function convertToDate(dateString: string) {
-    const [_, day, month, year] = dateString.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-    return new Date(+year, +month - 1, +day);
-}
-
-function isValidDate(d: Date): boolean {
-    return d instanceof Date && !isNaN(d as any);
-}
+import { IGetEditingId, convertToDate, isValidDate } from '../../App';
 
 interface DateRendererProps {
     api: GridApi,
