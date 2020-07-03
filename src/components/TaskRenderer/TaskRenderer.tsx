@@ -8,6 +8,7 @@ interface TaskRendererProps {
     api: GridApi,
     getEditingId: () => string,
     column: Column,
+    getValue: () => any,
 };
 
 interface TaskRendererState {
@@ -19,7 +20,6 @@ interface TaskRendererState {
 export default class TaskRenderer extends Component<TaskRendererProps, TaskRendererState> implements ICellRenderer {
     state: TaskRendererState;
     private inputRef = createRef<HTMLInputElement>();
-    refreshParams: any;
 
     constructor(props: TaskRendererProps) {
         super(props);
@@ -29,8 +29,7 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
         };
     }
 
-    refresh = (params) => {
-        this.refreshParams = params;
+    refresh = () => {
         this.setState({ editing: this.props.getEditingId() === this.props.node.id });
         return true;
     }
@@ -40,8 +39,13 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
         this.props.api.addEventListener('cancelChanges', this.cancelChanges);
 
         this.setState({
-            inputValue: this.props.value,
+            inputValue: this.props.getValue(),
         });
+    }
+
+    componentWillUnmount = () => {
+        this.props.api.removeEventListener('commitChanges', this.commitChanges);
+        this.props.api.removeEventListener('cancelChanges', this.cancelChanges);
     }
 
     componentDidUpdate() {
@@ -50,21 +54,15 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
         }
     }
 
-    componentWillUnmount = () => {
-        this.props.api.removeEventListener('commitChanges', this.commitChanges);
-        this.props.api.removeEventListener('cancelChanges', this.cancelChanges);
-    }
-
     commitChanges = () => {
         if (this.state.editing) {
             this.props.node.setDataValue(this.props.column.getColId(), this.state.inputValue);
-            console.log(this.props.node, this.refreshParams.node, this.props.node === this.refreshParams.node);
         }
     }
 
     cancelChanges = () => {
         if (this.state.editing) {
-            this.setState({ inputValue: this.props.value });
+            this.setState({ inputValue: this.props.getValue() });
         }
     }
 
@@ -78,7 +76,7 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
                 } />
 
         const spanTask =
-            <span className={this.props.node.isSelected() ? "strike" : ''}> {this.props.value}</span>
+            <span className={this.props.node.isSelected() ? "strike" : ''}> {this.props.getValue()}</span>
 
         return (
             <div className="task-wrapper" >

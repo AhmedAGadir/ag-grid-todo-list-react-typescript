@@ -17,6 +17,7 @@ interface DateRendererProps {
     node: RowNode,
     value: string,
     getEditingId: () => string,
+    getValue: () => any
 }
 
 interface DateRendererState {
@@ -42,15 +43,13 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
         return true;
     }
 
-    componentWillMount = () => {
-        if (this.props.value) {
-            this.setState({ selectedDate: convertToDate(this.props.value) })
-        }
-    }
-
     componentDidMount = () => {
         this.props.api.addEventListener('commitChanges', this.commitChanges);
         this.props.api.addEventListener('cancelChanges', this.cancelChanges);
+
+        if (this.props.getValue()) {
+            this.setState({ selectedDate: convertToDate(this.props.getValue()) })
+        }
     }
 
     componentWillUnmount = () => {
@@ -60,15 +59,15 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
 
     commitChanges = () => {
         if (this.state.editing) {
-            let dateBeforeEditing = this.props.value ? convertToDate(this.props.value) : null;
-            this.setState({ selectedDate: dateBeforeEditing });
+            let dateValue = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
+            this.props.node.setDataValue('deadline', dateValue);
         }
     }
 
     cancelChanges = () => {
         if (this.state.editing) {
-            let dateValue = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
-            this.props.node.setDataValue('deadline', dateValue);
+            let dateBeforeEditing = this.props.getValue() ? convertToDate(this.props.getValue()) : null;
+            this.setState({ selectedDate: dateBeforeEditing });
         }
     }
 
