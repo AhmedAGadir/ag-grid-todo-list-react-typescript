@@ -13,31 +13,36 @@ export default class TaskAdder extends Component<TaskAdderProps, TaskAdderState>
     state: TaskAdderState;
     private inputRef = createRef<HTMLInputElement>();
 
-    constructor(props: TaskAdderProps) {
+    public constructor(props: TaskAdderProps) {
         super(props);
         this.state = {
             value: ''
         };
     }
 
-    componentDidMount(): void {
+    public componentDidMount(): void {
         this.inputRef.current!.focus();
     }
 
-    onClickHandler: React.MouseEventHandler = (): void => {
+    private onClickHandler: React.MouseEventHandler = (): void => {
         if (this.state.value) {
             this.props.addTask(this.state.value);
             this.setState({ value: '' });
         }
     }
 
-    inputChangedHandler: React.ChangeEventHandler<HTMLInputElement> = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    private inputChangedHandler: React.ChangeEventHandler<HTMLInputElement> = (event: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({ value: event.target.value });
+
     }
 
-    render(): React.ReactElement {
+    private handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+        e.preventDefault();
+    }
+
+    public render(): React.ReactElement {
         return (
-            < form className="task-adder-form" onSubmit={e => e.preventDefault()} >
+            < form className="task-adder-form" onSubmit={this.handleSubmit} >
                 <input
                     ref={this.inputRef}
                     value={this.state.value}

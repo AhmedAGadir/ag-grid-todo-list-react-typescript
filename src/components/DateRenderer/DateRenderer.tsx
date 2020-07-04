@@ -23,7 +23,7 @@ interface DateRendererState {
 export default class DateRenderer extends Component<DateRendererProps, DateRendererState> implements ICellRenderer {
     state: DateRendererState;
 
-    constructor(props: DateRendererProps) {
+    public constructor(props: DateRendererProps) {
         super(props);
         let selectedDate = null;
         this.state = {
@@ -33,13 +33,13 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
     }
 
 
-    refresh(): boolean {
+    public refresh(): boolean {
         const editing: boolean = this.props.getEditingId() === this.props.node.id;
         this.setState({ editing });
         return true;
     }
 
-    componentDidMount(): void {
+    public componentDidMount(): void {
         this.props.api.addEventListener('commitChanges', this.commitChanges);
         this.props.api.addEventListener('cancelChanges', this.cancelChanges);
 
@@ -49,26 +49,26 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
         }
     }
 
-    componentWillUnmount(): void {
+    public componentWillUnmount(): void {
         this.props.api.removeEventListener('commitChanges', this.commitChanges);
         this.props.api.removeEventListener('cancelChanges', this.cancelChanges);
     }
 
-    commitChanges: Function = (): void => {
+    private commitChanges: Function = (): void => {
         if (this.state.editing) {
             const dateValue: string = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
             this.props.node.setDataValue('deadline', dateValue);
         }
     }
 
-    cancelChanges: Function = (): void => {
+    private cancelChanges: Function = (): void => {
         if (this.state.editing) {
             const dateBeforeEditing: Date = this.props.getValue() ? convertToDate(this.props.getValue()) : null;
             this.setState({ selectedDate: dateBeforeEditing });
         }
     }
 
-    handleDateChange = (d: Date | null) => {
+    private handleDateChange = (d: Date | null) => {
         if (!isValidDate(d)) {
             return;
         }
@@ -78,7 +78,7 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
         });
     }
 
-    render(): React.ReactElement {
+    public render(): React.ReactElement {
         return (
             <MuiPickersUtilsProvider utils={DateFnsUtils} >
                 <KeyboardDatePicker

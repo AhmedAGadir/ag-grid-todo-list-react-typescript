@@ -19,7 +19,7 @@ interface ActionsRendererState {
 export default class ActionsRenderer extends React.Component<ActionsRendererProps, ActionsRendererState> implements ICellRenderer {
     state: ActionsRendererState;
 
-    constructor(props: ActionsRendererProps) {
+    public constructor(props: ActionsRendererProps) {
         super(props);
         this.state = {
             editing: false,
@@ -27,31 +27,31 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
         }
     }
 
-    refresh(): boolean {
+    public refresh(): boolean {
         const editing: boolean = this.props.getEditingId() === this.props.node.id;
         this.setState({ editing });
         return true;
     }
 
-    componentDidMount(): void {
+    public componentDidMount(): void {
         this.props.api.addEventListener('cellMouseOver', this.onCellMouseOver);
         this.props.api.addEventListener('cellMouseOut', this.onCellMouseOut);
 
     }
 
-    componentWillUnmount(): void {
+    public componentWillUnmount(): void {
         this.props.api.removeEventListener('cellMouseOver', this.onCellMouseOver);
         this.props.api.removeEventListener('cellMouseOut', this.onCellMouseOut);
     }
 
-    onCellMouseOver: Function = (params: CellMouseOverEvent): void => {
+    private onCellMouseOver: Function = (params: CellMouseOverEvent): void => {
         if (params.node.id === this.props.node.id) {
             const visible: boolean = true;
             this.setState({ visible });
         }
     }
 
-    onCellMouseOut: Function = (params: CellMouseOutEvent): void => {
+    private onCellMouseOut: Function = (params: CellMouseOutEvent): void => {
         if (params.node.id === this.props.node.id) {
             if (this.state.editing) {
                 return;
@@ -61,7 +61,7 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
         }
     }
 
-    editTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+    private editTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         if (this.props.getEditingId() !== null) {
             alert('You can only edit one task at a time');
             return;
@@ -70,26 +70,26 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
         this.props.setEditingId(nodeId);
     }
 
-    deleteTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+    private deleteTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         if (window.confirm('Would you like to delete this task?')) {
             const nodeId: string = this.props.node.id;
             this.props.deleteTask(nodeId);
         }
     }
 
-    commitChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+    private commitChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         const commitChangesEvent: AgEvent = { type: 'commitChanges' };
         this.props.api.dispatchEvent(commitChangesEvent);
         setTimeout(() => this.props.setEditingId(null), 0);
     }
 
-    cancelChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+    private cancelChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         const cancelChangesEvent: AgEvent = { type: 'cancelChanges' };
         this.props.api.dispatchEvent(cancelChangesEvent);
         setTimeout(() => this.props.setEditingId(null), 0);
     }
 
-    render(): React.ReactElement {
+    public render(): React.ReactElement {
         if (!this.state.visible) {
             return null;
         }

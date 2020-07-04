@@ -14,37 +14,37 @@ interface CheckboxRendererState {
 export default class CompletedRenderer extends Component<CheckboxRendererProps, CheckboxRendererState> implements ICellRenderer {
     state: CheckboxRendererState;
 
-    constructor(props: CheckboxRendererProps) {
+    public constructor(props: CheckboxRendererProps) {
         super(props);
         this.state = {
             completed: false
         };
     }
 
-    refresh(): boolean {
+    public refresh(): boolean {
         const isNodeSelected: boolean = this.props.node.isSelected();
         this.setState({ completed: isNodeSelected })
         return true;
     }
 
-    componentDidMount(): void {
+    public componentDidMount(): void {
         const isNodeSelected: boolean = this.props.node.isSelected();
         this.setState({ completed: isNodeSelected });
     }
 
-    completeTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+    private completeTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         this.props.node.setSelected(true);
         const refreshCellsParams: RefreshCellsParams = { rowNodes: [this.props.node], force: true };
         this.props.api.refreshCells(refreshCellsParams);
     }
 
-    uncompleteTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+    private uncompleteTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         this.props.node.setSelected(false);
         const refreshCellsParams: RefreshCellsParams = { rowNodes: [this.props.node], force: true };
         this.props.api.refreshCells(refreshCellsParams);
     }
 
-    render(): React.ReactElement {
+    public render(): React.ReactElement {
         const completedIcon = (
             <span
                 className="completed-icon"
