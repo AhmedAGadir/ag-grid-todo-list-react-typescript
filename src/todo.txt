@@ -33,3 +33,7 @@ use JSDOC on everything
 https://www.carlrippon.com/building-super-simple-react-form-component-typescript-basics/
 
 make all methods private/public 
+
+TYPE THE JSX ELEMENTS IN EVERY RENDER METHOD E.G. REACT.REACTELEMENT<HTMLDIVELEMENT> (-- READ HOW TO DO THIS)
+
+AND THE GENERICS FOR THE RENDER RETURN TYPE E,G, : React.ReactElement<HTMLDivElement> (-- READ HOW TO DO THIS)
