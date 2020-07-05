@@ -55,13 +55,13 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
         }
     }
 
-    private commitChanges: Function = (): void => {
+    private commitChanges = (): void => {
         if (this.state.editing) {
             this.props.node.setDataValue(this.props.column.getColId(), this.state.value);
         }
     }
 
-    private cancelChanges: Function = (): void => {
+    private cancelChanges = (): void => {
         if (this.state.editing) {
             this.setState({ value: this.props.getValue() });
         }

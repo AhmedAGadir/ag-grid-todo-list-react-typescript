@@ -174,9 +174,8 @@ class App extends Component<AppProps, AppState> {
   }
 
   private onFirstDataRendered = (): void => {
-    const cb: Function = this.completeFirstTask;
     const timeout: number = 500;
-    setTimeout(cb, timeout);
+    setTimeout(this.completeFirstTask, timeout);
   }
 
   private completeFirstTask = (): void => {
