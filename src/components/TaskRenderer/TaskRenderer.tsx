@@ -73,14 +73,14 @@ export default class TaskRenderer extends Component<TaskRendererProps, TaskRende
 
     public render(): React.ReactElement {
         const isSelected: boolean = this.props.node.isSelected();
+        const inputStyles: React.CSSProperties = { background: isSelected ? '#D5F1D1' : 'whitesmoke' };
 
         const inputTask =
             <input
                 ref={this.inputRef}
                 value={this.state.value}
                 onChange={this.inputChangedHandler}
-                style={{ background: isSelected ? '#D5F1D1' : 'whitesmoke' }
-                } />
+                style={inputStyles} />
 
         const spanTask =
             <span className={isSelected ? "strike" : ''}> {this.state.value}</span>
