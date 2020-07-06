@@ -34,6 +34,8 @@ class App extends React.Component<{}, AppState> {
 		return (
 			<div className="app-component">
 				<TaskAdder addTask={this.addTask} />
+				{/* 
+				// @ts-ignore */}
 				<Grid tasks={this.state.tasks} deleteTask={this.deleteTask} />
 			</div>
 		);
