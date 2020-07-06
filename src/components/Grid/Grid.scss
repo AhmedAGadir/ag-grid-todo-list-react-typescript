@@ -1,0 +1,22 @@
+@import "../../../node_modules/ag-grid-community/src/styles/ag-grid.scss";
+@import "../../../node_modules/ag-grid-community/src/styles/ag-theme-alpine/sass/ag-theme-alpine-mixin.scss";
+
+.ag-theme-alpine {
+	@include ag-theme-alpine((
+		odd-row-background-color: null,
+		font-size: 16px,
+		font-family: ("Roboto", sans-serif),
+		row-hover-color: null,
+		range-selection-border-color: rgba(0,0,0,0),
+		cell-horizontal-padding: 10,
+		selected-row-background-color: lightgreen,
+	));
+
+	.ag-react-container {
+		height: 100%;
+	}
+
+	.ag-cell-value, .ag-cell-wrapper {
+		width: 100%;
+	}
+}

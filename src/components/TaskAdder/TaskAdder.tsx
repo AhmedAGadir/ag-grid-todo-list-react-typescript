@@ -1,7 +1,7 @@
 import React from 'react';
 import { Task, IAddTask } from '../../interfaces';
 import * as UTILS from '../../utils';
-import './TaskAdder.css';
+import './TaskAdder.scss';
 
 interface TaskAdderProps {
     addTask: IAddTask
