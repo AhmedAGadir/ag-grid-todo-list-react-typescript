@@ -20,18 +20,19 @@ import {
   ActionsRenderer
 } from './components';
 
-import { Task } from './interfaces';
+import { Task, IAddTask, IDeleteTask } from './interfaces';
 import * as UTILS from './utils';
 
 import 'ag-grid-enterprise';
 import './App.scss'
 import 'normalize.css';
 
+
 interface AppProps { }
 
 interface AppState {
   editingId: string,
-  rowData: Task[],
+  tasks: Task[],
   gridOptions: GridOptions
 }
 
@@ -44,32 +45,31 @@ class App extends React.Component<AppProps, AppState> {
     super(props);
     this.state = {
       editingId: null,
-      rowData: this.getRowData(),
+      tasks: this.initTasks(),
       gridOptions: {
         columnDefs: [
           {
-            headerName: 'Complete',
             cellRenderer: 'checkboxRenderer',
             pinned: 'left',
             width: 50,
           },
           {
-            headerName: 'Task',
             field: 'description',
             cellRenderer: 'taskRenderer',
             rowDrag: true,
             flex: 1,
           },
           {
-            headerName: 'deadline',
             field: 'deadline',
             cellRenderer: 'dateRenderer',
             tooltipValueGetter: this.tooltipValueGetter,
             width: 170,
           },
           {
-            headerName: 'Actions',
             cellRenderer: 'actionsRenderer',
+            cellRendererParams: {
+              deleteTask: this.deleteTask,
+            },
             width: 90,
           },
         ],
@@ -77,7 +77,6 @@ class App extends React.Component<AppProps, AppState> {
           componentParent: this,
           getEditingId: (): string => this.state.editingId,
           setEditingId: (id: string): void => this.setState({ editingId: id }),
-          deleteTask: this.deleteTask,
         },
         frameworkComponents: {
           taskRenderer: TaskRenderer,
@@ -143,7 +142,7 @@ class App extends React.Component<AppProps, AppState> {
     return task.id;
   }
 
-  private getRowData = (): Task[] => {
+  private initTasks = (): Task[] => {
     return [
       { description: 'Go to Wano', deadline: '11/07/2020', id: UTILS.uuid() },
       { description: 'Defeat Kaido', deadline: '25/08/2020', id: UTILS.uuid() },
@@ -151,24 +150,15 @@ class App extends React.Component<AppProps, AppState> {
     ]
   }
 
-  private addTask = (taskDescription: string): void => {
-    const rowData: Task[] = this.state.rowData.map(row => ({ ...row }));
-    const newTask: Task = this.createTask(taskDescription);
-    rowData.push(newTask);
-    this.setState({ rowData });
+  private addTask: IAddTask = (taskToAdd: Task): void => {
+    const tasks: Task[] = this.state.tasks.map(task => ({ ...task }));
+    tasks.push(taskToAdd);
+    this.setState({ tasks });
   }
 
-  private createTask = (description: string): Task => {
-    return {
-      description,
-      deadline: null,
-      id: UTILS.uuid(),
-    }
-  }
-
-  private deleteTask = (id: string): void => {
-    const rowData: Task[] = this.state.rowData.filter(row => row.id !== id);
-    this.setState({ rowData });
+  private deleteTask: IDeleteTask = (taskToDelete: Task): void => {
+    const tasks: Task[] = this.state.tasks.filter(task => task.id !== taskToDelete.id);
+    this.setState({ tasks });
   }
 
   public render(): React.ReactElement {
@@ -178,7 +168,7 @@ class App extends React.Component<AppProps, AppState> {
         <div className="ag-theme-alpine">
           <AgGridReact
             gridOptions={this.state.gridOptions}
-            rowData={this.state.rowData}
+            rowData={this.state.tasks}
             getRowNodeId={this.getRowNodeId}
             onFirstDataRendered={this.onFirstDataRendered}
             onGridReady={this.onGridReady}

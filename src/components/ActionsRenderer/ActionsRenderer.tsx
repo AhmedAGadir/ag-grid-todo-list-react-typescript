@@ -1,9 +1,10 @@
 import React from 'react';
 import { ICellRenderer, ICellRendererParams, CellMouseOverEvent, CellMouseOutEvent, AgEvent } from 'ag-grid-community';
+import { Task, IDeleteTask } from '../../interfaces';
 import './ActionsRenderer.scss'
 
 interface ActionsRendererProps extends ICellRendererParams {
-    // any props passed through cellRendererParams can be defined here
+    deleteTask: IDeleteTask
 }
 
 interface ActionsRendererState {
@@ -67,8 +68,8 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
 
     private deleteTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         if (window.confirm('Would you like to delete this task?')) {
-            const nodeId: string = this.props.node.id;
-            this.props.context.deleteTask(nodeId);
+            const task: Task = this.props.data;
+            this.props.deleteTask(task);
         }
     }
 
