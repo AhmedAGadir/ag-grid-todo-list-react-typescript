@@ -7,6 +7,8 @@ import { ICellRenderer, ICellRendererParams } from 'ag-grid-community';
 import * as UTILS from '../../utils';
 import './DateRenderer.scss';
 
+import { EditingContext, IEditingContext } from '../Grid/Grid';
+
 interface DateRendererProps extends ICellRendererParams {
     // any props passed through cellRendererParams can be defined here
 }
@@ -19,6 +21,8 @@ interface DateRendererState {
 export default class DateRenderer extends React.Component<DateRendererProps, DateRendererState> implements ICellRenderer {
     state: DateRendererState;
 
+    static contextType: React.Context<IEditingContext> = EditingContext;
+
     public constructor(props: DateRendererProps) {
         super(props);
         let selectedDate = null;
@@ -30,7 +34,7 @@ export default class DateRenderer extends React.Component<DateRendererProps, Dat
 
 
     public refresh(): boolean {
-        const editing: boolean = this.props.context.getEditingId() === this.props.node.id;
+        const editing: boolean = this.context.editingId === this.props.node.id;
         this.setState({ editing });
         return true;
     }

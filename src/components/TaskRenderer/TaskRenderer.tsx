@@ -2,6 +2,8 @@ import React from 'react';
 import { ICellRenderer, ICellRendererParams } from 'ag-grid-community';
 import './TaskRenderer.scss';
 
+import { EditingContext, IEditingContext } from '../Grid/Grid';
+
 interface TaskRendererProps extends ICellRendererParams {
     // any props passed through cellRendererParams can be defined here
 };
@@ -16,6 +18,8 @@ export default class TaskRenderer extends React.Component<TaskRendererProps, Tas
     state: TaskRendererState;
     private inputRef = React.createRef<HTMLInputElement>();
 
+    static contextType: React.Context<IEditingContext> = EditingContext;
+
     public constructor(props: TaskRendererProps) {
         super(props);
         this.state = {
@@ -25,7 +29,7 @@ export default class TaskRenderer extends React.Component<TaskRendererProps, Tas
     }
 
     public refresh(): boolean {
-        this.setState({ editing: this.props.context.getEditingId() === this.props.node.id });
+        this.setState({ editing: this.context.editingId === this.props.node.id });
         return true;
     }
 
