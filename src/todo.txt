@@ -29,7 +29,7 @@ fix the id types
 if you are reusing types put the in the same folder 
 
 
-use JSDOC on everything 
+use JSDOC/TSDOC on everything - search: when/how to use JSDOC?
 https://www.carlrippon.com/building-super-simple-react-form-component-typescript-basics/
 
 make all methods private/public 

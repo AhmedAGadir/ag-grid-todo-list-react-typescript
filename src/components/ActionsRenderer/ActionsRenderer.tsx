@@ -1,14 +1,12 @@
 import React from 'react';
-import { ICellRenderer, RowNode, GridApi, CellMouseOverEvent, CellMouseOutEvent, AgEvent } from 'ag-grid-community';
+import { ICellRenderer, ICellRendererParams, CellMouseOverEvent, CellMouseOutEvent, AgEvent } from 'ag-grid-community';
 import './ActionsRenderer.scss'
 import { IGetEditingId, ISetEditingId, IDeleteTask } from '../../App';
 
-interface ActionsRendererProps {
+interface ActionsRendererProps extends ICellRendererParams {
     getEditingId: IGetEditingId,
     setEditingId: ISetEditingId,
     deleteTask: IDeleteTask,
-    api: GridApi,
-    node: RowNode,
 }
 
 interface ActionsRendererState {

@@ -3,16 +3,12 @@ import React, { Component } from 'react';
 import { format } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { ICellRenderer, GridApi, RowNode } from 'ag-grid-community';
+import { ICellRenderer, ICellRendererParams } from 'ag-grid-community';
 import './DateRenderer.scss';
 import { IGetEditingId, convertToDate, isValidDate } from '../../App';
 
-interface DateRendererProps {
-    api: GridApi,
-    node: RowNode,
-    value: string,
+interface DateRendererProps extends ICellRendererParams {
     getEditingId: IGetEditingId,
-    getValue: () => any
 }
 
 interface DateRendererState {

@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { ICellRenderer, RowNode, GridApi, RefreshCellsParams } from 'ag-grid-community';
+import { ICellRenderer, ICellRendererParams, RefreshCellsParams } from 'ag-grid-community';
 import './CheckboxRenderer.scss';
 
-interface CheckboxRendererProps {
-    node: RowNode,
-    api: GridApi,
-}
+interface CheckboxRendererProps extends ICellRendererParams { }
 
 interface CheckboxRendererState {
     completed: boolean
