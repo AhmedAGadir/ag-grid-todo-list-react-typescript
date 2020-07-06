@@ -35,18 +35,6 @@ interface GridState {
 	gridOptions: GridOptions
 }
 
-
-export interface IEditingContext {
-	editingId: string,
-	setEditingId: (id: string) => void
-}
-
-export const EditingContext: React.Context<IEditingContext> = React.createContext({
-	editingId: null,
-	setEditingId: (id: string): void => { },
-});
-
-
 class Grid extends React.Component<GridProps, GridState> {
 	state: GridState;
 	private gridApi: GridApi;
@@ -160,15 +148,28 @@ class Grid extends React.Component<GridProps, GridState> {
 	}
 }
 
+export interface IEditingContext {
+	editingId: string,
+	setEditingId: (id: string) => void
+}
 
+export const EditingContext: React.Context<IEditingContext> = React.createContext({
+	editingId: null,
+	setEditingId: (id: string): void => { },
+});
+
+
+
+// THE RETURN PROP IS A PROBLEM WHEN YOU HOVER
+// APP.TSX IS BARKING ABOUT THE PROPERTY THAT GETS PASSED HERE 
 interface WithContextState extends IEditingContext { }
 
-const WithContext = <P, S>(WrappedComponent: React.ComponentClass<P, S>): React.ComponentClass<{}, WithContextState> => {
+const WithContext = <P, S>(WrappedComponent: React.ComponentClass<P, S>): React.ComponentClass<P, WithContextState> => {
 	return class extends React.Component<P, WithContextState> {
 		state: WithContextState;
 		static contextType: React.Context<IEditingContext> = EditingContext;
 
-		constructor(props: any) {
+		constructor(props: P) {
 			super(props);
 			this.state = {
 				editingId: null,
@@ -187,11 +188,11 @@ const WithContext = <P, S>(WrappedComponent: React.ComponentClass<P, S>): React.
 			// the editingId is also passed as a prop to allow for previous/current context comparisons in componentDidUpdate
 			return (
 				<EditingContext.Provider value={this.state}>
-					<WrappedComponent {...this.props as P} editingId={this.state.editingId} />
+					<WrappedComponent {...this.props} editingId={this.state.editingId} />
 				</EditingContext.Provider >
 			)
 		};
 	}
 }
 
-export default WithContext(Grid);
+export default WithContext<GridProps, GridState>(Grid);
