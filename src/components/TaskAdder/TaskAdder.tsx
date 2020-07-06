@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react';
+import React from 'react';
 import './TaskAdder.css';
 
 interface TaskAdderProps {
@@ -9,9 +9,9 @@ interface TaskAdderState {
     value: string
 }
 
-export default class TaskAdder extends Component<TaskAdderProps, TaskAdderState> {
+export default class TaskAdder extends React.Component<TaskAdderProps, TaskAdderState> {
     state: TaskAdderState;
-    private inputRef = createRef<HTMLInputElement>();
+    private inputRef = React.createRef<HTMLInputElement>();
 
     public constructor(props: TaskAdderProps) {
         super(props);

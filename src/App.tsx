@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
+
 import {
   GridReadyEvent,
   GridApi,
@@ -10,63 +11,21 @@ import {
   GetRowNodeIdFunc,
   ITooltipParams
 } from 'ag-grid-community'
+
+import {
+  TaskAdder,
+  DateRenderer,
+  TaskRenderer,
+  CheckboxRenderer,
+  ActionsRenderer
+} from './components';
+
+import { Task } from './interfaces';
+import * as UTILS from './utils';
+
 import 'ag-grid-enterprise';
-
-import TaskAdder from './components/TaskAdder/TaskAdder';
-import DateRenderer from './components/DateRenderer/DateRenderer';
-import TaskRenderer from './components/TaskRenderer/TaskRenderer';
-import CheckboxRenderer from './components/CheckboxRenderer/CheckboxRenderer';
-import ActionsRenderer from './components/ActionsRenderer/ActionsRenderer';
-
-import { differenceInDays } from 'date-fns';
-// import tasks,{ createNewTask, Task } from './tasks';
-
-import 'normalize.css';
 import './App.scss'
-
-import { uuid } from 'uuidv4';
-
-const getRowData = (): Task[] => {
-  return [
-    { description: 'Go to Wano', deadline: '11/07/2020', id: uuid() },
-    { description: 'Defeat Kaido', deadline: '25/08/2020', id: uuid() },
-    { description: 'Find Raftel', deadline: '06/09/2020', id: uuid() },
-  ]
-}
-
-export interface Task {
-  id: string,
-  description: string,
-  deadline: string | null
-}
-
-export const createNewTask = (description: string): Task => {
-  return {
-    description,
-    deadline: null,
-    id: uuid(),
-  }
-}
-
-export interface IGetEditingId {
-  (): string;
-}
-export interface ISetEditingId {
-  (id: string): void
-}
-
-export interface IDeleteTask {
-  (id: string): void
-}
-
-export const convertToDate = (dateString: string) => {
-  const [_, day, month, year] = dateString.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-  return new Date(+year, +month - 1, +day);
-}
-
-export const isValidDate = (d: Date): boolean => {
-  return d instanceof Date && !isNaN(d as any);
-}
+import 'normalize.css';
 
 interface AppProps { }
 
@@ -76,7 +35,7 @@ interface AppState {
   gridOptions: GridOptions
 }
 
-class App extends Component<AppProps, AppState> {
+class App extends React.Component<AppProps, AppState> {
   state: AppState;
   private gridApi: GridApi;
   private columnApi: ColumnApi;
@@ -85,7 +44,7 @@ class App extends Component<AppProps, AppState> {
     super(props);
     this.state = {
       editingId: null,
-      rowData: getRowData(),
+      rowData: this.getRowData(),
       gridOptions: {
         columnDefs: [
           {
@@ -111,18 +70,14 @@ class App extends Component<AppProps, AppState> {
           {
             headerName: 'Actions',
             cellRenderer: 'actionsRenderer',
-            cellRendererParams: {
-              deleteTask: this.deleteTask,
-              setEditingId: this.setEditingId,
-              getEditingId: this.getEditingId
-            },
             width: 90,
           },
         ],
-        defaultColDef: {
-          cellRendererParams: {
-            getEditingId: this.getEditingId
-          }
+        context: {
+          componentParent: this,
+          getEditingId: (): string => this.state.editingId,
+          setEditingId: (id: string): void => this.setState({ editingId: id }),
+          deleteTask: this.deleteTask,
         },
         frameworkComponents: {
           taskRenderer: TaskRenderer,
@@ -145,6 +100,7 @@ class App extends Component<AppProps, AppState> {
 
   public componentDidUpdate(_: AppProps, prevState: AppState): void {
     if (prevState.editingId !== this.state.editingId) {
+      // refresh editing node / node that just finished editing 
       const idToUpdate: string = this.state.editingId === null ? prevState.editingId : this.state.editingId;
       const nodeToUpdate: RowNode = this.gridApi.getRowNode(idToUpdate);
       const refreshCellsParams: RefreshCellsParams = { rowNodes: [nodeToUpdate], force: true };
@@ -152,8 +108,20 @@ class App extends Component<AppProps, AppState> {
     }
   }
 
-  private getRowNodeId: GetRowNodeIdFunc = (task: Task): string => {
-    return task.id;
+  private onGridReady = (params: GridReadyEvent): void => {
+    this.gridApi = params.api;
+    this.columnApi = params.columnApi;
+  }
+
+  private onFirstDataRendered = (): void => {
+    const timeout: number = 500;
+    setTimeout(() => {
+      // complete first task
+      const firstNode: RowNode = this.gridApi.getDisplayedRowAtIndex(0);
+      firstNode.setSelected(true);
+      const refreshCellsParams: RefreshCellsParams = { rowNodes: [firstNode], force: true };
+      this.gridApi.refreshCells(refreshCellsParams);
+    }, timeout);
   }
 
   private tooltipValueGetter = (params: ITooltipParams): string => {
@@ -164,46 +132,41 @@ class App extends Component<AppProps, AppState> {
       message = 'completed';
     } else {
       // change the whole app to use MM/dd/yyyy; - here and daterenderer
-      const deadlineDate: Date = convertToDate(params.value);
-      const difference: number = differenceInDays(deadlineDate, new Date());
+      const deadlineDate: Date = UTILS.convertToDate(params.value);
+      const difference: number = UTILS.differenceInDays(deadlineDate, new Date());
       message = difference > 0 ? `${difference} days remaining` : `${-difference} days overdue`;
     }
     return message;
   }
 
-  private onGridReady = (params: GridReadyEvent): void => {
-    this.gridApi = params.api;
-    this.columnApi = params.columnApi;
+  private getRowNodeId: GetRowNodeIdFunc = (task: Task): string => {
+    return task.id;
   }
 
-  private onFirstDataRendered = (): void => {
-    const timeout: number = 500;
-    setTimeout(this.completeFirstTask, timeout);
-  }
-
-  private completeFirstTask = (): void => {
-    const firstNode: RowNode = this.gridApi.getDisplayedRowAtIndex(0);
-    firstNode.setSelected(true);
-    const refreshCellsParams: RefreshCellsParams = { rowNodes: [firstNode], force: true };
-    this.gridApi.refreshCells(refreshCellsParams);
-  }
-
-  private setEditingId: ISetEditingId = (id: string): void => {
-    this.setState({ editingId: id });
-  }
-
-  private getEditingId: IGetEditingId = (): string => {
-    return this.state.editingId;
+  private getRowData = (): Task[] => {
+    return [
+      { description: 'Go to Wano', deadline: '11/07/2020', id: UTILS.uuid() },
+      { description: 'Defeat Kaido', deadline: '25/08/2020', id: UTILS.uuid() },
+      { description: 'Find Raftel', deadline: '06/09/2020', id: UTILS.uuid() },
+    ]
   }
 
   private addTask = (taskDescription: string): void => {
     const rowData: Task[] = this.state.rowData.map(row => ({ ...row }));
-    const newTask: Task = createNewTask(taskDescription);
+    const newTask: Task = this.createTask(taskDescription);
     rowData.push(newTask);
     this.setState({ rowData });
   }
 
-  private deleteTask: IDeleteTask = (id: string): void => {
+  private createTask = (description: string): Task => {
+    return {
+      description,
+      deadline: null,
+      id: UTILS.uuid(),
+    }
+  }
+
+  private deleteTask = (id: string): void => {
     const rowData: Task[] = this.state.rowData.filter(row => row.id !== id);
     this.setState({ rowData });
   }

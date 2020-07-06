@@ -1,14 +1,14 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import { format } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { ICellRenderer, ICellRendererParams } from 'ag-grid-community';
+import * as UTILS from '../../utils';
 import './DateRenderer.scss';
-import { IGetEditingId, convertToDate, isValidDate } from '../../App';
 
 interface DateRendererProps extends ICellRendererParams {
-    getEditingId: IGetEditingId,
+    // any props passed through cellRendererParams can be defined here
 }
 
 interface DateRendererState {
@@ -16,7 +16,7 @@ interface DateRendererState {
     editing: boolean
 }
 
-export default class DateRenderer extends Component<DateRendererProps, DateRendererState> implements ICellRenderer {
+export default class DateRenderer extends React.Component<DateRendererProps, DateRendererState> implements ICellRenderer {
     state: DateRendererState;
 
     public constructor(props: DateRendererProps) {
@@ -30,7 +30,7 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
 
 
     public refresh(): boolean {
-        const editing: boolean = this.props.getEditingId() === this.props.node.id;
+        const editing: boolean = this.props.context.getEditingId() === this.props.node.id;
         this.setState({ editing });
         return true;
     }
@@ -40,7 +40,7 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
         this.props.api.addEventListener('cancelChanges', this.cancelChanges);
 
         if (this.props.getValue()) {
-            const selectedDate: Date = convertToDate(this.props.getValue());
+            const selectedDate: Date = UTILS.convertToDate(this.props.getValue());
             this.setState({ selectedDate });
         }
     }
@@ -59,13 +59,13 @@ export default class DateRenderer extends Component<DateRendererProps, DateRende
 
     private cancelChanges = (): void => {
         if (this.state.editing) {
-            const dateBeforeEditing: Date = this.props.getValue() ? convertToDate(this.props.getValue()) : null;
+            const dateBeforeEditing: Date = this.props.getValue() ? UTILS.convertToDate(this.props.getValue()) : null;
             this.setState({ selectedDate: dateBeforeEditing });
         }
     }
 
     private handleDateChange = (d: Date | null) => {
-        if (!isValidDate(d)) {
+        if (!UTILS.isValidDate(d)) {
             return;
         }
         d.setHours(0, 0, 0, 0);

@@ -1,12 +1,9 @@
 import React from 'react';
 import { ICellRenderer, ICellRendererParams, CellMouseOverEvent, CellMouseOutEvent, AgEvent } from 'ag-grid-community';
 import './ActionsRenderer.scss'
-import { IGetEditingId, ISetEditingId, IDeleteTask } from '../../App';
 
 interface ActionsRendererProps extends ICellRendererParams {
-    getEditingId: IGetEditingId,
-    setEditingId: ISetEditingId,
-    deleteTask: IDeleteTask,
+    // any props passed through cellRendererParams can be defined here
 }
 
 interface ActionsRendererState {
@@ -26,7 +23,7 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
     }
 
     public refresh(): boolean {
-        const editing: boolean = this.props.getEditingId() === this.props.node.id;
+        const editing: boolean = this.props.context.getEditingId() === this.props.node.id;
         this.setState({ editing });
         return true;
     }
@@ -60,31 +57,31 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
     }
 
     private editTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
-        if (this.props.getEditingId() !== null) {
+        if (this.props.context.getEditingId() !== null) {
             alert('You can only edit one task at a time');
             return;
         }
         const nodeId: string = this.props.node.id;
-        this.props.setEditingId(nodeId);
+        this.props.context.setEditingId(nodeId);
     }
 
     private deleteTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         if (window.confirm('Would you like to delete this task?')) {
             const nodeId: string = this.props.node.id;
-            this.props.deleteTask(nodeId);
+            this.props.context.deleteTask(nodeId);
         }
     }
 
     private commitChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         const commitChangesEvent: AgEvent = { type: 'commitChanges' };
         this.props.api.dispatchEvent(commitChangesEvent);
-        setTimeout(() => this.props.setEditingId(null), 0);
+        setTimeout(() => this.props.context.setEditingId(null), 0);
     }
 
     private cancelChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         const cancelChangesEvent: AgEvent = { type: 'cancelChanges' };
         this.props.api.dispatchEvent(cancelChangesEvent);
-        setTimeout(() => this.props.setEditingId(null), 0);
+        setTimeout(() => this.props.context.setEditingId(null), 0);
     }
 
     public render(): React.ReactElement {

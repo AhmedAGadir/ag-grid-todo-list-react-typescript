@@ -1,14 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { ICellRenderer, ICellRendererParams, RefreshCellsParams } from 'ag-grid-community';
 import './CheckboxRenderer.scss';
 
-interface CheckboxRendererProps extends ICellRendererParams { }
+interface CheckboxRendererProps extends ICellRendererParams {
+    // any props passed through cellRendererParams can be defined here
+}
+
 
 interface CheckboxRendererState {
     completed: boolean
 }
 
-export default class CompletedRenderer extends Component<CheckboxRendererProps, CheckboxRendererState> implements ICellRenderer {
+export default class CompletedRenderer extends React.Component<CheckboxRendererProps, CheckboxRendererState> implements ICellRenderer {
     state: CheckboxRendererState;
 
     public constructor(props: CheckboxRendererProps) {
