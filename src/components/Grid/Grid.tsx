@@ -25,6 +25,17 @@ import 'ag-grid-enterprise';
 import './Grid.scss'
 import 'normalize.css';
 
+interface GridProps {
+	editingId: string,
+	tasks: Task[],
+	deleteTask: IDeleteTask
+}
+
+interface GridState {
+	gridOptions: GridOptions
+}
+
+
 export interface IEditingContext {
 	editingId: string,
 	setEditingId: (id: string) => void
@@ -35,16 +46,6 @@ export const EditingContext: React.Context<IEditingContext> = React.createContex
 	setEditingId: (id: string): void => { },
 });
 
-interface GridProps {
-	tasks: Task[],
-	deleteTask: IDeleteTask
-}
-
-interface GridState {
-	editingContext: IEditingContext,
-	editingId: string,
-	gridOptions: GridOptions
-}
 
 class Grid extends React.Component<GridProps, GridState> {
 	state: GridState;
@@ -53,11 +54,6 @@ class Grid extends React.Component<GridProps, GridState> {
 	public constructor(props: GridProps) {
 		super(props);
 		this.state = {
-			editingContext: {
-				editingId: null,
-				setEditingId: this.setEditingId
-			},
-			editingId: null,
 			gridOptions: {
 				columnDefs: [
 					{
@@ -85,11 +81,6 @@ class Grid extends React.Component<GridProps, GridState> {
 						width: 90,
 					},
 				],
-				// context: {
-				// 	componentParent: this,
-				// 	getEditingId: (): string => this.state.editingId,
-				// 	setEditingId: (id: string): void => this.setState({ editingId: id }),
-				// },
 				frameworkComponents: {
 					taskRenderer: TaskRenderer,
 					dateRenderer: DateRenderer,
@@ -109,19 +100,10 @@ class Grid extends React.Component<GridProps, GridState> {
 		}
 	}
 
-	setEditingId = (id: string): void => {
-		this.setState(prevState => ({
-			editingContext: {
-				...prevState.editingContext,
-				editingId: id,
-			}
-		}))
-	}
-
-	public componentDidUpdate(_: GridProps, prevState: GridState): void {
-		if (prevState.editingContext.editingId !== this.state.editingContext.editingId) {
+	public componentDidUpdate(prevProps: GridProps, _: GridState): void {
+		if (prevProps.editingId !== this.props.editingId) {
 			// refresh editing node / node that just finished editing 
-			const idToUpdate: string = this.state.editingContext.editingId === null ? prevState.editingContext.editingId : this.state.editingContext.editingId;
+			const idToUpdate: string = this.props.editingId === null ? prevProps.editingId : this.props.editingId;
 			const nodeToUpdate: RowNode = this.gridApi.getRowNode(idToUpdate);
 			const refreshCellsParams: RefreshCellsParams = { rowNodes: [nodeToUpdate], force: true };
 			this.gridApi.refreshCells(refreshCellsParams);
@@ -165,39 +147,51 @@ class Grid extends React.Component<GridProps, GridState> {
 
 	public render(): React.ReactElement {
 		return (
-			<EditingContext.Provider value={this.state.editingContext}>
-				{/* <p>Editing Id: {this.state.editingContext.editingId}</p>
-				<MyComponent /> */}
-				<div className="ag-theme-alpine">
-					<AgGridReact
-						rowData={this.props.tasks}
-						gridOptions={this.state.gridOptions}
-						getRowNodeId={this.getRowNodeId}
-						onFirstDataRendered={this.onFirstDataRendered}
-						onGridReady={this.onGridReady}
-					/>
-				</div>
-			</EditingContext.Provider>
+			<div className="ag-theme-alpine">
+				<AgGridReact
+					rowData={this.props.tasks}
+					gridOptions={this.state.gridOptions}
+					getRowNodeId={this.getRowNodeId}
+					onFirstDataRendered={this.onFirstDataRendered}
+					onGridReady={this.onGridReady}
+				/>
+			</div>
 		);
 	}
 }
 
-// class MyComponent extends React.Component {
 
-// 	static contextType: React.Context<IEditingContext> = EditingContext;
+interface WithContextState extends IEditingContext { }
 
-// 	constructor(props: any) {
-// 		super(props);
-// 	}
+const WithContext = <P, S>(WrappedComponent: React.ComponentClass<P, S>): React.ComponentClass<{}, WithContextState> => {
+	return class extends React.Component<P, WithContextState> {
+		state: WithContextState;
+		static contextType: React.Context<IEditingContext> = EditingContext;
 
-// 	clickHandler = () => {
-// 		this.context.setEditingId(Math.random() * 100)
-// 	}
+		constructor(props: any) {
+			super(props);
+			this.state = {
+				editingId: null,
+				setEditingId: this.setEditingId
+			}
+		}
 
-// 	render(): React.ReactElement {
-// 		console.log(this.context)
-// 		return <button onClick={this.clickHandler}>increment id</button>
-// 	}
-// }
+		setEditingId = (id: string): void => {
+			this.setState(prevState => ({
+				...prevState,
+				editingId: id,
+			}))
+		}
 
-export default Grid;
+		render(): React.ReactElement {
+			// the editingId is also passed as a prop to allow for previous/current context comparisons in componentDidUpdate
+			return (
+				<EditingContext.Provider value={this.state}>
+					<WrappedComponent {...this.props as P} editingId={this.state.editingId} />
+				</EditingContext.Provider >
+			)
+		};
+	}
+}
+
+export default WithContext(Grid);
