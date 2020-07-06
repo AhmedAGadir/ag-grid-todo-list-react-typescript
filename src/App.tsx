@@ -26,6 +26,14 @@ import './App.scss'
 
 import { uuid } from 'uuidv4';
 
+const getRowData = (): Task[] => {
+  return [
+    { description: 'Go to Wano', deadline: '11/07/2020', id: uuid() },
+    { description: 'Defeat Kaido', deadline: '25/08/2020', id: uuid() },
+    { description: 'Find Raftel', deadline: '06/09/2020', id: uuid() },
+  ]
+}
+
 export interface Task {
   id: string,
   description: string,
@@ -35,8 +43,8 @@ export interface Task {
 export const createNewTask = (description: string): Task => {
   return {
     description,
-    id: uuid(),
     deadline: null,
+    id: uuid(),
   }
 }
 
@@ -77,11 +85,7 @@ class App extends Component<AppProps, AppState> {
     super(props);
     this.state = {
       editingId: null,
-      rowData: [
-        { id: uuid(), description: 'Go to Wano', deadline: '11/07/2020' },
-        { id: uuid(), description: 'Defeat Kaido', deadline: '25/08/2020' },
-        { id: uuid(), description: 'Find Raftel', deadline: '06/09/2020' },
-      ],
+      rowData: getRowData(),
       gridOptions: {
         columnDefs: [
           {
@@ -156,8 +160,7 @@ class App extends Component<AppProps, AppState> {
     let message: string;
     if (!params.value) {
       message = 'no deadline';
-    }
-    if (params.node.selected) {
+    } else if (params.node.selected) {
       message = 'completed';
     } else {
       // change the whole app to use MM/dd/yyyy; - here and daterenderer
@@ -218,7 +221,7 @@ class App extends Component<AppProps, AppState> {
             onGridReady={this.onGridReady}
           />
         </div>
-        < img src={require("./ag-grid-logo.png")} alt="ag-Grid Logo" />
+        < img src={require("./assets/ag-grid-logo.png")} alt="ag-Grid Logo" />
       </div>
     );
   }
