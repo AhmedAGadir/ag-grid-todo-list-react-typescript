@@ -1,44 +1,47 @@
-@import '../../_mixin/mixin.scss';
+@import '../../_mixin/icon_styles';
 
 .actions-wrapper {
-    @include strike-animation;
+    @include icon-styles;
     display: flex; 
     justify-content: flex-end; 
     align-items: center;
     height: 100%;
-}
 
-.edit-icon {
-    font-size: 20px;
-}
-
-.delete-icon {
-    font-size: 20px;
-}
-
-.save-icon {
-    font-size: 22px;
-    color: dimgrey;
-}
-
-.cancel-icon {
-    font-size: 20px;
-    color: dimgrey;
-}
-
-.delete-icon, .cancel-icon {
-    margin-left: 25px;
-    margin-right: 10px;
-}
-
-.edit-icon, .save-icon {
-    margin-left: 15px;
-}
-
-.edit-icon:hover, .delete-icon:hover {
-    color: magenta;
-}
-
-.save-icon:hover, .cancel-icon:hover {
-    color: magenta;
+    .edit-icon {
+        font-size: 20px;
+    }
+    
+    .delete-icon {
+        font-size: 20px;
+    }
+    
+    .save-icon {
+        font-size: 22px;
+    }
+    
+    .cancel-icon {
+        font-size: 20px;
+    }
+    
+    .delete-icon, .cancel-icon {
+        margin-left: 25px;
+        margin-right: 10px;
+    }
+    
+    .edit-icon, .save-icon {
+        margin-left: 15px;
+    }
+    
+    .edit-icon, .delete-icon {
+        &:hover {
+            color: magenta;
+        }
+    }
+    
+    .save-icon, .cancel-icon {
+        color: dimgrey;
+        &:hover {
+            color: magenta;
+        }
+    }
 }

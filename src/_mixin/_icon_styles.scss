@@ -1,0 +1,7 @@
+@mixin icon-styles {
+    [class$="-icon"] {
+        display: block;
+        color: darkgrey;
+        cursor: pointer;
+    }
+}

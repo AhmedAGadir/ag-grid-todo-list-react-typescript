@@ -1,19 +1,21 @@
-@import '../../_mixin/mixin.scss';
+@import '../../_mixin/strike_animation';
+
+@include strike_animation;
 
 .my-datepicker {
     position: relative;
     bottom: 1;
     border-radius: 5px;
-}
-
-.my-datepicker .MuiInput-underline:before {
-    border-bottom: none !important;
-}
-
-.my-datepicker .MuiInputBase-root.Mui-disabled {
-    color: black !important;
-}
-
-.my-datepicker .MuiInput-underline:after {
-    border-bottom-color: magenta !important;
+    
+    .MuiInput-underline:before {
+        border-bottom: none !important;
+    }
+    
+    .MuiInputBase-root.Mui-disabled {
+        color: black !important;
+    }
+    
+    .MuiInput-underline:after {
+        border-bottom-color: magenta !important;
+    }
 }

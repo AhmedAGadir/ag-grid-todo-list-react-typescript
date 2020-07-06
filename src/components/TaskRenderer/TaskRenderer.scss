@@ -1,14 +1,16 @@
-@import '../../_mixin/mixin.scss';
+@import '../../_mixin/strike_animation';
 
 .task-wrapper {
+    @include strike_animation;
+
     cursor: pointer;
     height: 100%;
     display: flex;
     align-items: center;
-}
-
-.task-wrapper input {
-    width: 100%;
-    height: 30px;
-    border-radius: 5px;
+    
+    input {
+        width: 100%;
+        height: 30px;
+        border-radius: 5px;
+    }
 }
