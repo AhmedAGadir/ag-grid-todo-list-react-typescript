@@ -43,3 +43,13 @@ https://medium.com/better-programming/typescript-reactjs-the-element-vs-reactele
 https://medium.com/@tiago.souto/most-common-react-app-types-using-typescript-99f4d5d4c4f8
 
 GOOGLE COMMON REACT TYPESCRIPT USES
+
+
+// THE RETURN PROP IS A PROBLEM WHEN YOU HOVER
+// APP.TSX IS BARKING ABOUT THE PROPERTY THAT GETS PASSED HERE 
+
+difference between react node, react element etc - use it in code.
+
+LIST OF 10 QUESTIONS FOR ALBERTO:
+1) REACT.CREATECONTEXT TAKES A GENERIC = CAN YOU SHOW ME HOW YOU KNOW THE PURPOSE OF THIS GENERIC 
+2) ...

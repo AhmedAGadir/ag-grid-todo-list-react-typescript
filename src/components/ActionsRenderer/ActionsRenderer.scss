@@ -2,6 +2,7 @@
 
 .actions-wrapper {
     @include icon-styles;
+    
     display: flex; 
     justify-content: flex-end; 
     align-items: center;
