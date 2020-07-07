@@ -52,4 +52,4 @@ difference between react node, react element etc - use it in code.
 
 LIST OF 10 QUESTIONS FOR ALBERTO:
 1) REACT.CREATECONTEXT TAKES A GENERIC = CAN YOU SHOW ME HOW YOU KNOW THE PURPOSE OF THIS GENERIC 
-2) ...
+2) editingId props in grid ? ignore it (!)? remove it? 

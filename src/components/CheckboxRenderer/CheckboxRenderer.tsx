@@ -2,9 +2,7 @@ import React from 'react';
 import { ICellRenderer, ICellRendererParams, RefreshCellsParams } from 'ag-grid-community';
 import './CheckboxRenderer.scss';
 
-interface CheckboxRendererProps extends ICellRendererParams {
-    // any props passed through cellRendererParams can be defined here
-}
+interface CheckboxRendererProps extends ICellRendererParams { }
 
 
 interface CheckboxRendererState {

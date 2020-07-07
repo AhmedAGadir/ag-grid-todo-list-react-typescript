@@ -9,9 +9,7 @@ import './DateRenderer.scss';
 
 import { EditingContext, IEditingContext } from '../Grid/Grid';
 
-interface DateRendererProps extends ICellRendererParams {
-    // any props passed through cellRendererParams can be defined here
-}
+interface DateRendererProps extends ICellRendererParams { }
 
 interface DateRendererState {
     selectedDate: Date,

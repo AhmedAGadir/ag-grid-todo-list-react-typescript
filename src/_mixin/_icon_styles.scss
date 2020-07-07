@@ -3,5 +3,12 @@
         display: block;
         color: darkgrey;
         cursor: pointer;
+        // font-size: 20px;
+
+        &:hover {
+            color: magenta;
+        }
     }
+
+
 }

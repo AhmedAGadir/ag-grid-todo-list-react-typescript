@@ -4,9 +4,7 @@ import './TaskRenderer.scss';
 
 import { EditingContext, IEditingContext } from '../Grid/Grid';
 
-interface TaskRendererProps extends ICellRendererParams {
-    // any props passed through cellRendererParams can be defined here
-};
+interface TaskRendererProps extends ICellRendererParams { };
 
 interface TaskRendererState {
     editing: boolean,

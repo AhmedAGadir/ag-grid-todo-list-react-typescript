@@ -89,6 +89,7 @@ class Grid extends React.Component<GridProps, GridState> {
 	}
 
 	public componentDidUpdate(prevProps: GridProps): void {
+		// comparisons of context here
 		if (prevProps.editingId !== this.props.editingId) {
 			// refresh editing node / node that just finished editing 
 			const idToUpdate: string = this.props.editingId === null ? prevProps.editingId : this.props.editingId;
