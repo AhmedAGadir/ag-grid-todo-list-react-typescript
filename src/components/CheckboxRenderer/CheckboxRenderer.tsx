@@ -4,7 +4,6 @@ import './CheckboxRenderer.scss';
 
 interface CheckboxRendererProps extends ICellRendererParams { }
 
-
 interface CheckboxRendererState {
     completed: boolean
 }
