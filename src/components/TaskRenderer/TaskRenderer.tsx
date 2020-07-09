@@ -14,7 +14,7 @@ interface TaskRendererState {
 
 export default class TaskRenderer extends React.Component<TaskRendererProps, TaskRendererState> implements ICellRenderer {
     state: TaskRendererState;
-    private inputRef = React.createRef<HTMLInputElement>();
+    private inputRef: React.RefObject<HTMLInputElement>;
 
     static contextType: React.Context<IEditingContext> = EditingContext;
 
@@ -24,6 +24,7 @@ export default class TaskRenderer extends React.Component<TaskRendererProps, Tas
             editing: false,
             value: ''
         };
+        this.inputRef = React.createRef<HTMLInputElement>();
     }
 
     public refresh(): boolean {

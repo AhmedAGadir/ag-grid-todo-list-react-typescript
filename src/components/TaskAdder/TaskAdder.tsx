@@ -13,13 +13,14 @@ interface TaskAdderState {
 
 export default class TaskAdder extends React.Component<TaskAdderProps, TaskAdderState> {
     state: TaskAdderState;
-    private inputRef = React.createRef<HTMLInputElement>();
+    private inputRef: React.RefObject<HTMLInputElement>;
 
     public constructor(props: TaskAdderProps) {
         super(props);
         this.state = {
             description: ''
         };
+        this.inputRef = React.createRef<HTMLInputElement>();
     }
 
     public componentDidMount(): void {
