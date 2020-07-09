@@ -27,7 +27,7 @@ export default class TaskAdder extends React.Component<TaskAdderProps, TaskAdder
         this.inputRef.current!.focus();
     }
 
-    private onClickHandler: React.MouseEventHandler = (): void => {
+    private onClickHandler: React.MouseEventHandler<HTMLButtonElement> = (): void => {
         if (this.state.description) {
             const task: Task = this.createTask(this.state.description)
             this.props.addTask(task);
