@@ -7,8 +7,12 @@ import * as UTILS from './utils';
 import './App.scss';
 
 interface AppState {
-	tasks: Task[],
+	tasks: Task[]
 }
+
+/**
+ * Root level Component of the application
+ */
 class App extends React.Component<{}, AppState> {
 
 	public state: AppState = {
@@ -19,12 +23,20 @@ class App extends React.Component<{}, AppState> {
 		]
 	}
 
+	/**
+	 * adds a task to the task array 
+	 * @param taskToAdd - the task to be added
+	 */
 	private addTask: IAddTask = (taskToAdd: Task): void => {
 		const tasks: Task[] = this.state.tasks.map(task => ({ ...task }));
 		tasks.push(taskToAdd);
 		this.setState({ tasks });
 	}
 
+	/**
+	 * removes a task from the task array
+	 * @param taskToDelete - the task to be removed
+	 */
 	private deleteTask: IDeleteTask = (taskToDelete: Task): void => {
 		const tasks: Task[] = this.state.tasks.filter(task => task.id !== taskToDelete.id);
 		this.setState({ tasks });
