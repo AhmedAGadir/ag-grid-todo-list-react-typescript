@@ -13,12 +13,12 @@ import {
 
 import {
 	DateRenderer,
-	TaskRenderer,
+	DescriptionRenderer,
 	CheckboxRenderer,
 	ActionsRenderer
 } from '../index';
 
-import { Task, IDeleteTask } from '../../interfaces';
+import { ToDo, IDeleteToDo } from '../../interfaces';
 import * as UTILS from '../../utils';
 
 import 'ag-grid-enterprise';
@@ -27,8 +27,8 @@ import 'normalize.css';
 
 interface GridProps {
 	editingId: string,
-	tasks: Task[],
-	deleteTask: IDeleteTask
+	toDoList: ToDo[],
+	deleteToDo: IDeleteToDo
 }
 
 interface GridState {
@@ -51,7 +51,7 @@ class Grid extends React.Component<GridProps, GridState> {
 					},
 					{
 						field: 'description',
-						cellRenderer: 'taskRenderer',
+						cellRenderer: 'descriptionRenderer',
 						rowDrag: true,
 						flex: 1,
 					},
@@ -64,13 +64,13 @@ class Grid extends React.Component<GridProps, GridState> {
 					{
 						cellRenderer: 'actionsRenderer',
 						cellRendererParams: {
-							deleteTask: this.props.deleteTask,
+							deleteToDo: this.props.deleteToDo,
 						},
 						width: 90,
 					},
 				],
 				frameworkComponents: {
-					taskRenderer: TaskRenderer,
+					descriptionRenderer: DescriptionRenderer,
 					dateRenderer: DateRenderer,
 					checkboxRenderer: CheckboxRenderer,
 					actionsRenderer: ActionsRenderer
@@ -105,10 +105,10 @@ class Grid extends React.Component<GridProps, GridState> {
 
 	private onFirstDataRendered = (): void => {
 		const timeout: number = 500;
-		setTimeout(this.completeFirstTask, timeout);
+		setTimeout(this.completeFirstToDo, timeout);
 	}
 
-	private completeFirstTask = (): void => {
+	private completeFirstToDo = (): void => {
 		const firstNode: RowNode = this.gridApi.getDisplayedRowAtIndex(0);
 		firstNode.setSelected(true);
 		const refreshCellsParams: RefreshCellsParams = { rowNodes: [firstNode], force: true };
@@ -130,15 +130,15 @@ class Grid extends React.Component<GridProps, GridState> {
 		return message;
 	}
 
-	private getRowNodeId: GetRowNodeIdFunc = (task: Task): string => {
-		return task.id;
+	private getRowNodeId: GetRowNodeIdFunc = (toDo: ToDo): string => {
+		return toDo.id;
 	}
 
 	public render(): React.ReactElement {
 		return (
 			<div className="ag-theme-alpine">
 				<AgGridReact
-					rowData={this.props.tasks}
+					rowData={this.props.toDoList}
 					gridOptions={this.state.gridOptions}
 					getRowNodeId={this.getRowNodeId}
 					onFirstDataRendered={this.onFirstDataRendered}

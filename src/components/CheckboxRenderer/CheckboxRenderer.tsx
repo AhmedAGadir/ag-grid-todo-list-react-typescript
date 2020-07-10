@@ -29,13 +29,13 @@ export default class CompletedRenderer extends React.Component<CheckboxRendererP
         this.setState({ completed: isNodeSelected });
     }
 
-    private completeTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+    private completeToDo: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         this.props.node.setSelected(true);
         const refreshCellsParams: RefreshCellsParams = { rowNodes: [this.props.node], force: true };
         this.props.api.refreshCells(refreshCellsParams);
     }
 
-    private uncompleteTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+    private uncompleteToDo: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         this.props.node.setSelected(false);
         const refreshCellsParams: RefreshCellsParams = { rowNodes: [this.props.node], force: true };
         this.props.api.refreshCells(refreshCellsParams);
@@ -45,7 +45,7 @@ export default class CompletedRenderer extends React.Component<CheckboxRendererP
         const completedIcon = (
             <span
                 className="completed-icon"
-                onClick={this.uncompleteTask}>
+                onClick={this.uncompleteToDo}>
                 <i className="far fa-check-square" ></i>
             </span>
         );
@@ -53,7 +53,7 @@ export default class CompletedRenderer extends React.Component<CheckboxRendererP
         const uncompletedIcon = (
             <span
                 className="uncompleted-icon"
-                onClick={this.completeTask}>
+                onClick={this.completeToDo}>
                 <i className="far fa-square" ></i>
             </span>
         )

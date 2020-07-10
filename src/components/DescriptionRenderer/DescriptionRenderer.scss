@@ -1,6 +1,6 @@
 @import '../../_mixin/strike_animation';
 
-.task-wrapper {
+.todo-wrapper {
     @include strike_animation;
 
     cursor: pointer;

@@ -1,15 +1,15 @@
-import TaskAdder from './TaskAdder/TaskAdder';
+import ToDoAdder from './ToDoAdder/ToDoAdder';
 import DateRenderer from './DateRenderer/DateRenderer';
-import TaskRenderer from './TaskRenderer/TaskRenderer';
+import DescriptionRenderer from './DescriptionRenderer/DescriptionRenderer';
 import CheckboxRenderer from './CheckboxRenderer/CheckboxRenderer';
 import ActionsRenderer from './ActionsRenderer/ActionsRenderer';
 import Grid from './Grid/Grid';
 
 export {
-    TaskAdder,
+    ToDoAdder,
     Grid,
     DateRenderer,
-    TaskRenderer,
+    DescriptionRenderer,
     CheckboxRenderer,
     ActionsRenderer
 }

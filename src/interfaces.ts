@@ -1,13 +1,13 @@
-export interface Task {
+export type ToDo = {
     id: string,
     description: string,
     deadline: string | null
 }
 
-export interface IAddTask {
-    (tas: Task): void
+export interface IAddToDo {
+    (tas: ToDo): void
 }
 
-export interface IDeleteTask {
-    (task: Task): void
+export interface IDeleteToDo {
+    (toDo: ToDo): void
 }

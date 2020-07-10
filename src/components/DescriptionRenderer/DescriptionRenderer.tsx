@@ -1,24 +1,24 @@
 import React from 'react';
 import { ICellRenderer, ICellRendererParams } from 'ag-grid-community';
-import './TaskRenderer.scss';
+import './DescriptionRenderer.scss';
 
 import { EditingContext, IEditingContext } from '../Grid/Grid';
 
-interface TaskRendererProps extends ICellRendererParams { };
+interface DescriptionRendererProps extends ICellRendererParams { };
 
-interface TaskRendererState {
+interface DescriptionRendererState {
     editing: boolean,
     value: string
 };
 
 
-export default class TaskRenderer extends React.Component<TaskRendererProps, TaskRendererState> implements ICellRenderer {
-    state: TaskRendererState;
+export default class DescriptionRenderer extends React.Component<DescriptionRendererProps, DescriptionRendererState> implements ICellRenderer {
+    state: DescriptionRendererState;
     private inputRef: React.RefObject<HTMLInputElement>;
 
     static contextType: React.Context<IEditingContext> = EditingContext;
 
-    public constructor(props: TaskRendererProps) {
+    public constructor(props: DescriptionRendererProps) {
         super(props);
         this.state = {
             editing: false,
@@ -85,7 +85,7 @@ export default class TaskRenderer extends React.Component<TaskRendererProps, Tas
         }
 
         return (
-            <div className="task-wrapper" >
+            <div className="todo-wrapper" >
                 {component}
             </div>
         );

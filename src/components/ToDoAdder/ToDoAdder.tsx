@@ -1,21 +1,21 @@
 import React from 'react';
-import { Task, IAddTask } from '../../interfaces';
+import { ToDo, IAddToDo } from '../../interfaces';
 import * as UTILS from '../../utils';
-import './TaskAdder.scss';
+import './ToDoAdder.scss';
 
-interface TaskAdderProps {
-    addTask: IAddTask
+interface ToDoAdderProps {
+    addToDo: IAddToDo
 }
 
-interface TaskAdderState {
+interface ToDoAdderState {
     description: string
 }
 
-export default class TaskAdder extends React.Component<TaskAdderProps, TaskAdderState> {
-    state: TaskAdderState;
+export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdderState> {
+    state: ToDoAdderState;
     private inputRef: React.RefObject<HTMLInputElement>;
 
-    public constructor(props: TaskAdderProps) {
+    public constructor(props: ToDoAdderProps) {
         super(props);
         this.state = {
             description: ''
@@ -29,13 +29,13 @@ export default class TaskAdder extends React.Component<TaskAdderProps, TaskAdder
 
     private onClickHandler: React.MouseEventHandler<HTMLButtonElement> = (): void => {
         if (this.state.description) {
-            const task: Task = this.createTask(this.state.description)
-            this.props.addTask(task);
+            const toDo: ToDo = this.createToDo(this.state.description)
+            this.props.addToDo(toDo);
             this.setState({ description: '' });
         }
     }
 
-    private createTask = (description: string): Task => {
+    private createToDo = (description: string): ToDo => {
         return {
             description,
             deadline: null,
@@ -54,12 +54,12 @@ export default class TaskAdder extends React.Component<TaskAdderProps, TaskAdder
 
     public render(): React.ReactElement {
         return (
-            < form className="task-adder-form" onSubmit={this.handleSubmit} >
+            < form className="todo-adder-form" onSubmit={this.handleSubmit} >
                 <input
                     ref={this.inputRef}
                     value={this.state.description}
                     onChange={this.inputChangedHandler}
-                    placeholder="Enter Task..." />
+                    placeholder="Enter To Do..." />
                 <button type="submit" onClick={this.onClickHandler} >+</button>
             </form>
         );

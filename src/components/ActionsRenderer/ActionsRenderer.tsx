@@ -1,12 +1,12 @@
 import React from 'react';
 import { ICellRenderer, ICellRendererParams, CellMouseOverEvent, CellMouseOutEvent, AgEvent } from 'ag-grid-community';
-import { Task, IDeleteTask } from '../../interfaces';
+import { ToDo, IDeleteToDo } from '../../interfaces';
 import './ActionsRenderer.scss'
 
 import { EditingContext, IEditingContext } from '../Grid/Grid';
 
 interface ActionsRendererProps extends ICellRendererParams {
-    deleteTask: IDeleteTask
+    deleteToDo: IDeleteToDo
 }
 
 interface ActionsRendererState {
@@ -61,19 +61,19 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
         }
     }
 
-    private editTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+    private editToDo: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         if (this.context.editingId !== null) {
-            alert('You can only edit one task at a time');
+            alert('You can only edit one todo at a time');
             return;
         }
         const nodeId: string = this.props.node.id;
         this.context.setEditingId(nodeId);
     }
 
-    private deleteTask: React.MouseEventHandler<HTMLSpanElement> = (): void => {
-        if (window.confirm('Would you like to delete this task?')) {
-            const task: Task = this.props.data;
-            this.props.deleteTask(task);
+    private deleteToDo: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+        if (window.confirm('Would you like to delete this todo?')) {
+            const toDo: ToDo = this.props.data;
+            this.props.deleteToDo(toDo);
         }
     }
 
@@ -103,8 +103,8 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
 
         const notEditingIcons = (
             <>
-                <span className="edit-icon" onClick={this.editTask} > <i className="fas fa-pen" > </i></span >
-                <span className="delete-icon" onClick={this.deleteTask} > <i className="fas fa-trash" > </i></span >
+                <span className="edit-icon" onClick={this.editToDo} > <i className="fas fa-pen" > </i></span >
+                <span className="delete-icon" onClick={this.deleteToDo} > <i className="fas fa-trash" > </i></span >
             </>
         );
 

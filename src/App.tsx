@@ -1,22 +1,22 @@
 import React from 'react';
 
-import { TaskAdder, Grid } from './components'
-import { Task, IAddTask, IDeleteTask } from './interfaces';
+import { ToDoAdder, Grid } from './components'
+import { ToDo, IAddToDo, IDeleteToDo } from './interfaces';
 import * as UTILS from './utils';
 
 import './App.scss';
 
 interface AppState {
-	tasks: Task[]
+	toDoList: ToDo[]
 }
 
 /**
- * Root level Component of the application
+ * Root Component of the application
  */
 class App extends React.Component<{}, AppState> {
 
 	public state: AppState = {
-		tasks: [
+		toDoList: [
 			{ description: 'Go to Wano', deadline: '11/07/2020', id: UTILS.uuid() },
 			{ description: 'Defeat Kaido', deadline: '25/08/2020', id: UTILS.uuid() },
 			{ description: 'Find Raftel', deadline: '06/09/2020', id: UTILS.uuid() },
@@ -24,31 +24,31 @@ class App extends React.Component<{}, AppState> {
 	}
 
 	/**
-	 * adds a task to the task array 
-	 * @param taskToAdd - the task to be added
+	 * adds a toDo to the toDoList array 
+	 * @param toDoToAdd  - the toDo to be added
 	 */
-	private addTask: IAddTask = (taskToAdd: Task): void => {
-		const tasks: Task[] = this.state.tasks.map(task => ({ ...task }));
-		tasks.push(taskToAdd);
-		this.setState({ tasks });
+	private addToDo: IAddToDo = (toDoToAdd: ToDo): void => {
+		const toDoList: ToDo[] = this.state.toDoList.map(toDo => ({ ...toDo }));
+		toDoList.push(toDoToAdd);
+		this.setState({ toDoList });
 	}
 
 	/**
-	 * removes a task from the task array
-	 * @param taskToDelete - the task to be removed
+	 * removes a toDo from the toDoList array
+	 * @param toDoToDelete - the toDo to be removed
 	 */
-	private deleteTask: IDeleteTask = (taskToDelete: Task): void => {
-		const tasks: Task[] = this.state.tasks.filter(task => task.id !== taskToDelete.id);
-		this.setState({ tasks });
+	private deleteToDo: IDeleteToDo = (toDoToDelete: ToDo): void => {
+		const toDoList: ToDo[] = this.state.toDoList.filter(toDo => toDo.id !== toDoToDelete.id);
+		this.setState({ toDoList });
 	}
 
 	public render(): React.ReactElement {
 		return (
 			<div className="app-component">
-				<TaskAdder addTask={this.addTask} />
+				<ToDoAdder addToDo={this.addToDo} />
 				{/* 
 				// @ts-ignore */}
-				<Grid tasks={this.state.tasks} deleteTask={this.deleteTask} />
+				<Grid toDoList={this.state.toDoList} deleteToDo={this.deleteToDo} />
 			</div>
 		);
 	}
