@@ -1,3 +1,5 @@
+/** @ignore *//** */
+
 // tags
 // typescript - <> and interfaces etc and more - study
 // modularise 

@@ -1,3 +1,5 @@
+/** @ignore *//** */
+
 import ToDoAdder from './ToDoAdder/ToDoAdder';
 import DateRenderer from './DateRenderer/DateRenderer';
 import DescriptionRenderer from './DescriptionRenderer/DescriptionRenderer';
