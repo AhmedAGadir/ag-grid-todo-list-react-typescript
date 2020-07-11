@@ -2,7 +2,7 @@ import React from 'react';
 import { ICellRenderer, ICellRendererParams } from 'ag-grid-community';
 import './DescriptionRenderer.scss';
 
-import { EditingContext, IEditingContext } from '../Grid/Grid';
+import { EditingContext, IEditingContext } from '../../context/EditingContext';
 
 interface DescriptionRendererProps extends ICellRendererParams { };
 

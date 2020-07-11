@@ -3,7 +3,7 @@ import { ICellRenderer, ICellRendererParams, CellMouseOverEvent, CellMouseOutEve
 import { ToDo, IDeleteToDo } from '../../interfaces';
 import './ActionsRenderer.scss'
 
-import { EditingContext, IEditingContext } from '../Grid/Grid';
+import { EditingContext, IEditingContext } from '../../context/EditingContext';
 
 interface ActionsRendererProps extends ICellRendererParams {
     deleteToDo: IDeleteToDo

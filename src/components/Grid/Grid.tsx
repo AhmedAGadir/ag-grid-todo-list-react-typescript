@@ -18,8 +18,10 @@ import {
 	ActionsRenderer
 } from '../index';
 
-import { ToDo, IDeleteToDo } from '../../interfaces';
+import { ToDo, ToDoList, IDeleteToDo } from '../../interfaces';
 import * as UTILS from '../../utils';
+
+import WithEditingContext from '../../HOC/WithEditingContext';
 
 import 'ag-grid-enterprise';
 import './Grid.scss'
@@ -27,7 +29,7 @@ import 'normalize.css';
 
 interface GridProps {
 	editingId: string,
-	toDoList: ToDo[],
+	toDoList: ToDoList,
 	deleteToDo: IDeleteToDo
 }
 
@@ -149,51 +151,4 @@ class Grid extends React.Component<GridProps, GridState> {
 	}
 }
 
-export interface IEditingContext {
-	editingId: string,
-	setEditingId: (id: string) => void
-}
-
-export const EditingContext: React.Context<IEditingContext> = React.createContext({
-	editingId: null,
-	setEditingId: (id: string): void => { },
-});
-
-
-
-// THE RETURN PROP IS A PROBLEM WHEN YOU HOVER
-// APP.TSX IS BARKING ABOUT THE PROPERTY THAT GETS PASSED HERE 
-interface WithContextState extends IEditingContext { }
-
-const WithContext = <P, S>(WrappedComponent: React.ComponentClass<P, S>): React.ComponentClass<P, WithContextState> => {
-	return class extends React.Component<P, WithContextState> {
-		state: WithContextState;
-		static contextType: React.Context<IEditingContext> = EditingContext;
-
-		constructor(props: P) {
-			super(props);
-			this.state = {
-				editingId: null,
-				setEditingId: this.setEditingId
-			}
-		}
-
-		setEditingId = (id: string): void => {
-			this.setState(prevState => ({
-				...prevState,
-				editingId: id,
-			}))
-		}
-
-		render(): React.ReactElement {
-			// the editingId is also passed as a prop to allow for previous/current context comparisons in componentDidUpdate
-			return (
-				<EditingContext.Provider value={this.state}>
-					<WrappedComponent {...this.props} editingId={this.state.editingId} />
-				</EditingContext.Provider >
-			)
-		};
-	}
-}
-
-export default WithContext<GridProps, GridState>(Grid);
+export default WithEditingContext<GridProps, GridState>(Grid);

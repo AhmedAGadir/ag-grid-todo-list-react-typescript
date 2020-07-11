@@ -8,9 +8,15 @@ interface ToDoAdderProps {
 }
 
 interface ToDoAdderState {
+    /**
+    * Description of the new {@link ToDo | toDo} to add to the application's {@link AppState.toDoList |toDoList}
+    */
     description: string
 }
 
+/**
+ * Form component where users can input a {@link ToDo.description | ToDo description} which is then turned into a {@link ToDo} and appended to {@link AppState.toDoList}
+ */
 export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdderState> {
     state: ToDoAdderState;
     private inputRef: React.RefObject<HTMLInputElement>;
@@ -54,7 +60,7 @@ export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdder
 
     public render(): React.ReactElement {
         return (
-            < form className="todo-adder-form" onSubmit={this.handleSubmit} >
+            <form className="todo-adder-form" onSubmit={this.handleSubmit} >
                 <input
                     ref={this.inputRef}
                     value={this.state.description}

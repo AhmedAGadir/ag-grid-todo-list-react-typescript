@@ -7,7 +7,7 @@ import { ICellRenderer, ICellRendererParams } from 'ag-grid-community';
 import * as UTILS from '../../utils';
 import './DateRenderer.scss';
 
-import { EditingContext, IEditingContext } from '../Grid/Grid';
+import { EditingContext, IEditingContext } from '../../context/EditingContext';
 
 interface DateRendererProps extends ICellRendererParams { }
 
