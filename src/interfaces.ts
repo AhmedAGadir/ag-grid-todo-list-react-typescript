@@ -1,22 +1,22 @@
 /** todo item a user wants to complete */
 export interface ToDo {
-    /** unique id for each toDo */
+    /** unique id for each todo */
     id: string,
-    /** user provided description of toDo */
+    /** user provided description of todo */
     description: string,
-    /** due date for toDo */
+    /** due date for todo */
     deadline: string | null
 }
 
 /** collection of toDos */
 export type ToDoList = ToDo[];
 
-/** handles adding a {@link ToDo | toDo} to the {@link ToDoList | toDoList}  */
+/** Function that adds a {@link ToDo | toDo} to a {@link ToDoList | toDoList}  */
 export interface IAddToDo {
     (toDo: ToDo): void
 }
 
-/** handles removing a {@link ToDo | toDo} from the {@link ToDoList | toDoList}  */
+/** Function which removes a {@link ToDo | toDo} from a {@link ToDoList | toDoList}  */
 export interface IDeleteToDo {
     (toDo: ToDo): void
 }

@@ -8,14 +8,13 @@ interface ToDoAdderProps {
 }
 
 interface ToDoAdderState {
-    /**
-    * Description of the new {@link ToDo | toDo} to add to the application's {@link AppState.toDoList |toDoList}
-    */
+    /** Description of the new {@link ToDo | toDo} to add to the application's {@link AppState.toDoList |toDoList} */
     description: string
 }
 
 /**
- * Form component where users can input a {@link ToDo.description | ToDo description} which is then turned into a {@link ToDo} and appended to {@link AppState.toDoList}
+ * Form component where users can input a {@link ToDo.description | ToDo description} 
+ * which is then turned into a {@link ToDo} and appended to {@link AppState.toDoList}
  */
 export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdderState> {
     state: ToDoAdderState;
@@ -33,7 +32,7 @@ export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdder
         this.inputRef.current!.focus();
     }
 
-    private onClickHandler: React.MouseEventHandler<HTMLButtonElement> = (): void => {
+    private submitDescription: React.MouseEventHandler<HTMLButtonElement> = (): void => {
         if (this.state.description) {
             const toDo: ToDo = this.createToDo(this.state.description)
             this.props.addToDo(toDo);
@@ -49,24 +48,24 @@ export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdder
         }
     }
 
-    private inputChangedHandler: React.ChangeEventHandler<HTMLInputElement> = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    private descriptionChangedHandler: React.ChangeEventHandler<HTMLInputElement> = (event: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({ description: event.target.value });
 
     }
 
-    private handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    private handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
     }
 
     public render(): React.ReactElement {
         return (
-            <form className="todo-adder-form" onSubmit={this.handleSubmit} >
+            <form className="todo-adder-form" onSubmit={this.handleFormSubmit} >
                 <input
                     ref={this.inputRef}
                     value={this.state.description}
-                    onChange={this.inputChangedHandler}
+                    onChange={this.descriptionChangedHandler}
                     placeholder="Enter To Do..." />
-                <button type="submit" onClick={this.onClickHandler} >+</button>
+                <button type="submit" onClick={this.submitDescription} >+</button>
             </form>
         );
     }

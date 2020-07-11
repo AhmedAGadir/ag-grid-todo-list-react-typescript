@@ -7,12 +7,11 @@ import * as UTILS from './utils';
 import './App.scss';
 
 interface AppState {
+	/** Collection of the user's {@link ToDo | todos} */
 	toDoList: ToDoList
 }
 
-/**
- * Root level component of the application where all ToDos are stored
- */
+/** Root level component of the application */
 class App extends React.Component<{}, AppState> {
 
 	public state: AppState = {
@@ -23,12 +22,14 @@ class App extends React.Component<{}, AppState> {
 		]
 	}
 
+	/** adds a {@link ToDo | todo} to {@link AppState.toDoList}  */
 	private addToDo: IAddToDo = (toDoToAdd: ToDo): void => {
 		const toDoList: ToDo[] = this.state.toDoList.map(toDo => ({ ...toDo }));
 		toDoList.push(toDoToAdd);
 		this.setState({ toDoList });
 	}
 
+	/** removes a {@link ToDo | todo} from {@link AppState.toDoList}  */
 	private deleteToDo: IDeleteToDo = (toDoToDelete: ToDo): void => {
 		const toDoList: ToDo[] = this.state.toDoList.filter(toDo => toDo.id !== toDoToDelete.id);
 		this.setState({ toDoList });

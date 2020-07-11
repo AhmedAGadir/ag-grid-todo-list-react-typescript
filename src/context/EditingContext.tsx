@@ -3,14 +3,13 @@ import React from 'react';
 export interface IEditingContext {
     /** ID of the currently editing node */
     editingId: string,
-    /** function to set the ID of the currently editing node */
+    /** function to update the ID the currently editing ID */
     setEditingId: (id: string) => void
 }
 
 /** 
- * The context that will be available throughout ag-Grid cell renderers 
- * to ensure that only one node is editable at a time. 
- * The default value is overriden in the state of {@link WithEditingContext}
+ * The context object that is available throughout the application 
+ * The default value is intended to be overriden in the {@link WithEditingContext} Higher Order Component.
 */
 export const EditingContext: React.Context<IEditingContext> = React.createContext({
     editingId: null,

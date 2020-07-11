@@ -8,12 +8,14 @@ import { IEditingContext, EditingContext } from '../context/EditingContext';
  * Higher Order Component which takes a react component and returns a react component with access to an Editing Context.
  * @param WrappedComponent - A React component
  * @returns - a React component where it (and all its nested components) have access to an {@link EditingContext}.
- * Note: the returned component is also passed the {@link IEditingContext.editingId | currently editing ID} as a prop so it can have access to it's previous and current values in it's **componentDidUpdate** lifecycle hook.
+ * Note: the returned component is also passed the {@link IEditingContext.editingId | currently editing ID} 
+ * as a prop so it can have access to it's previous and current values in it's **componentDidUpdate** lifecycle hook.
  */
 const WithEditingContext = <P, S>(WrappedComponent: React.ComponentClass<P, S>): React.ComponentClass<P, IEditingContext> => {
     return class extends React.Component<P, IEditingContext> {
         state: IEditingContext;
 
+        /** Creates a context state object */
         constructor(props: P) {
             super(props);
             this.state = {
@@ -22,6 +24,7 @@ const WithEditingContext = <P, S>(WrappedComponent: React.ComponentClass<P, S>):
             }
         }
 
+        /** updates the context object's {@link IEditingContext.editingId | editing ID} */
         setEditingId = (id: string): void => {
             this.setState(prevState => ({
                 ...prevState,
