@@ -41,6 +41,7 @@ class App extends React.Component<{}, AppState> {
 				{/* 
 				// @ts-ignore */}
 				<Grid toDoList={this.state.toDoList} deleteToDo={this.deleteToDo} />
+				<img src={require("./assets/ag-grid-logo.png")} alt="ag-Grid Logo" />
 			</div>
 		);
 	}
