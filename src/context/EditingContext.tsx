@@ -1,9 +1,9 @@
 import React from 'react';
 
 export interface IEditingContext {
-    /** ID of the currently editing node */
+    /** ID of the currently editing node in the {@link Grid} | ag-Grid instance */
     editingId: string,
-    /** function to update the ID the currently editing ID */
+    /** function to update the ID the currently editing node in the {@link Grid} | ag-Grid instance */
     setEditingId: (id: string) => void
 }
 

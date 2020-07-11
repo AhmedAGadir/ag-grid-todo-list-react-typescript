@@ -2,6 +2,7 @@ import { differenceInDays } from 'date-fns';
 import { uuid } from 'uuidv4';
 
 /**
+ * Converts a date string in the form of 'dd/mm/yy' to a JavaScript Date object.
  * @param dateString - date string in the form 'dd/mm/yyyy'
  * @returns - a JavaScript Date object for the passed string
  */
@@ -11,7 +12,8 @@ const convertToDate = (dateString: string): Date => {
 }
 
 /**
- * @param d - Date object to be checked
+ * Checks whether a Javascript Date object is non-null or not.
+ * @param d - JavaScript Date object to be checked
  * @returns - a boolean value that indicates whether the passed date is non-null or not
  */
 const isValidDate = (d: Date): boolean => {
