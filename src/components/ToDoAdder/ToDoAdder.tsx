@@ -29,6 +29,7 @@ export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdder
         this.inputRef = React.createRef<HTMLInputElement>();
     }
 
+    /** focus on the HTML input element on mounting  */
     public componentDidMount(): void {
         this.inputRef.current!.focus();
     }

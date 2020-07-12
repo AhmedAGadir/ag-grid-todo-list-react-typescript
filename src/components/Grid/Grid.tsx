@@ -29,8 +29,8 @@ import 'normalize.css';
 
 interface GridProps {
 	/** 
-	 * the id of the currently editing node in the Grid. Note: this value is stored in 
-	 * the {@link EditingContext} context, but is also passed as a prop to {@link Grid} 
+	 * the ID of the currently editing node in the Grid. Note: this value is stored in 
+	 * the {@link EditingContext} context, but it is also passed as a prop to {@link Grid} 
 	 * to allow comparing its current and previous values in {@link Grid.componentDidUpdate}
 	*/
 	editingId: string,
@@ -129,7 +129,6 @@ class Grid extends React.Component<GridProps, GridState> {
 		} else if (params.node.selected) {
 			message = 'completed';
 		} else {
-			// change the whole Grid to use MM/dd/yyyy; - here and daterenderer
 			const deadlineDate: Date = UTILS.convertToDate(params.value);
 			const difference: number = UTILS.differenceInDays(deadlineDate, new Date());
 			message = difference > 0 ? `${difference} days remaining` : `${-difference} days overdue`;
