@@ -4,11 +4,12 @@ import * as UTILS from '../../utils';
 import './ToDoAdder.scss';
 
 interface ToDoAdderProps {
+    /** adds a {@link ToDo} to {@link AppState.toDoList} */
     addToDo: IAddToDo
 }
 
 interface ToDoAdderState {
-    /** Description of the new {@link ToDo | toDo} to add to the application's {@link AppState.toDoList |toDoList} */
+    /** Description of the new {@link ToDo | toDo} to add to {@link AppState.toDoList} */
     description: string
 }
 
@@ -32,6 +33,7 @@ export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdder
         this.inputRef.current!.focus();
     }
 
+    /** Creates a new {@link ToDo} using the {@link ToDoAdderState.description} and adds it to {@link AppState.toDoList} */
     private submitDescription: React.MouseEventHandler<HTMLButtonElement> = (): void => {
         if (this.state.description) {
             const toDo: ToDo = this.createToDo(this.state.description)
@@ -40,6 +42,7 @@ export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdder
         }
     }
 
+    /** @returns a new {@link ToDo} using a description */
     private createToDo = (description: string): ToDo => {
         return {
             description,
@@ -48,11 +51,13 @@ export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdder
         }
     }
 
+    /** updates {@link ToDoAdderState.description} */
     private descriptionChangedHandler: React.ChangeEventHandler<HTMLInputElement> = (event: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({ description: event.target.value });
 
     }
 
+    /** prevents HTML Form submission */
     private handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
     }
