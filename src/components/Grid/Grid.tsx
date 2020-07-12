@@ -151,4 +151,4 @@ class Grid extends React.Component<GridProps, GridState> {
 	}
 }
 
-export default WithEditingContext<GridProps, GridState>(Grid);
+export default WithEditingContext<GridProps>(Grid);
