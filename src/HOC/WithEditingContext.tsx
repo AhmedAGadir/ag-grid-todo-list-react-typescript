@@ -4,9 +4,9 @@ import { IEditingContext, EditingContext } from '../context/EditingContext';
 /**
  * Higher Order Component which wraps a react component so that it (and its children components) have access to an {@link EditingContext}.
  * @param WrappedComponent - A React component
- * @returns - a React component where it (and its children components) have access to an {@link EditingContext}.
+ * @returns - a wrapped React component that has access to an {@link EditingContext}.
  * Note: the returned component is also passed the {@link IEditingContext.editingId | currently editing ID} 
- * as a prop so it can have access to it's previous and current values in it's **componentDidUpdate** lifecycle hook.
+ * as a prop so it can compare it's previous and current values in the **componentDidUpdate** lifecycle hook.
  */
 const WithEditingContext = <P extends {}>(WrappedComponent: React.ComponentClass<P>): React.ComponentClass<P, IEditingContext> => {
     return class extends React.Component<P, IEditingContext> {

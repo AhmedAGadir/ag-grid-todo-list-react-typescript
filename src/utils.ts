@@ -7,7 +7,9 @@ import { uuid } from 'uuidv4';
  * @returns - a JavaScript Date object for the passed string
  */
 const convertToDate = (dateString: string): Date => {
-    const [_, day, month, year] = dateString.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    const match = dateString.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    match.shift();
+    const [day, month, year] = match;
     return new Date(+year, +month - 1, +day);
 }
 
