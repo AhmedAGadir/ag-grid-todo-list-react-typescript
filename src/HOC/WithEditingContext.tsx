@@ -15,7 +15,7 @@ const WithEditingContext = <P, S>(WrappedComponent: React.ComponentClass<P, S>):
     return class extends React.Component<P, IEditingContext> {
         state: IEditingContext;
 
-        /** Creates an {@link EditingContext | Editing Context} state object */
+        /** Creates an {@link IEditingContext | Editing Context} state object */
         constructor(props: P) {
             super(props);
             this.state = {
