@@ -28,6 +28,11 @@ import './Grid.scss'
 import 'normalize.css';
 
 interface GridProps {
+	/** 
+	 * the id of the currently editing node in the Grid. Note: this value is stored in 
+	 * the {@link EditingContext} context, but is also passed as a prop to {@link Grid} 
+	 * to allow comparing its current and previous values in {@link Grid.componentDidUpdate}
+	*/
 	editingId: string,
 	toDoList: ToDoList,
 	deleteToDo: IDeleteToDo
