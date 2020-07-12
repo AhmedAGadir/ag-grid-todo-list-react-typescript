@@ -29,8 +29,8 @@ import 'normalize.css';
 
 interface GridProps {
 	/** 
-	 * the ID of the currently editing node in the Grid. Note: this value is stored in 
-	 * the {@link EditingContext} context, but it is also passed as a prop to {@link Grid} 
+	 * the ID of the currently editing node in the Grid. 
+	 * This value is passed to {@link Grid} as a prop in {@link WithEditingContext} Higher Order Component
 	 * to allow comparing its current and previous values in {@link Grid.componentDidUpdate}
 	*/
 	editingId: string,
