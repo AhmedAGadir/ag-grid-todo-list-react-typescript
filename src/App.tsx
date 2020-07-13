@@ -16,9 +16,11 @@ class App extends React.Component<{}, AppState> {
 
 	public state: AppState = {
 		toDoList: [
-			{ description: 'Get shopping', deadline: '11/07/2020', id: UTILS.uuid() },
-			{ description: 'Go for a run', deadline: '25/08/2020', id: UTILS.uuid() },
-			{ description: 'Buy a Datagrid', deadline: '06/09/2020', id: UTILS.uuid() },
+			{ description: 'Go to Japan', deadline: '01/07/2020', id: UTILS.uuid() },
+			{ description: 'Climb Mt. Fuji', deadline: '08/07/2020', id: UTILS.uuid() },
+			{ description: 'Ride the Bullet Train', deadline: '15/07/2020', id: UTILS.uuid() },
+			// { description: 'Drive a real life Mario Kart', deadline: '22/08/2020', id: UTILS.uuid() },
+			// { description: 'Go on a ramen tour', deadline: null, id: UTILS.uuid() },
 		]
 	}
 

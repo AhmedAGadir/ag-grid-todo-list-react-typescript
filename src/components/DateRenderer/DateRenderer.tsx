@@ -7,33 +7,33 @@ import { ICellRenderer, ICellRendererParams } from 'ag-grid-community';
 import * as UTILS from '../../utils';
 import './DateRenderer.scss';
 
-import { EditingContext, IEditingContext } from '../../context/EditingContext';
+import { MockEditingContext, IMockEditingContext } from '../../context/MockEditingContext';
 
 interface DateRendererProps extends ICellRendererParams { }
 
 interface DateRendererState {
     selectedDate: Date,
-    editing: boolean
+    mockEditing: boolean
 }
 
 export default class DateRenderer extends React.Component<DateRendererProps, DateRendererState> implements ICellRenderer {
     state: DateRendererState;
 
-    static contextType: React.Context<IEditingContext> = EditingContext;
+    static contextType: React.Context<IMockEditingContext> = MockEditingContext;
 
     public constructor(props: DateRendererProps) {
         super(props);
         let selectedDate = null;
         this.state = {
             selectedDate: selectedDate,
-            editing: false,
+            mockEditing: false,
         }
     }
 
 
     public refresh(): boolean {
-        const editing: boolean = this.context.editingId === this.props.node.id;
-        this.setState({ editing });
+        const mockEditing: boolean = this.context.mockEditingId === this.props.node.id;
+        this.setState({ mockEditing });
         return true;
     }
 
@@ -53,16 +53,16 @@ export default class DateRenderer extends React.Component<DateRendererProps, Dat
     }
 
     private commitChanges = (): void => {
-        if (this.state.editing) {
+        if (this.state.mockEditing) {
             const dateValue: string = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
             this.props.node.setDataValue('deadline', dateValue);
         }
     }
 
     private cancelChanges = (): void => {
-        if (this.state.editing) {
-            const dateBeforeEditing: Date = this.props.getValue() ? UTILS.convertToDate(this.props.getValue()) : null;
-            this.setState({ selectedDate: dateBeforeEditing });
+        if (this.state.mockEditing) {
+            const dateBeforeMockEditing: Date = this.props.getValue() ? UTILS.convertToDate(this.props.getValue()) : null;
+            this.setState({ selectedDate: dateBeforeMockEditing });
         }
     }
 
@@ -80,11 +80,11 @@ export default class DateRenderer extends React.Component<DateRendererProps, Dat
         return (
             <MuiPickersUtilsProvider utils={DateFnsUtils} >
                 <KeyboardDatePicker
-                    className={this.props.node.isSelected() && !this.state.editing ? "my-datepicker strike" : 'my-datepicker'}
-                    style={{ background: this.state.editing ? this.props.node.isSelected() ? '#D5F1D1' : 'whitesmoke' : null }}
+                    className={this.props.node.isSelected() && !this.state.mockEditing ? "my-datepicker strike" : 'my-datepicker'}
+                    style={{ background: this.state.mockEditing ? this.props.node.isSelected() ? '#D5F1D1' : 'whitesmoke' : null }}
                     value={this.state.selectedDate}
                     onChange={this.handleDateChange}
-                    disabled={!this.state.editing}
+                    disabled={!this.state.mockEditing}
                     id={`date-picker-dialog-${this.props.node.id}`}
                     format="dd/MM/yyyy"
                     placeholder={'No deadline'}

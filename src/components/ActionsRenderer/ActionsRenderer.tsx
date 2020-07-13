@@ -3,33 +3,33 @@ import { ICellRenderer, ICellRendererParams, CellMouseOverEvent, CellMouseOutEve
 import { ToDo, IDeleteToDo } from '../../interfaces';
 import './ActionsRenderer.scss'
 
-import { EditingContext, IEditingContext } from '../../context/EditingContext';
+import { MockEditingContext, IMockEditingContext } from '../../context/MockEditingContext';
 
 interface ActionsRendererProps extends ICellRendererParams {
     deleteToDo: IDeleteToDo
 }
 
 interface ActionsRendererState {
-    editing: boolean,
+    mockEditing: boolean,
     visible: boolean
 }
 
 export default class ActionsRenderer extends React.Component<ActionsRendererProps, ActionsRendererState> implements ICellRenderer {
     state: ActionsRendererState;
 
-    static contextType: React.Context<IEditingContext> = EditingContext;
+    static contextType: React.Context<IMockEditingContext> = MockEditingContext;
 
     public constructor(props: ActionsRendererProps) {
         super(props);
         this.state = {
-            editing: false,
+            mockEditing: false,
             visible: false
         }
     }
 
     public refresh(): boolean {
-        const editing: boolean = this.context.editingId === this.props.node.id;
-        this.setState({ editing });
+        const mockEditing: boolean = this.context.mockEditingId === this.props.node.id;
+        this.setState({ mockEditing });
         return true;
     }
 
@@ -53,7 +53,7 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
 
     private onCellMouseOut = (params: CellMouseOutEvent): void => {
         if (params.node.id === this.props.node.id) {
-            if (this.state.editing) {
+            if (this.state.mockEditing) {
                 return;
             }
             const visible: boolean = false;
@@ -62,12 +62,12 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
     }
 
     private editToDo: React.MouseEventHandler<HTMLSpanElement> = (): void => {
-        if (this.context.editingId !== null) {
+        if (this.context.mockEditingId !== null) {
             alert('You can only edit one todo at a time');
             return;
         }
         const nodeId: string = this.props.node.id;
-        this.context.setEditingId(nodeId);
+        this.context.setMockEditingId(nodeId);
     }
 
     private deleteToDo: React.MouseEventHandler<HTMLSpanElement> = (): void => {
@@ -80,13 +80,13 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
     private commitChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         const commitChangesEvent: AgEvent = { type: 'commitChanges' };
         this.props.api.dispatchEvent(commitChangesEvent);
-        setTimeout(() => this.context.setEditingId(null), 0);
+        setTimeout(() => this.context.setMockEditingId(null), 0);
     }
 
     private cancelChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         const cancelChangesEvent: AgEvent = { type: 'cancelChanges' };
         this.props.api.dispatchEvent(cancelChangesEvent);
-        setTimeout(() => this.context.setEditingId(null), 0);
+        setTimeout(() => this.context.setMockEditingId(null), 0);
     }
 
     public render(): React.ReactElement {
@@ -94,14 +94,14 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
             return null;
         }
 
-        const editingIcons = (
+        const mockEditingIcons = (
             <>
                 <span className="save-icon" onClick={this.commitChanges} > <i className="far fa-save" > </i></span >
                 <span className="cancel-icon" onClick={this.cancelChanges} > <i className="fas fa-undo" > </i></span >
             </>
         );
 
-        const notEditingIcons = (
+        const nonMockEditingIcons = (
             <>
                 <span className="edit-icon" onClick={this.editToDo} > <i className="fas fa-pen" > </i></span >
                 <span className="delete-icon" onClick={this.deleteToDo} > <i className="fas fa-trash" > </i></span >
@@ -110,7 +110,7 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
 
         return (
             <div className="actions-wrapper" >
-                {this.state.editing ? editingIcons : notEditingIcons}
+                {this.state.mockEditing ? mockEditingIcons : nonMockEditingIcons}
             </div>
         )
     }

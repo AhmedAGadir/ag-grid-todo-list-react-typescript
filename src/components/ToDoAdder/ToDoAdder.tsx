@@ -43,7 +43,10 @@ export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdder
         }
     }
 
-    /** @returns a new {@link ToDo} using a description */
+    /** 
+     * @param description - description of ToDo
+     * @returns a new {@link ToDo} using a description 
+     */
     private createToDo = (description: string): ToDo => {
         return {
             description,

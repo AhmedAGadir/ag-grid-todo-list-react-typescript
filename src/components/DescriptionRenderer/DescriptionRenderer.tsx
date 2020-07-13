@@ -2,12 +2,14 @@ import React from 'react';
 import { ICellRenderer, ICellRendererParams } from 'ag-grid-community';
 import './DescriptionRenderer.scss';
 
-import { EditingContext, IEditingContext } from '../../context/EditingContext';
+import { MockEditingContext, IMockEditingContext } from '../../context/MockEditingContext';
 
 interface DescriptionRendererProps extends ICellRendererParams { };
 
 interface DescriptionRendererState {
-    editing: boolean,
+    /** boolean value indicating whether the node this renderer is situated in is currently mock-editing or not */
+    mockEditing: boolean,
+    /** {@link ToDo.description | description} of a toDo */
     value: string
 };
 
@@ -16,19 +18,19 @@ export default class DescriptionRenderer extends React.Component<DescriptionRend
     state: DescriptionRendererState;
     private inputRef: React.RefObject<HTMLInputElement>;
 
-    static contextType: React.Context<IEditingContext> = EditingContext;
+    static contextType: React.Context<IMockEditingContext> = MockEditingContext;
 
     public constructor(props: DescriptionRendererProps) {
         super(props);
         this.state = {
-            editing: false,
+            mockEditing: false,
             value: ''
         };
         this.inputRef = React.createRef<HTMLInputElement>();
     }
 
     public refresh(): boolean {
-        this.setState({ editing: this.context.editingId === this.props.node.id });
+        this.setState({ mockEditing: this.context.mockEditingId === this.props.node.id });
         return true;
     }
 
@@ -47,19 +49,19 @@ export default class DescriptionRenderer extends React.Component<DescriptionRend
     }
 
     public componentDidUpdate(): void {
-        if (this.state.editing) {
+        if (this.state.mockEditing) {
             this.inputRef.current!.focus();
         }
     }
 
     private commitChanges = (): void => {
-        if (this.state.editing) {
+        if (this.state.mockEditing) {
             this.props.node.setDataValue(this.props.column.getColId(), this.state.value);
         }
     }
 
     private cancelChanges = (): void => {
-        if (this.state.editing) {
+        if (this.state.mockEditing) {
             this.setState({ value: this.props.getValue() });
         }
     }
@@ -72,7 +74,7 @@ export default class DescriptionRenderer extends React.Component<DescriptionRend
         let component: React.ReactElement;
         const isSelected: boolean = this.props.node.isSelected();
 
-        if (this.state.editing) {
+        if (this.state.mockEditing) {
             const inputStyles: React.CSSProperties = { background: isSelected ? '#D5F1D1' : 'whitesmoke' };
             component =
                 <input

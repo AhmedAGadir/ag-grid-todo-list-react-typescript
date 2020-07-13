@@ -21,7 +21,7 @@ import {
 import { ToDo, ToDoList, IDeleteToDo } from '../../interfaces';
 import * as UTILS from '../../utils';
 
-import WithEditingContext from '../../HOC/WithEditingContext';
+import WithMockEditingContext from '../../HOC/WithMockEditingContext';
 
 import 'ag-grid-enterprise';
 import './Grid.scss'
@@ -29,19 +29,22 @@ import 'normalize.css';
 
 interface GridProps {
 	/** 
-	 * ID of the currently editing node in the Grid. 
-	 * editingId is passed as a prop to the {@link Grid} via the {@link WithEditingContext} Higher Order Component
-	 * to allow comparing its current and previous values in {@link Grid.componentDidUpdate}
+	 * ID of the currently mock-editing node in the Grid. 
+	 * Passed via the {@link WithMockEditingContext} Higher Order Component
 	*/
-	editingId: string,
+	mockEditingId: string,
+	/** Collection of toDos to render */
 	toDoList: ToDoList,
+	/** removes a toDo from {@link AppState.toDoList} */
 	deleteToDo: IDeleteToDo
 }
 
 interface GridState {
+	/** grid config the ag-Grid instances */
 	gridOptions: GridOptions
 }
 
+/** ag-Grid instance that renders the toDoList */
 class Grid extends React.Component<GridProps, GridState> {
 	state: GridState;
 	private gridApi: GridApi;
@@ -52,36 +55,30 @@ class Grid extends React.Component<GridProps, GridState> {
 			gridOptions: {
 				columnDefs: [
 					{
-						cellRenderer: 'checkboxRenderer',
 						pinned: 'left',
+						cellRendererFramework: CheckboxRenderer,
 						width: 50,
 					},
 					{
 						field: 'description',
-						cellRenderer: 'descriptionRenderer',
+						cellRendererFramework: DescriptionRenderer,
 						rowDrag: true,
 						flex: 1,
 					},
 					{
 						field: 'deadline',
-						cellRenderer: 'dateRenderer',
+						cellRendererFramework: DateRenderer,
 						tooltipValueGetter: this.tooltipValueGetter,
 						width: 170,
 					},
 					{
-						cellRenderer: 'actionsRenderer',
+						cellRendererFramework: ActionsRenderer,
 						cellRendererParams: {
 							deleteToDo: this.props.deleteToDo,
 						},
 						width: 90,
 					},
 				],
-				frameworkComponents: {
-					descriptionRenderer: DescriptionRenderer,
-					dateRenderer: DateRenderer,
-					checkboxRenderer: CheckboxRenderer,
-					actionsRenderer: ActionsRenderer
-				},
 				immutableData: true,
 				domLayout: "autoHeight",
 				headerHeight: 0,
@@ -95,31 +92,45 @@ class Grid extends React.Component<GridProps, GridState> {
 		}
 	}
 
+	/** 
+	 * Compares the previous and currently {@link IMockEditingContext.mockEditingId | mockEditingId} values.
+	 * If there is a change then the grid nodes are refreshed to reflect this.
+	 */
 	public componentDidUpdate(prevProps: GridProps): void {
-		if (prevProps.editingId !== this.props.editingId) {
-			const idToUpdate: string = this.props.editingId === null ? prevProps.editingId : this.props.editingId;
+		if (prevProps.mockEditingId !== this.props.mockEditingId) {
+			const idToUpdate: string = this.props.mockEditingId === null ? prevProps.mockEditingId : this.props.mockEditingId;
 			const nodeToUpdate: RowNode = this.gridApi.getRowNode(idToUpdate);
 			const refreshCellsParams: RefreshCellsParams = { rowNodes: [nodeToUpdate], force: true };
 			this.gridApi.refreshCells(refreshCellsParams);
 		}
 	}
 
+	/** saves a reference to the ag-Grid API on this component */
 	private onGridReady = (params: GridReadyEvent): void => {
 		this.gridApi = params.api;
 	}
 
+	/** Complete the first two toDos in {@link AppState.toDoList} */
 	private onFirstDataRendered = (): void => {
 		const timeout: number = 500;
-		setTimeout(this.completeFirstToDo, timeout);
+		setTimeout(() => {
+			this.completeToDos([0, 1]);
+		}, timeout);
 	}
 
-	private completeFirstToDo = (): void => {
-		const firstNode: RowNode = this.gridApi.getDisplayedRowAtIndex(0);
-		firstNode.setSelected(true);
-		const refreshCellsParams: RefreshCellsParams = { rowNodes: [firstNode], force: true };
+	/** Completes the toDos located in the Grid at the indexes passed */
+	private completeToDos = (indexes: number[]): void => {
+		const nodesArr: RowNode[] = [];
+		indexes.forEach(ind => {
+			const node: RowNode = this.gridApi.getDisplayedRowAtIndex(ind);
+			node.setSelected(true);
+			nodesArr.push(node);
+		})
+		const refreshCellsParams: RefreshCellsParams = { rowNodes: nodesArr, force: true };
 		this.gridApi.refreshCells(refreshCellsParams);
 	}
 
+	/** @returns a message saying how many days are remaining/overdue a toDo is */
 	private tooltipValueGetter = (params: ITooltipParams): string => {
 		let message: string;
 		if (!params.value) {
@@ -134,6 +145,7 @@ class Grid extends React.Component<GridProps, GridState> {
 		return message;
 	}
 
+	/** points ag-Grid to the unique ID of each toDo */
 	private getRowNodeId: GetRowNodeIdFunc = (toDo: ToDo): string => {
 		return toDo.id;
 	}
@@ -153,4 +165,4 @@ class Grid extends React.Component<GridProps, GridState> {
 	}
 }
 
-export default WithEditingContext<GridProps>(Grid);
+export default WithMockEditingContext<GridProps>(Grid);
