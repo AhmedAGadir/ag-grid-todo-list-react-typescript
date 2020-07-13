@@ -1,10 +1,10 @@
-/** todo that a user aims to complete */
+/** toDo that a user aims to complete */
 export interface ToDo {
-    /** unique id for todo */
+    /** unique id for toDo */
     id: string,
-    /** description of todo */
+    /** description of toDo */
     description: string,
-    /** due date for todo */
+    /** due date for toDo */
     deadline: string | null
 }
 

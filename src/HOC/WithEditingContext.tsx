@@ -8,6 +8,7 @@ import { IEditingContext, EditingContext } from '../context/EditingContext';
  * Note: the returned component is also passed the {@link IEditingContext.editingId | currently editing ID} 
  * as a prop so it can compare it's previous and current values in the **componentDidUpdate** lifecycle hook.
  */
+// https://stackoverflow.com/questions/41112313/how-to-use-generics-with-arrow-functions-in-typescript-jsx-with-react/41112882#41112882
 const WithEditingContext = <P extends {}>(WrappedComponent: React.ComponentClass<P>): React.ComponentClass<P, IEditingContext> => {
     return class extends React.Component<P, IEditingContext> {
         state: IEditingContext;

@@ -30,7 +30,7 @@ import 'normalize.css';
 interface GridProps {
 	/** 
 	 * ID of the currently editing node in the Grid. 
-	 * editingId is passed as a prop via the {@link WithEditingContext} Higher Order Component
+	 * editingId is passed as a prop to the {@link Grid} via the {@link WithEditingContext} Higher Order Component
 	 * to allow comparing its current and previous values in {@link Grid.componentDidUpdate}
 	*/
 	editingId: string,

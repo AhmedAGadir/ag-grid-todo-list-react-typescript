@@ -2,7 +2,7 @@ import { differenceInDays } from 'date-fns';
 import { uuid } from 'uuidv4';
 
 /**
- * Converts a date string in the form of 'dd/mm/yy' to a JavaScript Date object.
+ * Converts a date string in the form of 'dd/mm/yyyy' to a JavaScript Date object.
  * @param dateString - date string in the form 'dd/mm/yyyy'
  * @returns - a JavaScript Date object for the passed string
  */
