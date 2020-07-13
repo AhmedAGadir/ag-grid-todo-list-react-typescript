@@ -7,7 +7,7 @@ import * as UTILS from './utils';
 import './App.scss';
 
 interface AppState {
-	/** Collection of a user's {@link ToDo | toDos} */
+	/** Collection of {@link ToDo | toDos} */
 	toDoList: ToDoList
 }
 

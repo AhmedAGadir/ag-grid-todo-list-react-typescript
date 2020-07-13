@@ -1,6 +1,6 @@
 /** toDo that a user aims to complete */
 export interface ToDo {
-    /** unique id for toDo */
+    /** unique ID for toDo */
     id: string,
     /** description of toDo */
     description: string,

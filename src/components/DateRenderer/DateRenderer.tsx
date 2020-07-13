@@ -12,8 +12,10 @@ import { MockEditingContext, IMockEditingContext } from '../../context/MockEditi
 interface DateRendererProps extends ICellRendererParams { }
 
 interface DateRendererState {
-    selectedDate: Date,
+    /** true if the node is in mock-edit mode */
     mockEditing: boolean
+    /** deadline for the toDo */
+    selectedDate: Date,
 }
 
 export default class DateRenderer extends React.Component<DateRendererProps, DateRendererState> implements ICellRenderer {

@@ -61,3 +61,5 @@ modules and namespaces
 tsdoc/typedoc
 
 WHAT DOES THE REACT.REACTELEMENT HOVER STUFF MEAN??
+
+render(): React.ReactElement<{ mockEditing: boolean } extends P> {

@@ -14,7 +14,7 @@ interface ToDoAdderState {
 }
 
 /**
- * Form component where users can input a {@link ToDo.description | ToDo description} 
+ * Form component which allows a user to input a {@link ToDo.description | description} 
  * which is then turned into a {@link ToDo} and appended to {@link AppState.toDoList}
  */
 export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdderState> {
@@ -45,7 +45,7 @@ export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdder
 
     /** 
      * @param description - description of ToDo
-     * @returns a new {@link ToDo} using a description 
+     * @returns a new {@link ToDo}
      */
     private createToDo = (description: string): ToDo => {
         return {

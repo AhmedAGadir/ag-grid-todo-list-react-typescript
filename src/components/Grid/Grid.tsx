@@ -28,12 +28,10 @@ import './Grid.scss'
 import 'normalize.css';
 
 interface GridProps {
-	/** 
-	 * ID of the currently mock-editing node in the Grid. 
-	 * Passed via the {@link WithMockEditingContext} Higher Order Component
-	*/
+	/** ID of the mock-editing node in the Grid. 
+	 * Passed via {@link WithMockEditingContext} */
 	mockEditingId: string,
-	/** Collection of toDos to render */
+	/** Collection of toDos */
 	toDoList: ToDoList,
 	/** removes a toDo from {@link AppState.toDoList} */
 	deleteToDo: IDeleteToDo
@@ -93,7 +91,7 @@ class Grid extends React.Component<GridProps, GridState> {
 	}
 
 	/** 
-	 * Compares the previous and currently {@link IMockEditingContext.mockEditingId | mockEditingId} values.
+	 * Compares the previous and current {@link IMockEditingContext.mockEditingId | mockEditingId} values.
 	 * If there is a change then the grid nodes are refreshed to reflect this.
 	 */
 	public componentDidUpdate(prevProps: GridProps): void {
@@ -118,7 +116,7 @@ class Grid extends React.Component<GridProps, GridState> {
 		}, timeout);
 	}
 
-	/** Completes the toDos located in the Grid at the indexes passed */
+	/** Completes the toDos in the Grid positioned at the indexes passed */
 	private completeToDos = (indexes: number[]): void => {
 		const nodesArr: RowNode[] = [];
 		indexes.forEach(ind => {
