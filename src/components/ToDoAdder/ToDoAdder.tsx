@@ -55,10 +55,9 @@ export default class ToDoAdder extends React.Component<ToDoAdderProps, ToDoAdder
     /** updates {@link ToDoAdderState.description} */
     private descriptionChangedHandler: React.ChangeEventHandler<HTMLInputElement> = (event: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({ description: event.target.value });
-
     }
 
-    /** prevents HTML Form submission */
+    /** prevents HTML form submission */
     private handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
     }

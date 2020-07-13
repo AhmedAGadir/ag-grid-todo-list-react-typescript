@@ -2,9 +2,9 @@ import React from 'react';
 import { IEditingContext, EditingContext } from '../context/EditingContext';
 
 /**
- * Higher Order Component which wraps a react component so that it (and its children components) have access to an {@link EditingContext}.
+ * Higher Order Component which wraps a react component so that it (and its children components) have access to {@link EditingContext}.
  * @param WrappedComponent - A React component
- * @returns - a wrapped React component that has access to an {@link EditingContext}.
+ * @returns - a wrapped React component that has access to {@link EditingContext}.
  * Note: the returned component is also passed the {@link IEditingContext.editingId | currently editing ID} 
  * as a prop so it can compare it's previous and current values in the **componentDidUpdate** lifecycle hook.
  */
@@ -12,7 +12,7 @@ const WithEditingContext = <P extends {}>(WrappedComponent: React.ComponentClass
     return class extends React.Component<P, IEditingContext> {
         state: IEditingContext;
 
-        /** Creates an {@link IEditingContext | Editing Context} state object */
+        /** Creates an object to override the default {@link EditingContext} value*/
         constructor(props: P) {
             super(props);
             this.state = {
@@ -21,7 +21,7 @@ const WithEditingContext = <P extends {}>(WrappedComponent: React.ComponentClass
             }
         }
 
-        /** updates the context object's {@link IEditingContext.editingId | editing ID} */
+        /** updates {@link EditingContext.editingId} */
         setEditingId = (id: string): void => {
             this.setState(prevState => ({
                 ...prevState,

@@ -7,10 +7,7 @@ export interface IEditingContext {
     setEditingId: (id: string) => void
 }
 
-/** 
- * The context object that is available throughout the application 
- * The default value is intended to be overriden in the {@link WithEditingContext} Higher Order Component.
-*/
+/** The default value is intended to be overriden in the {@link WithEditingContext} Higher Order Component */
 export const EditingContext: React.Context<IEditingContext> = React.createContext({
     editingId: null,
     setEditingId: (id: string): void => { },

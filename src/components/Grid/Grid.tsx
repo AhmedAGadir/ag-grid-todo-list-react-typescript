@@ -29,8 +29,8 @@ import 'normalize.css';
 
 interface GridProps {
 	/** 
-	 * the ID of the currently editing node in the Grid. 
-	 * This value is passed to {@link Grid} as a prop in {@link WithEditingContext} Higher Order Component
+	 * ID of the currently editing node in the Grid. 
+	 * editingId is passed as a prop via the {@link WithEditingContext} Higher Order Component
 	 * to allow comparing its current and previous values in {@link Grid.componentDidUpdate}
 	*/
 	editingId: string,
@@ -96,9 +96,7 @@ class Grid extends React.Component<GridProps, GridState> {
 	}
 
 	public componentDidUpdate(prevProps: GridProps): void {
-		// comparisons of context here
 		if (prevProps.editingId !== this.props.editingId) {
-			// refresh editing node / node that just finished editing 
 			const idToUpdate: string = this.props.editingId === null ? prevProps.editingId : this.props.editingId;
 			const nodeToUpdate: RowNode = this.gridApi.getRowNode(idToUpdate);
 			const refreshCellsParams: RefreshCellsParams = { rowNodes: [nodeToUpdate], force: true };
