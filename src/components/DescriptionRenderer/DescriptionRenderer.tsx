@@ -100,6 +100,7 @@ export default class DescriptionRenderer extends React.Component<DescriptionRend
             <div className="todo-wrapper" >
                 {component}
             </div>
+
         );
     }
 }
