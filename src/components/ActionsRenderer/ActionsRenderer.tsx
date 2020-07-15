@@ -1,11 +1,13 @@
 import React from 'react';
-import { ICellRenderer, ICellRendererParams, CellMouseOverEvent, CellMouseOutEvent, AgEvent } from 'ag-grid-community';
-import { ToDo, IDeleteToDo } from '../../interfaces';
+import { ICellRenderer, ICellRendererParams, CellMouseOverEvent, CellMouseOutEvent } from 'ag-grid-community';
+import { ToDo, IDeleteToDo } from '../../interfaces/todo';
 import './ActionsRenderer.scss'
 
 import { MockEditingContext, IMockEditingContext } from '../../context/MockEditingContext';
 
 interface ActionsRendererProps extends ICellRendererParams {
+    commit: () => null,
+    rollback: () => null,
     deleteToDo: IDeleteToDo
 }
 
@@ -77,15 +79,13 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
         }
     }
 
-    private commitChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
-        const commitChangesEvent: AgEvent = { type: 'commitChanges' };
-        this.props.api.dispatchEvent(commitChangesEvent);
+    private saveChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+        this.props.commit();
         setTimeout(() => this.context.setMockEditingId(null), 0);
     }
 
-    private cancelChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
-        const cancelChangesEvent: AgEvent = { type: 'cancelChanges' };
-        this.props.api.dispatchEvent(cancelChangesEvent);
+    private undoChanges: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+        this.props.rollback();
         setTimeout(() => this.context.setMockEditingId(null), 0);
     }
 
@@ -96,8 +96,8 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
 
         const mockEditingIcons = (
             <>
-                <span className="save-icon" onClick={this.commitChanges} > <i className="far fa-save" > </i></span >
-                <span className="cancel-icon" onClick={this.cancelChanges} > <i className="fas fa-undo" > </i></span >
+                <span className="save-icon" onClick={this.saveChanges} > <i className="far fa-save" > </i></span >
+                <span className="cancel-icon" onClick={this.undoChanges} > <i className="fas fa-undo" > </i></span >
             </>
         );
 

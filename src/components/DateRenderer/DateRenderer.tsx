@@ -3,11 +3,12 @@ import React from 'react';
 import { format } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { ICellRenderer, ICellRendererParams } from 'ag-grid-community';
+import { ICellRendererParams } from 'ag-grid-community';
 import * as UTILS from '../../utils';
 import './DateRenderer.scss';
 
 import { MockEditingContext, IMockEditingContext } from '../../context/MockEditingContext';
+import { IMockCellEditor } from '../../interfaces/mockCellEditor';
 
 interface DateRendererProps extends ICellRendererParams { }
 
@@ -18,7 +19,7 @@ interface DateRendererState {
     selectedDate: Date,
 }
 
-export default class DateRenderer extends React.Component<DateRendererProps, DateRendererState> implements ICellRenderer {
+export default class DateRenderer extends React.Component<DateRendererProps, DateRendererState> implements IMockCellEditor {
     state: DateRendererState;
 
     static contextType: React.Context<IMockEditingContext> = MockEditingContext;
@@ -40,32 +41,20 @@ export default class DateRenderer extends React.Component<DateRendererProps, Dat
     }
 
     public componentDidMount(): void {
-        this.props.api.addEventListener('commitChanges', this.commitChanges);
-        this.props.api.addEventListener('cancelChanges', this.cancelChanges);
-
         if (this.props.getValue()) {
             const selectedDate: Date = UTILS.convertToDate(this.props.getValue());
             this.setState({ selectedDate });
         }
     }
 
-    public componentWillUnmount(): void {
-        this.props.api.removeEventListener('commitChanges', this.commitChanges);
-        this.props.api.removeEventListener('cancelChanges', this.cancelChanges);
+    public getValue(): [string, string] {
+        const dateValue: string = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
+        return [this.props.column.getColId(), dateValue];
     }
 
-    private commitChanges = (): void => {
-        if (this.state.mockEditing) {
-            const dateValue: string = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
-            this.props.node.setDataValue('deadline', dateValue);
-        }
-    }
-
-    private cancelChanges = (): void => {
-        if (this.state.mockEditing) {
-            const dateBeforeMockEditing: Date = this.props.getValue() ? UTILS.convertToDate(this.props.getValue()) : null;
-            this.setState({ selectedDate: dateBeforeMockEditing });
-        }
+    public reset(): void {
+        const dateBeforeMockEditing: Date = this.props.getValue() ? UTILS.convertToDate(this.props.getValue()) : null;
+        this.setState({ selectedDate: dateBeforeMockEditing });
     }
 
     private handleDateChange = (d: Date | null) => {

@@ -63,3 +63,78 @@ tsdoc/typedoc
 WHAT DOES THE REACT.REACTELEMENT HOVER STUFF MEAN??
 
 render(): React.ReactElement<{ mockEditing: boolean } extends P> {
+
+
+
+
+
+
+    ==============
+
+    import React from 'react';
+import { ICellRendererParams } from 'ag-grid-community';
+import { MockEditingContext, IMockEditingContext } from '../context/MockEditingContext';
+
+
+export interface IMockEditingCellRenderer extends React.ComponentClass, React.Component implements {
+    commitChanges: () => void,
+    cancelChanges: () => void
+}
+
+interface MockEditingCellRenderer {
+    mockEditing: boolean,
+}
+
+const MockEditingCellRenderer = (CellRendererComp: any): React.ComponentClass => {
+
+    return class extends React.Component {
+        static contextType: React.Context<IMockEditingContext> = MockEditingContext;
+
+        constructor(props: any) {
+            super(props);
+            this.state = {
+                mockEditing: false,
+            }
+        }
+
+        public refresh(): boolean {
+            this.setState({ mockEditing: this.context.mockEditingId === (this.props as any).node.id });
+            return true;
+        }
+
+        public componentDidMount(): void {
+            (this.props as any).api.addEventListener('commitChanges', this.commitChanges);
+            (this.props as any).api.addEventListener('cancelChanges', this.cancelChanges);
+
+            // CellRendererComp.componentDidMount();
+        }
+
+        public componentWillUnmount(): void {
+            (this.props as any).api.removeEventListener('commitChanges', this.commitChanges);
+            (this.props as any).api.removeEventListener('cancelChanges', this.cancelChanges);
+
+            // CellRendererComp.componentWillMount();
+        }
+
+        commitChanges() {
+            if ((this.state as any).mockEditing) {
+                CellRendererComp.commitChanges();
+            }
+        }
+
+        cancelChanges() {
+            if ((this.state as any).mockEditing) {
+                CellRendererComp.cancelChanges();
+            }
+        }
+
+        render(): React.ReactElement {
+            // mockEditing state passed for styling/rendering 
+            {/* 
+				// @ts-ignore */}
+            return <CellRendererComp {...this.props} mockEditing={(this.state as any).mockEditing} />
+        };
+    }
+}
+
+export default MockEditingCellRenderer;

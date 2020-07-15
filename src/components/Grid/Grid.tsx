@@ -8,7 +8,7 @@ import {
 	RefreshCellsParams,
 	GridOptions,
 	GetRowNodeIdFunc,
-	ITooltipParams
+	ITooltipParams,
 } from 'ag-grid-community'
 
 import {
@@ -18,10 +18,13 @@ import {
 	ActionsRenderer
 } from '../index';
 
-import { ToDo, ToDoList, IDeleteToDo } from '../../interfaces';
+import { ToDo, ToDoList, IDeleteToDo, } from '../../interfaces/todo';
+import { instanceOfIMockCellEditor, IMockCellEditor } from '../../interfaces/mockCellEditor';
+
 import * as UTILS from '../../utils';
 
 import WithMockEditingContext from '../../HOC/WithMockEditingContext';
+import { IMockEditingContext, MockEditingContext } from '../../context/MockEditingContext';
 
 import 'ag-grid-enterprise';
 import './Grid.scss'
@@ -29,7 +32,7 @@ import 'normalize.css';
 
 interface GridProps {
 	/** ID of the mock-editing node in the Grid. 
-	 * Passed via {@link WithMockEditingContext} */
+	 * Passed via {@link WithMockEditingContext} Higher Order Component */
 	mockEditingId: string,
 	/** Collection of toDos */
 	toDoList: ToDoList,
@@ -46,6 +49,9 @@ interface GridState {
 class Grid extends React.Component<GridProps, GridState> {
 	state: GridState;
 	private gridApi: GridApi;
+
+	// context is needed in the stopEditing method
+	static contextType: React.Context<IMockEditingContext> = MockEditingContext;
 
 	public constructor(props: GridProps) {
 		super(props);
@@ -72,6 +78,8 @@ class Grid extends React.Component<GridProps, GridState> {
 					{
 						cellRendererFramework: ActionsRenderer,
 						cellRendererParams: {
+							commit: this.commitChanges,
+							rollback: this.rollbackChanges,
 							deleteToDo: this.props.deleteToDo,
 						},
 						width: 90,
@@ -147,6 +155,35 @@ class Grid extends React.Component<GridProps, GridState> {
 	private getRowNodeId: GetRowNodeIdFunc = (toDo: ToDo): string => {
 		return toDo.id;
 	}
+
+	private commitChanges = (): void => {
+		const mockEditingNode: RowNode = this.gridApi.getRowNode(this.context.mockEditingId);
+		const updatedToDo: ToDo = { ...mockEditingNode.data };
+
+		const mockEditors: IMockCellEditor[] = this.getMockEditors();
+		mockEditors.forEach(mockEditor => {
+			let [field, updatedValue]: ['id' | 'description' | 'deadline', any] = mockEditor.getValue();
+			updatedToDo[field] = updatedValue;
+		});
+		mockEditingNode.setData(updatedToDo);
+	}
+
+	private rollbackChanges = (): void => {
+		const mockEditors: IMockCellEditor[] = this.getMockEditors();
+		mockEditors.forEach(mockEditor => {
+			mockEditor.reset();
+		});
+	}
+
+
+	private getMockEditors = (): IMockCellEditor[] => {
+		const mockEditingNode: RowNode = this.gridApi.getRowNode(this.context.mockEditingId);
+		const mockEditors: IMockCellEditor[] = this.gridApi.getCellRendererInstances({ rowNodes: [mockEditingNode] })
+			.map(cellRenderer => (cellRenderer as any).componentInstance)
+			.filter(cellRenderer => instanceOfIMockCellEditor(cellRenderer));
+		return mockEditors;
+	}
+
 
 	public render(): React.ReactElement {
 		return (

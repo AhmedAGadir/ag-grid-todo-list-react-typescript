@@ -1,5 +1,5 @@
 import React from 'react';
-import { ToDo, IAddToDo } from '../../interfaces';
+import { ToDo, IAddToDo } from '../../interfaces/todo';
 import * as UTILS from '../../utils';
 import './ToDoAdder.scss';
 

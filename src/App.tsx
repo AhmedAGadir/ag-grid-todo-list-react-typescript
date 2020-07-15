@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ToDoAdder, Grid } from './components'
-import { ToDo, ToDoList, IAddToDo, IDeleteToDo } from './interfaces';
+import { ToDo, ToDoList, IAddToDo, IDeleteToDo } from './interfaces/todo';
 import * as UTILS from './utils';
 
 import './App.scss';
