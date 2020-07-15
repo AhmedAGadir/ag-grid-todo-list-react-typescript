@@ -1,31 +1,13 @@
 import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
-
-import {
-	GridReadyEvent,
-	GridApi,
-	RowNode,
-	RefreshCellsParams,
-	GridOptions,
-	GetRowNodeIdFunc,
-	ITooltipParams,
-} from 'ag-grid-community'
-
-import {
-	DateRenderer,
-	DescriptionRenderer,
-	CheckboxRenderer,
-	ActionsRenderer
-} from '../index';
-
+import { GridReadyEvent, GridApi, RowNode, RefreshCellsParams, GridOptions, GetRowNodeIdFunc, ITooltipParams } from 'ag-grid-community';
+import { ReactComponent } from 'ag-grid-react/lib/reactComponent';
+import { DateRenderer, DescriptionRenderer, CheckboxRenderer, ActionsRenderer } from '../index';
 import { ToDo, ToDoList, IDeleteToDo, } from '../../interfaces/todo';
 import { instanceOfIMockCellEditor, IMockCellEditor } from '../../interfaces/mockCellEditor';
-
-import * as UTILS from '../../utils';
-
 import WithMockEditingContext from '../../HOC/WithMockEditingContext';
 import { IMockEditingContext, MockEditingContext } from '../../context/MockEditingContext';
-
+import * as UTILS from '../../utils';
 import 'ag-grid-enterprise';
 import './Grid.scss'
 import 'normalize.css';
@@ -179,7 +161,7 @@ class Grid extends React.Component<GridProps, GridState> {
 	private getMockEditors = (): IMockCellEditor[] => {
 		const mockEditingNode: RowNode = this.gridApi.getRowNode(this.context.mockEditingId);
 		const mockEditors: IMockCellEditor[] = this.gridApi.getCellRendererInstances({ rowNodes: [mockEditingNode] })
-			.map(cellRenderer => (cellRenderer as any).componentInstance)
+			.map(cellRenderer => (cellRenderer as unknown as ReactComponent).getFrameworkComponentInstance())
 			.filter(cellRenderer => instanceOfIMockCellEditor(cellRenderer));
 		return mockEditors;
 	}

@@ -4,11 +4,10 @@ import { format } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { ICellRendererParams } from 'ag-grid-community';
-import * as UTILS from '../../utils';
-import './DateRenderer.scss';
-
 import { MockEditingContext, IMockEditingContext } from '../../context/MockEditingContext';
 import { IMockCellEditor } from '../../interfaces/mockCellEditor';
+import * as UTILS from '../../utils';
+import './DateRenderer.scss';
 
 interface DateRendererProps extends ICellRendererParams { }
 

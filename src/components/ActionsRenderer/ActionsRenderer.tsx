@@ -1,9 +1,9 @@
 import React from 'react';
 import { ICellRenderer, ICellRendererParams, CellMouseOverEvent, CellMouseOutEvent } from 'ag-grid-community';
 import { ToDo, IDeleteToDo } from '../../interfaces/todo';
+import { MockEditingContext, IMockEditingContext } from '../../context/MockEditingContext';
 import './ActionsRenderer.scss'
 
-import { MockEditingContext, IMockEditingContext } from '../../context/MockEditingContext';
 
 interface ActionsRendererProps extends ICellRendererParams {
     commit: () => null,

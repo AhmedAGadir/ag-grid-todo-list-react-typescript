@@ -1,9 +1,8 @@
 import React from 'react';
 import { ICellRendererParams } from 'ag-grid-community';
-import './DescriptionRenderer.scss';
-
 import { MockEditingContext, IMockEditingContext } from '../../context/MockEditingContext';
 import { IMockCellEditor } from '../../interfaces/mockCellEditor';
+import './DescriptionRenderer.scss';
 
 interface DescriptionRendererProps extends ICellRendererParams { };
 
@@ -52,7 +51,6 @@ export default class DescriptionRenderer extends React.Component<DescriptionRend
     }
 
     public reset(): void {
-        console.log('resetting', this.props.getValue());
         this.setState({ value: this.props.getValue() });
     }
 

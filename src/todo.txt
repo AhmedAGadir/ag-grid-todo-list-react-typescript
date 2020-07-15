@@ -138,3 +138,25 @@ const MockEditingCellRenderer = (CellRendererComp: any): React.ComponentClass =>
 }
 
 export default MockEditingCellRenderer;
+
+
+
+==================
+
+
+
+GRID.TSX
+context = mockEditingContext
+
+stopMockEditing(boolean) {
+    let mockEditingNode = this.gridApi.getRowNode(this.mockEditingId);
+    let updateData = {...node.data};
+    forEach(cellRenderer) in mockEditingNode {
+        if (cellRenderer instanceof ImockEditingCellRenderer) {
+            if (bool) {
+                updatedData[field] = cellRenderer.getValue() 
+            }
+        }
+    }
+    mockEditingNode.setData(updatedData)
+}
