@@ -1,6 +1,7 @@
-import { ICellRenderer } from 'ag-grid-community'
+// import { ICellRenderer } from 'ag-grid-community'
 
-export interface IMockCellEditor extends ICellRenderer {
+// export interface IMockCellEditor extends ICellRenderer {
+export interface IMockCellEditor {
     getValue: () => [any, any],
     reset: () => any,
 }

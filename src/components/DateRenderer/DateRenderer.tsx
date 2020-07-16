@@ -3,20 +3,23 @@ import React from 'react';
 import { format } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { ICellRendererParams } from 'ag-grid-community';
-import WithMockCellEditor, { WithMockCellEditorProps } from '../../HOC/WithMockCellEditor';
+import { ICellRendererParams, ICellRenderer } from 'ag-grid-community';
+// import WithMockCellEditor, { WithMockCellEditorProps } from '../../HOC/WithMockCellEditor';
+import WithMockCellEditor from '../../HOC/WithMockCellEditor';
 import { IMockCellEditor } from '../../interfaces/mockCellEditor';
 import * as UTILS from '../../utils';
 import './DateRenderer.scss';
+import { WithMockCellRendererProps } from '../../HOC/WithMockCellRenderer';
 
-interface DateRendererProps extends ICellRendererParams, WithMockCellEditorProps { }
+// interface DateRendererProps extends ICellRendererParams, WithMockCellEditorProps { }
+interface DateRendererProps extends ICellRendererParams, WithMockCellRendererProps { }
 
 interface DateRendererState {
     /** deadline for the toDo */
     selectedDate: Date,
 }
 
-class DateRenderer extends React.Component<DateRendererProps, DateRendererState> implements IMockCellEditor {
+class DateRenderer extends React.Component<DateRendererProps, DateRendererState> implements IMockCellEditor, ICellRenderer {
     state: DateRendererState;
 
     public constructor(props: DateRendererProps) {

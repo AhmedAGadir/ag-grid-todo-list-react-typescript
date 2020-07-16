@@ -1,10 +1,13 @@
 import React from 'react';
-import { ICellRendererParams } from 'ag-grid-community';
-import WithMockCellEditor, { WithMockCellEditorProps } from '../../HOC/WithMockCellEditor';
+import { ICellRendererParams, ICellRenderer } from 'ag-grid-community';
+// import WithMockCellEditor from '../../HOC/WithMockCellEditor';
+import WithMockCellEditor from '../../HOC/WithMockCellEditor';
 import { IMockCellEditor } from '../../interfaces/mockCellEditor';
 import './DescriptionRenderer.scss';
+import { WithMockCellRendererProps } from '../../HOC/WithMockCellRenderer';
 
-interface DescriptionRendererProps extends ICellRendererParams, WithMockCellEditorProps { };
+// interface DescriptionRendererProps extends ICellRendererParams, WithMockCellEditorProps { };
+interface DescriptionRendererProps extends ICellRendererParams, WithMockCellRendererProps { };
 
 interface DescriptionRendererState {
     /** {@link ToDo.description | description} of a toDo */
@@ -12,7 +15,7 @@ interface DescriptionRendererState {
 };
 
 /** renders the description of a toDo. If the node is in mock-edit mode then an input field is rendered to allow for updating */
-class DescriptionRenderer extends React.Component<DescriptionRendererProps, DescriptionRendererState> implements IMockCellEditor {
+class DescriptionRenderer extends React.Component<DescriptionRendererProps, DescriptionRendererState> implements IMockCellEditor, ICellRenderer {
     state: DescriptionRendererState;
     private inputRef: React.RefObject<HTMLInputElement>;
 
