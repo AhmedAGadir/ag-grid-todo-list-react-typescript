@@ -160,3 +160,15 @@ stopMockEditing(boolean) {
     }
     mockEditingNode.setData(updatedData)
 }
+
+
+
+
+=========
+
+google typescript higher order components and apply 
+abstract mockcelleditor logic
+abstract grid service
+TSDOC everhthing]
+WHAT DOES THE REACT.REACTELEMENT HOVER STUFF MEAN??
+check out all the generics and typing and make sure they have a point

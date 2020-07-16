@@ -5,17 +5,14 @@ import { ReactComponent } from 'ag-grid-react/lib/reactComponent';
 import { DateRenderer, DescriptionRenderer, CheckboxRenderer, ActionsRenderer } from '../index';
 import { ToDo, ToDoList, IDeleteToDo, } from '../../interfaces/todo';
 import { instanceOfIMockCellEditor, IMockCellEditor } from '../../interfaces/mockCellEditor';
-import WithMockEditingContext from '../../HOC/WithMockEditingContext';
+import WithMockEditingContext, { WithMockEditingIdProps } from '../../HOC/WithMockEditingContext';
 import { IMockEditingContext, MockEditingContext } from '../../context/MockEditingContext';
 import * as UTILS from '../../utils';
 import 'ag-grid-enterprise';
 import './Grid.scss'
 import 'normalize.css';
 
-interface GridProps {
-	/** ID of the mock-editing node in the Grid. 
-	 * Passed via {@link WithMockEditingContext} Higher Order Component */
-	mockEditingId: string,
+interface GridProps extends WithMockEditingIdProps {
 	/** Collection of toDos */
 	toDoList: ToDoList,
 	/** removes a toDo from {@link AppState.toDoList} */
@@ -143,11 +140,12 @@ class Grid extends React.Component<GridProps, GridState> {
 		const updatedToDo: ToDo = { ...mockEditingNode.data };
 
 		const mockEditors: IMockCellEditor[] = this.getMockEditors();
+		console.log('mockEditors', mockEditors);
 		mockEditors.forEach(mockEditor => {
-			let [field, updatedValue]: ['id' | 'description' | 'deadline', any] = mockEditor.getValue();
+			const [field, updatedValue]: ['id' | 'description' | 'deadline', any] = mockEditor.getValue();
 			updatedToDo[field] = updatedValue;
 		});
-		mockEditingNode.setData(updatedToDo);
+		this.gridApi.applyTransaction({ update: [updatedToDo] });
 	}
 
 	private rollbackChanges = (): void => {
@@ -157,7 +155,6 @@ class Grid extends React.Component<GridProps, GridState> {
 		});
 	}
 
-
 	private getMockEditors = (): IMockCellEditor[] => {
 		const mockEditingNode: RowNode = this.gridApi.getRowNode(this.context.mockEditingId);
 		const mockEditors: IMockCellEditor[] = this.gridApi.getCellRendererInstances({ rowNodes: [mockEditingNode] })
@@ -165,7 +162,6 @@ class Grid extends React.Component<GridProps, GridState> {
 			.filter(cellRenderer => instanceOfIMockCellEditor(cellRenderer));
 		return mockEditors;
 	}
-
 
 	public render(): React.ReactElement {
 		return (

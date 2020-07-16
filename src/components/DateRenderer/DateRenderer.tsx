@@ -4,38 +4,31 @@ import { format } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { ICellRendererParams } from 'ag-grid-community';
-import { MockEditingContext, IMockEditingContext } from '../../context/MockEditingContext';
+import WithMockCellEditor, { WithMockCellEditorProps } from '../../HOC/WithMockCellEditor';
 import { IMockCellEditor } from '../../interfaces/mockCellEditor';
 import * as UTILS from '../../utils';
 import './DateRenderer.scss';
 
-interface DateRendererProps extends ICellRendererParams { }
+interface DateRendererProps extends ICellRendererParams, WithMockCellEditorProps { }
 
 interface DateRendererState {
-    /** true if the node is in mock-edit mode */
-    mockEditing: boolean
     /** deadline for the toDo */
     selectedDate: Date,
 }
 
-export default class DateRenderer extends React.Component<DateRendererProps, DateRendererState> implements IMockCellEditor {
+class DateRenderer extends React.Component<DateRendererProps, DateRendererState> implements IMockCellEditor {
     state: DateRendererState;
-
-    static contextType: React.Context<IMockEditingContext> = MockEditingContext;
 
     public constructor(props: DateRendererProps) {
         super(props);
         let selectedDate = null;
         this.state = {
             selectedDate: selectedDate,
-            mockEditing: false,
         }
     }
 
-
+    // OVERRIDDEN 
     public refresh(): boolean {
-        const mockEditing: boolean = this.context.mockEditingId === this.props.node.id;
-        this.setState({ mockEditing });
         return true;
     }
 
@@ -70,11 +63,11 @@ export default class DateRenderer extends React.Component<DateRendererProps, Dat
         return (
             <MuiPickersUtilsProvider utils={DateFnsUtils} >
                 <KeyboardDatePicker
-                    className={this.props.node.isSelected() && !this.state.mockEditing ? "my-datepicker strike" : 'my-datepicker'}
-                    style={{ background: this.state.mockEditing ? this.props.node.isSelected() ? '#D5F1D1' : 'whitesmoke' : null }}
+                    className={this.props.node.isSelected() && !this.props.mockEditing ? "my-datepicker strike" : 'my-datepicker'}
+                    style={{ background: this.props.mockEditing ? this.props.node.isSelected() ? '#D5F1D1' : 'whitesmoke' : null }}
                     value={this.state.selectedDate}
                     onChange={this.handleDateChange}
-                    disabled={!this.state.mockEditing}
+                    disabled={!this.props.mockEditing}
                     id={`date-picker-dialog-${this.props.node.id}`}
                     format="dd/MM/yyyy"
                     placeholder={'No deadline'}
@@ -85,3 +78,5 @@ export default class DateRenderer extends React.Component<DateRendererProps, Dat
         )
     }
 }
+
+export default WithMockCellEditor(DateRenderer);

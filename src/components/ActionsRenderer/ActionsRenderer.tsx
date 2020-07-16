@@ -2,21 +2,21 @@ import React from 'react';
 import { ICellRenderer, ICellRendererParams, CellMouseOverEvent, CellMouseOutEvent } from 'ag-grid-community';
 import { ToDo, IDeleteToDo } from '../../interfaces/todo';
 import { MockEditingContext, IMockEditingContext } from '../../context/MockEditingContext';
+import WithMockCellRenderer, { WithMockCellRendererProps } from '../../HOC/WithMockCellRenderer';
 import './ActionsRenderer.scss'
 
 
-interface ActionsRendererProps extends ICellRendererParams {
+interface ActionsRendererProps extends ICellRendererParams, WithMockCellRendererProps {
     commit: () => null,
     rollback: () => null,
     deleteToDo: IDeleteToDo
 }
 
 interface ActionsRendererState {
-    mockEditing: boolean,
     visible: boolean
 }
 
-export default class ActionsRenderer extends React.Component<ActionsRendererProps, ActionsRendererState> implements ICellRenderer {
+class ActionsRenderer extends React.Component<ActionsRendererProps, ActionsRendererState> implements ICellRenderer {
     state: ActionsRendererState;
 
     static contextType: React.Context<IMockEditingContext> = MockEditingContext;
@@ -24,15 +24,13 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
     public constructor(props: ActionsRendererProps) {
         super(props);
         this.state = {
-            mockEditing: false,
             visible: false
         }
     }
 
+    /** overridden in {@link WithMockCellRenderer} */
     public refresh(): boolean {
-        const mockEditing: boolean = this.context.mockEditingId === this.props.node.id;
-        this.setState({ mockEditing });
-        return true;
+        return true
     }
 
     public componentDidMount(): void {
@@ -55,7 +53,7 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
 
     private onCellMouseOut = (params: CellMouseOutEvent): void => {
         if (params.node.id === this.props.node.id) {
-            if (this.state.mockEditing) {
+            if (this.props.mockEditing) {
                 return;
             }
             const visible: boolean = false;
@@ -110,8 +108,10 @@ export default class ActionsRenderer extends React.Component<ActionsRendererProp
 
         return (
             <div className="actions-wrapper" >
-                {this.state.mockEditing ? mockEditingIcons : nonMockEditingIcons}
+                {this.props.mockEditing ? mockEditingIcons : nonMockEditingIcons}
             </div>
         )
     }
 }
+
+export default WithMockCellRenderer(ActionsRenderer);

@@ -1,36 +1,32 @@
 import React from 'react';
 import { ICellRendererParams } from 'ag-grid-community';
-import { MockEditingContext, IMockEditingContext } from '../../context/MockEditingContext';
+import WithMockCellEditor, { WithMockCellEditorProps } from '../../HOC/WithMockCellEditor';
 import { IMockCellEditor } from '../../interfaces/mockCellEditor';
 import './DescriptionRenderer.scss';
 
-interface DescriptionRendererProps extends ICellRendererParams { };
+interface DescriptionRendererProps extends ICellRendererParams, WithMockCellEditorProps { };
 
 interface DescriptionRendererState {
-    /** true if the node is in mock-edit mode */
-    mockEditing: boolean,
     /** {@link ToDo.description | description} of a toDo */
     value: string
 };
 
 /** renders the description of a toDo. If the node is in mock-edit mode then an input field is rendered to allow for updating */
-export default class DescriptionRenderer extends React.Component<DescriptionRendererProps, DescriptionRendererState> implements IMockCellEditor {
+class DescriptionRenderer extends React.Component<DescriptionRendererProps, DescriptionRendererState> implements IMockCellEditor {
     state: DescriptionRendererState;
     private inputRef: React.RefObject<HTMLInputElement>;
 
-    static contextType: React.Context<IMockEditingContext> = MockEditingContext;
-
     public constructor(props: DescriptionRendererProps) {
         super(props);
+        console.log('constructor', this.props.data.description);
         this.state = {
-            mockEditing: false,
             value: ''
         };
         this.inputRef = React.createRef<HTMLInputElement>();
     }
 
+    // OVERRIDDEN IN WRAPPER 
     public refresh(): boolean {
-        this.setState({ mockEditing: this.context.mockEditingId === this.props.node.id });
         return true;
     }
 
@@ -41,7 +37,7 @@ export default class DescriptionRenderer extends React.Component<DescriptionRend
     }
 
     public componentDidUpdate(): void {
-        if (this.state.mockEditing) {
+        if (this.props.mockEditing) {
             this.inputRef.current!.focus();
         }
     }
@@ -63,7 +59,7 @@ export default class DescriptionRenderer extends React.Component<DescriptionRend
         let component: React.ReactElement;
         const isSelected: boolean = this.props.node.isSelected();
 
-        if (this.state.mockEditing) {
+        if (this.props.mockEditing) {
             const inputStyles: React.CSSProperties = { background: isSelected ? '#D5F1D1' : 'whitesmoke' };
             component =
                 <input
@@ -76,10 +72,12 @@ export default class DescriptionRenderer extends React.Component<DescriptionRend
         }
 
         return (
-            <div className="todo-wrapper" >
+            <div className="todo-wrapper">
                 {component}
             </div>
 
         );
     }
 }
+
+export default WithMockCellEditor(DescriptionRenderer);

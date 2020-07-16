@@ -1,7 +1,7 @@
 import { ICellRenderer } from 'ag-grid-community'
 
 export interface IMockCellEditor extends ICellRenderer {
-    getValue: () => any,
+    getValue: () => [any, any],
     reset: () => any,
 }
 
