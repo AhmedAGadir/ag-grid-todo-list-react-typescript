@@ -1,13 +1,13 @@
 import React from 'react';
 import { IMockEditingContext, MockEditingContext } from '../context/MockEditingContext';
 
-
 export interface WithMockEditingIdProps {
+    /** the id of the node in mock edit mode */
     mockEditingId: string
 }
 
 /**
- * Higher Order Component which wraps a react component so that it (and its children components) have access to {@link MockEditingContext}.
+ * Higher Order Component which wraps a react component so that it and its children components have access to {@link MockEditingContext}.
  * @param WrappedComponent - A React component
  * @returns - a wrapped React component that has access to {@link MockEditingContext}.
  * Note: the returned component is also passed the {@link IMockEditingContext.mockEditingId | mock-editing ID} 

@@ -4,13 +4,19 @@ import { ICellRenderer, ICellRendererParams } from 'ag-grid-community';
 
 
 export interface WithMockCellRendererProps {
-    mockEditing: boolean;
+    /** a boolean value indicating whether the current node is in mock-edit mode or not */
+    isMockEditing: boolean;
 }
 
 interface WithMockCellRendererState {
-    mockEditing: boolean
+    /** a boolean value indicating whether the current node is in mock-edit mode or not */
+    isMockEditing: boolean
 }
 
+/**
+ * wraps a cell renderer with the logic to identify whether it is in mock-edit mode or not whenever the cell is refreshed
+ * @param WrappedComponent - The cell renderer component which should enter a mock edit mode 
+ */
 const WithMockCellRenderer = <P extends ICellRendererParams>(WrappedComponent: React.ComponentClass<P>): React.ComponentClass<P> => (
     class extends React.Component<P> implements ICellRenderer {
         state: WithMockCellRendererState;
@@ -19,17 +25,17 @@ const WithMockCellRenderer = <P extends ICellRendererParams>(WrappedComponent: R
         constructor(props: P) {
             super(props);
             this.state = {
-                mockEditing: false
+                isMockEditing: false
             }
         }
 
         public refresh(): boolean {
-            this.setState({ mockEditing: this.context.mockEditingId === this.props.node.id });
+            this.setState({ isMockEditing: this.context.mockEditingId === this.props.node.id });
             return true;
         }
 
         render(): React.ReactElement<P & WithMockCellRendererProps> {
-            return <WrappedComponent {...this.props as P} mockEditing={this.state.mockEditing} />
+            return <WrappedComponent {...this.props as P} isMockEditing={this.state.isMockEditing} />
         }
     }
 );

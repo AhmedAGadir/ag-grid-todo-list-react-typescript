@@ -7,15 +7,23 @@ import './ActionsRenderer.scss'
 
 
 interface ActionsRendererProps extends ICellRendererParams, WithMockCellRendererProps {
+    /** a method to be invoked when the user would like to save changes made in mock-editors */
     commit: () => null,
+    /** a method to be invoked when the user would like to cancel changes made in mock-editors */
     rollback: () => null,
+    /** a method to be invoked when the user would like to delete a toDo */
     deleteToDo: IDeleteToDo
 }
 
 interface ActionsRendererState {
+    /** a boolean value indicating whether the actions should be visible or not (they are visible when the node is hovered over) */
     visible: boolean
 }
 
+/** renders:
+ *  - an enter mock-edit mode icon and delete icon when the node is *not* in mock edit mode
+ *  - a save changes icon and cancel changes icon when the node is in mock edit mode
+ *  */
 class ActionsRenderer extends React.Component<ActionsRendererProps, ActionsRendererState> implements ICellRenderer {
     state: ActionsRendererState;
 
@@ -30,7 +38,8 @@ class ActionsRenderer extends React.Component<ActionsRendererProps, ActionsRende
 
     /** overridden in {@link WithMockCellRenderer} */
     public refresh(): boolean {
-        return true
+        throw new Error('ActionsRenderer not wrapped with WithMockCellRenderer');
+        return true;
     }
 
     public componentDidMount(): void {
@@ -53,7 +62,7 @@ class ActionsRenderer extends React.Component<ActionsRendererProps, ActionsRende
 
     private onCellMouseOut = (params: CellMouseOutEvent): void => {
         if (params.node.id === this.props.node.id) {
-            if (this.props.mockEditing) {
+            if (this.props.isMockEditing) {
                 return;
             }
             const visible: boolean = false;
@@ -61,7 +70,7 @@ class ActionsRenderer extends React.Component<ActionsRendererProps, ActionsRende
         }
     }
 
-    private editToDo: React.MouseEventHandler<HTMLSpanElement> = (): void => {
+    private enterMockEditMode: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         if (this.context.mockEditingId !== null) {
             alert('You can only edit one todo at a time');
             return;
@@ -101,14 +110,14 @@ class ActionsRenderer extends React.Component<ActionsRendererProps, ActionsRende
 
         const nonMockEditingIcons = (
             <>
-                <span className="edit-icon" onClick={this.editToDo} > <i className="fas fa-pen" > </i></span >
+                <span className="edit-icon" onClick={this.enterMockEditMode} > <i className="fas fa-pen" > </i></span >
                 <span className="delete-icon" onClick={this.deleteToDo} > <i className="fas fa-trash" > </i></span >
             </>
         );
 
         return (
             <div className="actions-wrapper" >
-                {this.props.mockEditing ? mockEditingIcons : nonMockEditingIcons}
+                {this.props.isMockEditing ? mockEditingIcons : nonMockEditingIcons}
             </div>
         )
     }

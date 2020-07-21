@@ -1,9 +1,9 @@
 import React from 'react';
 
 export interface IMockEditingContext {
-    /** ID of the mock-editing node in the {@link Grid} */
+    /** ID of the mock-editing node in {@link Grid} */
     mockEditingId: string,
-    /** function to update {@link IMockEditingContext.mockEditingId} */
+    /** function to update the mockEditingId */
     setMockEditingId: (id: string) => void
 }
 

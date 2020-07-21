@@ -5,9 +5,11 @@ import './CheckboxRenderer.scss';
 interface CheckboxRendererProps extends ICellRendererParams { }
 
 interface CheckboxRendererState {
+    /** a boolean value indicating whether the toDo is complete or not (selected) */
     completed: boolean
 }
 
+/** renders a span element which looks like a HTML checkbox element. the checked attribute is bound to the nodes selection status  */
 export default class CompletedRenderer extends React.Component<CheckboxRendererProps, CheckboxRendererState> implements ICellRenderer {
     state: CheckboxRendererState;
 

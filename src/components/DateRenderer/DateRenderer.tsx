@@ -3,23 +3,21 @@ import React from 'react';
 import { format } from 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import { ICellRendererParams, ICellRenderer } from 'ag-grid-community';
-// import WithMockCellEditor, { WithMockCellEditorProps } from '../../HOC/WithMockCellEditor';
-import WithMockCellEditor from '../../HOC/WithMockCellEditor';
+import { ICellRendererParams } from 'ag-grid-community';
+import WithMockCellEditor, { WithMockCellEditorProps } from '../../HOC/WithMockCellEditor';
 import { IMockCellEditor } from '../../interfaces/mockCellEditor';
 import * as UTILS from '../../utils';
 import './DateRenderer.scss';
-import { WithMockCellRendererProps } from '../../HOC/WithMockCellRenderer';
 
-// interface DateRendererProps extends ICellRendererParams, WithMockCellEditorProps { }
-interface DateRendererProps extends ICellRendererParams, WithMockCellRendererProps { }
+interface DateRendererProps extends ICellRendererParams, WithMockCellEditorProps { }
 
 interface DateRendererState {
     /** deadline for the toDo */
     selectedDate: Date,
 }
 
-class DateRenderer extends React.Component<DateRendererProps, DateRendererState> implements IMockCellEditor, ICellRenderer {
+/** renders the deadline of a toDo. If the node is in mock-edit mode then a third-party date-picker is rendered to allow for updating */
+class DateRenderer extends React.Component<DateRendererProps, DateRendererState> implements IMockCellEditor {
     state: DateRendererState;
 
     public constructor(props: DateRendererProps) {
@@ -30,8 +28,9 @@ class DateRenderer extends React.Component<DateRendererProps, DateRendererState>
         }
     }
 
-    // OVERRIDDEN 
+    /** overridden in {@link WithMockCellEditor} */
     public refresh(): boolean {
+        throw new Error('DateRenderer not wrapped with WithMockCellEditor');
         return true;
     }
 
@@ -42,9 +41,10 @@ class DateRenderer extends React.Component<DateRendererProps, DateRendererState>
         }
     }
 
-    public getValue(): [string, string] {
+    public getValue(): [any, any] {
+        const field: string = this.props.column.getColId();
         const dateValue: string = this.state.selectedDate ? format(this.state.selectedDate, 'dd/MM/yyyy') : null;
-        return [this.props.column.getColId(), dateValue];
+        return [field, dateValue];
     }
 
     public reset(): void {
@@ -66,11 +66,11 @@ class DateRenderer extends React.Component<DateRendererProps, DateRendererState>
         return (
             <MuiPickersUtilsProvider utils={DateFnsUtils} >
                 <KeyboardDatePicker
-                    className={this.props.node.isSelected() && !this.props.mockEditing ? "my-datepicker strike" : 'my-datepicker'}
-                    style={{ background: this.props.mockEditing ? this.props.node.isSelected() ? '#D5F1D1' : 'whitesmoke' : null }}
+                    className={this.props.node.isSelected() && !this.props.isMockEditing ? "my-datepicker strike" : 'my-datepicker'}
+                    style={{ background: this.props.isMockEditing ? this.props.node.isSelected() ? '#D5F1D1' : 'whitesmoke' : null }}
                     value={this.state.selectedDate}
                     onChange={this.handleDateChange}
-                    disabled={!this.props.mockEditing}
+                    disabled={!this.props.isMockEditing}
                     id={`date-picker-dialog-${this.props.node.id}`}
                     format="dd/MM/yyyy"
                     placeholder={'No deadline'}
