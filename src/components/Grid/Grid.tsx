@@ -143,7 +143,7 @@ class Grid extends React.Component<GridProps, GridState> {
 		const mockEditingNode: RowNode = this.gridApi.getRowNode(this.context.mockEditingId);
 		const updatedToDo: ToDo = { ...mockEditingNode.data };
 
-		const mockEditors: IMockCellEditor[] = this.getMockEditors();
+		const mockEditors: IMockCellEditor[] = this.getMockEditors(mockEditingNode);
 		mockEditors.forEach(mockEditor => {
 			const [field, updatedValue]: ['description' | 'deadline', any] = mockEditor.getValue();
 			updatedToDo[field] = updatedValue;
@@ -153,16 +153,16 @@ class Grid extends React.Component<GridProps, GridState> {
 
 	/** iterates over each mock-editor in mock edit mode and calls {@link IMockCellEditor.reset | reset}  */
 	private rollbackChanges = (): void => {
-		const mockEditors: IMockCellEditor[] = this.getMockEditors();
+		const mockEditingNode: RowNode = this.gridApi.getRowNode(this.context.mockEditingId);
+		const mockEditors: IMockCellEditor[] = this.getMockEditors(mockEditingNode);
 		mockEditors.forEach(mockEditor => {
 			mockEditor.reset();
 		});
 	}
 
-	/** returns all the mock-editors currently in mock-edit mode */
-	private getMockEditors = (): IMockCellEditor[] => {
-		const mockEditingNode: RowNode = this.gridApi.getRowNode(this.context.mockEditingId);
-		const mockEditors: any[] = this.gridApi.getCellRendererInstances({ rowNodes: [mockEditingNode] })
+	/** returns all the mock-editors on a node */
+	private getMockEditors = (node: RowNode): IMockCellEditor[] => {
+		const mockEditors: any[] = this.gridApi.getCellRendererInstances({ rowNodes: [node] })
 			.map(cellRenderer => (cellRenderer as unknown as ReactComponent).getFrameworkComponentInstance())
 			.filter(cellRenderer => instanceOfIMockCellEditor(cellRenderer));
 		return mockEditors;
