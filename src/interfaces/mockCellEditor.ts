@@ -5,7 +5,7 @@ export interface IMockCellEditor extends ICellRenderer {
     /** returns a tuple with the colId and the updated value in the cell */
     getValue: () => [any, any],
     /** resets the cell value to that before editing */
-    reset: () => any,
+    reset: () => void,
 }
 
 /**
