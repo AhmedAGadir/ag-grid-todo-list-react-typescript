@@ -20,27 +20,34 @@ export default class CompletedRenderer extends React.Component<CheckboxRendererP
         };
     }
 
-    public refresh(): boolean {
-        const isNodeSelected: boolean = this.props.node.isSelected();
-        this.setState({ completed: isNodeSelected })
-        return true;
-    }
-
+    /** bind the completed state variable to the nodes selection status */
     public componentDidMount(): void {
         const isNodeSelected: boolean = this.props.node.isSelected();
         this.setState({ completed: isNodeSelected });
     }
 
+    /** update the nodes selection status upon checking and refresh the node */
     private completeToDo: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         this.props.node.setSelected(true);
-        const refreshCellsParams: RefreshCellsParams = { rowNodes: [this.props.node], force: true };
+        const refreshCellsParams: RefreshCellsParams = {
+            rowNodes: [this.props.node],
+            force: true
+        };
         this.props.api.refreshCells(refreshCellsParams);
     }
 
+    /** update the nodes selection status upon un-checking and refresh the node */
     private uncompleteToDo: React.MouseEventHandler<HTMLSpanElement> = (): void => {
         this.props.node.setSelected(false);
         const refreshCellsParams: RefreshCellsParams = { rowNodes: [this.props.node], force: true };
         this.props.api.refreshCells(refreshCellsParams);
+    }
+
+    /** update the completed state variable after each refresh of the node */
+    public refresh(): boolean {
+        const isNodeSelected: boolean = this.props.node.isSelected();
+        this.setState({ completed: isNodeSelected })
+        return true;
     }
 
     public render(): React.ReactElement {
