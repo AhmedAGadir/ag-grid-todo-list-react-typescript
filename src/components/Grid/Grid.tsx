@@ -162,7 +162,7 @@ class Grid extends React.Component<GridProps, GridState> {
 
 	/** returns all the mock-editors on a node */
 	private getMockEditors = (node: RowNode): IMockCellEditor[] => {
-		const mockEditors: any[] = this.gridApi.getCellRendererInstances({ rowNodes: [node] })
+		const mockEditors: IMockCellEditor[] = this.gridApi.getCellRendererInstances({ rowNodes: [node] })
 			.map(cellRenderer => (cellRenderer as unknown as ReactComponent).getFrameworkComponentInstance())
 			.filter(cellRenderer => instanceOfIMockCellEditor(cellRenderer));
 		return mockEditors;
