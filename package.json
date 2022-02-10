@@ -17,7 +17,7 @@
     "ag-grid-enterprise": "^23.2.1",
     "ag-grid-react": "^23.2.1",
     "date-fns": "^2.12.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "normalize.css": "^8.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
