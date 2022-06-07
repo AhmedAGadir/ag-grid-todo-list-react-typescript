@@ -1,7 +1,6 @@
 import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { GridReadyEvent, GridApi, RowNode, RefreshCellsParams, GridOptions, GetRowNodeIdFunc, ITooltipParams } from 'ag-grid-community';
-import { ReactComponent } from 'ag-grid-react/lib/reactComponent';
 import { DateRenderer, DescriptionRenderer, CheckboxRenderer, ActionsRenderer } from '../index';
 import { ToDo, ToDoList, IDeleteToDo, } from '../../interfaces/todo';
 import { instanceOfIMockCellEditor, IMockCellEditor } from '../../interfaces/mockCellEditor';
@@ -77,7 +76,7 @@ class Grid extends React.Component<GridProps, GridState> {
 		}
 	}
 
-	/** 
+	/**
 	 * Compares the previous and current {@link IMockEditingContext.mockEditingId | mockEditingId} values.
 	 * If there is a change then the grid nodes are refreshed to reflect this.
 	 */
@@ -120,7 +119,7 @@ class Grid extends React.Component<GridProps, GridState> {
 		let message: string;
 		if (!params.value) {
 			message = 'no deadline';
-		} else if (params.node.selected) {
+		} else if (params.node.isSelected()) {
 			message = 'completed';
 		} else {
 			const deadlineDate: Date = UTILS.convertToDate(params.value);
@@ -135,9 +134,9 @@ class Grid extends React.Component<GridProps, GridState> {
 		return toDo.id;
 	}
 
-	/** 
-	 * iterates over each mock-editor in mock-edit mode and retrieves its value and colId, 
-	 * then updates the underlying node data 
+	/**
+	 * iterates over each mock-editor in mock-edit mode and retrieves its value and colId,
+	 * then updates the underlying node data
 	*/
 	private commitChanges = (): void => {
 		const mockEditingNode: RowNode = this.gridApi.getRowNode(this.context.mockEditingId);
@@ -163,7 +162,7 @@ class Grid extends React.Component<GridProps, GridState> {
 	/** returns all the mock-editors on a node */
 	private getMockEditors = (node: RowNode): IMockCellEditor[] => {
 		const mockEditors: IMockCellEditor[] = this.gridApi.getCellRendererInstances({ rowNodes: [node] })
-			.map(cellRenderer => (cellRenderer as unknown as ReactComponent).getFrameworkComponentInstance())
+			.map(cellRenderer => (cellRenderer as any).getFrameworkComponentInstance())
 			.filter(cellRenderer => instanceOfIMockCellEditor(cellRenderer));
 		return mockEditors;
 	}

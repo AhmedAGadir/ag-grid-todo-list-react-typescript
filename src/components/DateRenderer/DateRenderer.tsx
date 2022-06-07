@@ -31,7 +31,6 @@ class DateRenderer extends React.Component<DateRendererProps, DateRendererState>
     /** overridden in {@link WithMockCellEditor} */
     public refresh(): boolean {
         throw new Error('DateRenderer not wrapped with WithMockCellEditor');
-        return true;
     }
 
     public componentDidMount(): void {

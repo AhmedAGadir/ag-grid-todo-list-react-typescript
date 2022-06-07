@@ -27,7 +27,6 @@ class DescriptionRenderer extends React.Component<DescriptionRendererProps, Desc
     /** overridden in {@link WithMockCellEditor} */
     public refresh(): boolean {
         throw new Error('DescriptionRenderer not wrapped with WithMockCellEditor');
-        return true;
     }
 
     public componentDidMount(): void {

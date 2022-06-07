@@ -39,7 +39,7 @@ class ActionsRenderer extends React.Component<ActionsRendererProps, ActionsRende
     /** overridden in {@link WithMockCellRenderer} */
     public refresh(): boolean {
         throw new Error('ActionsRenderer not wrapped with WithMockCellRenderer');
-        return true;
+
     }
 
     public componentDidMount(): void {
