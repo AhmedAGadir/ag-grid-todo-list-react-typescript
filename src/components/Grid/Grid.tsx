@@ -1,6 +1,6 @@
 import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { GridReadyEvent, GridApi, RowNode, RefreshCellsParams, GridOptions, GetRowNodeIdFunc, ITooltipParams } from 'ag-grid-community';
+import { GridReadyEvent, GridApi, RowNode, RefreshCellsParams, GridOptions, ITooltipParams } from 'ag-grid-community';
 import { DateRenderer, DescriptionRenderer, CheckboxRenderer, ActionsRenderer } from '../index';
 import { ToDo, ToDoList, IDeleteToDo, } from '../../interfaces/todo';
 import { instanceOfIMockCellEditor, IMockCellEditor } from '../../interfaces/mockCellEditor';
@@ -38,23 +38,24 @@ class Grid extends React.Component<GridProps, GridState> {
 				columnDefs: [
 					{
 						pinned: 'left',
-						cellRendererFramework: CheckboxRenderer,
+						cellRenderer: CheckboxRenderer,
 						width: 50,
 					},
 					{
 						field: 'description',
-						cellRendererFramework: DescriptionRenderer,
+						cellRenderer: DescriptionRenderer,
 						rowDrag: true,
 						flex: 1,
 					},
 					{
 						field: 'deadline',
-						cellRendererFramework: DateRenderer,
+						cellRenderer: DateRenderer,
 						tooltipValueGetter: this.tooltipValueGetter,
 						width: 170,
 					},
+
 					{
-						cellRendererFramework: ActionsRenderer,
+						cellRenderer: ActionsRenderer,
 						cellRendererParams: {
 							commit: this.commitChanges,
 							rollback: this.rollbackChanges,
@@ -63,7 +64,6 @@ class Grid extends React.Component<GridProps, GridState> {
 						width: 90,
 					},
 				],
-				immutableData: true,
 				domLayout: "autoHeight",
 				headerHeight: 0,
 				rowHeight: 65,
@@ -129,10 +129,10 @@ class Grid extends React.Component<GridProps, GridState> {
 		return message;
 	}
 
-	/** points ag-Grid to the unique ID of each toDo */
-	private getRowNodeId: GetRowNodeIdFunc = (toDo: ToDo): string => {
-		return toDo.id;
-	}
+	// /** points ag-Grid to the unique ID of each toDo */
+	// private getRowNodeId: GetRowNodeIdFunc = (toDo: ToDo): string => {
+	// 	return toDo.id;
+	// }
 
 	/**
 	 * iterates over each mock-editor in mock-edit mode and retrieves its value and colId,
@@ -173,7 +173,7 @@ class Grid extends React.Component<GridProps, GridState> {
 				<AgGridReact
 					rowData={this.props.toDoList}
 					gridOptions={this.state.gridOptions}
-					getRowNodeId={this.getRowNodeId}
+					getRowId={(row) => row.data.id }
 					onFirstDataRendered={this.onFirstDataRendered}
 					onGridReady={this.onGridReady}
 				/>
